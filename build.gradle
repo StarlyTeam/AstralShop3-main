@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+group = 'kr.starly.astralshop'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url = "https://repo.starly.kr/repository/maven-releases/"
+    }
+    maven { url = "https://jitpack.io" }
+}
+
+dependencies {
+    compileOnly "org.jetbrains:annotations:23.0.0"
+    compileOnly "org.projectlombok:lombok:1.18.26"
+    annotationProcessor "org.projectlombok:lombok:1.18.26"
+
+    compileOnly "org.spigotmc:spigot-api:R0.1:1.12.2"
+    compileOnly "kr.starly.core:StarlyCore:2.0"
+    api "xyz.starly.astralshop:AstralShopAPI:1.0"
+
+    compileOnly "com.github.MilkBowl:VaultAPI:1.7.1"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+}
+
+shadowJar {
+    archiveFileName = "AstralShop.jar"
+    destinationDirectory = file("C:\\Users\\PC\\Desktop\\AstralShop")
+}
+
+build.dependsOn shadowJar

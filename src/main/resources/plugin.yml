@@ -1,0 +1,12 @@
+name: AstralShop
+main: xyz.starly.astralshop.AstralShop
+website: https://starly.xyz
+authors:
+  - Nick
+  - apEnrl
+
+version: 1.0
+api-version: 1.13
+
+depend:
+  - Vault
