@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import xyz.starly.astralshop.api.shop.Shop;
 import xyz.starly.astralshop.api.shop.ShopPage;
-import xyz.starly.astralshop.api.shop.SoundType;
+import xyz.starly.astralshop.api.sound.SoundType;
 
 import java.util.HashMap;
 import java.util.Map;
