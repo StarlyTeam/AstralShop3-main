@@ -3,6 +3,7 @@ package xyz.starly.astralshop.shop;
 import lombok.Getter;
 import lombok.Setter;
 import xyz.starly.astralshop.api.shop.Shop;
+import xyz.starly.astralshop.api.shop.ShopPage;
 import xyz.starly.astralshop.api.shop.SoundType;
 
 import java.util.HashMap;
@@ -13,6 +14,8 @@ public class ShopImpl implements Shop {
     @Setter @Getter private String name;
     @Getter @Setter private String npc;
     private final Map<SoundType, String> sound;
+
+    private ShopPage shopPage;
 
     public ShopImpl(String name, String npc) {
         this.name = name;
