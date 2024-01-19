@@ -14,7 +14,7 @@ import java.util.List;
 public class ShopPageImpl implements ShopPage {
 
     private int pageNum;
-    private List<ShopItem> items;
-    private String inventoryName;
+    private String guiTitle;
     private int rows;
+    private List<ShopItem> items;
 }
