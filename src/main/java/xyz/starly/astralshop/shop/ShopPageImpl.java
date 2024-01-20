@@ -6,7 +6,7 @@ import lombok.Setter;
 import xyz.starly.astralshop.api.shop.ShopItem;
 import xyz.starly.astralshop.api.shop.ShopPage;
 
-import java.util.List;
+import java.util.Map;
 
 @AllArgsConstructor
 @Getter
@@ -16,5 +16,5 @@ public class ShopPageImpl implements ShopPage {
     private int pageNum;
     private String guiTitle;
     private int rows;
-    private List<ShopItem> items;
+    private Map<Integer, ShopItem> items;
 }
