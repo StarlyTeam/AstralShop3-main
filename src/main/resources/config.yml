@@ -1,0 +1,4 @@
+mysql:
+  url: "jdbc:mysql://localhost:3306/connectdb1?serverTimezone=Asia/Seoul&useSSL=false"
+  user: "root"
+  password: ""
