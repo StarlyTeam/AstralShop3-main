@@ -5,7 +5,8 @@ import lombok.Setter;
 import org.bukkit.inventory.ItemStack;
 import xyz.starly.astralshop.api.shop.ShopItem;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class ShopItemImpl implements ShopItem {
