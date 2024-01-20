@@ -9,29 +9,15 @@ import java.util.*;
 
 public class ShopItemImpl implements ShopItem {
 
-    private ItemStack itemStack;
-    @Getter @Setter private double buyPrice = -1;
-    @Getter @Setter private double sellPrice = -1;
-    @Getter @Setter private int stock = -1;
-    @Getter @Setter private int remainStock = -1;
-    @Getter private Map<UUID, Integer> limitBuyCount;
-    @Getter private Map<UUID, Integer> limitSellCount;
-    @Getter private List<String> commands;
+    @Getter private ItemStack itemStack;
+    @Getter @Setter private double buyPrice;
+    @Getter @Setter private double sellPrice;
+    @Getter @Setter private int stock;
+    @Getter @Setter private int remainStock;
+    @Getter @Setter private List<String> commands;
 
     public ShopItemImpl(ItemStack itemStack) {
         this.itemStack = itemStack;
-        this.limitBuyCount = new HashMap<>();
-        this.limitSellCount = new HashMap<>();
         this.commands = new ArrayList<>();
-    }
-
-
-    @Override
-    public void setLimitBuyCount(UUID uuid, int i) {
-    }
-
-    @Override
-    public void setLimitSellCount(UUID uuid, int i) {
-
     }
 }
