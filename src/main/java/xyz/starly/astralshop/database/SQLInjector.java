@@ -1,7 +1,10 @@
 package xyz.starly.astralshop.database;
 
+import lombok.Getter;
+
 import java.sql.*;
 
+@Getter
 public class SQLInjector {
 
     private String url;
@@ -12,12 +15,9 @@ public class SQLInjector {
 
     private String dbName;
 
-    private Connection con = null;
+    private Connection con;
 
     private Class driver;
-
-    private Statement statement;
-    private ResultSet result;
 
     public SQLInjector(String url, String user, String password, String dbName) throws ClassNotFoundException, SQLException {
         this.url = url;
@@ -29,8 +29,23 @@ public class SQLInjector {
         con = DriverManager.getConnection(url + dbName, user, password);
     }
 
-    public int createTable(String sql) throws SQLException {
+    public int executeUpdate(String sql) throws SQLException {
         Statement s = con.createStatement();
+
         return s.executeUpdate(sql);
+    }
+
+    public ResultSet executeQuery(String sql) throws SQLException {
+        PreparedStatement preparedStatement = con.prepareStatement(sql);
+        return preparedStatement.executeQuery();
+    }
+
+    public PreparedStatement preparedStatement(String sql) throws SQLException {
+        return con.prepareStatement(sql);
+    }
+
+    public boolean execute(String sql) throws SQLException {
+        Statement statement = con.createStatement();
+        return statement.execute(sql);
     }
 }
