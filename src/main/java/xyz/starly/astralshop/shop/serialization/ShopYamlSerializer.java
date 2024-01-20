@@ -105,6 +105,10 @@ public class ShopYamlSerializer {
                         LOGGER.info("   - Lore: " + item.getItemStack().getItemMeta().getLore());
                     }
 
+                    if (item.getItemStack().getItemMeta().hasCustomModelData()) {
+                        LOGGER.info("   - CustomModelData: " + item.getItemStack().getItemMeta().getCustomModelData());
+                    }
+
                     // POTION
                     if (item.getItemStack().getItemMeta() instanceof PotionMeta) {
                         PotionMeta potionMeta = (PotionMeta) item.getItemStack().getItemMeta();

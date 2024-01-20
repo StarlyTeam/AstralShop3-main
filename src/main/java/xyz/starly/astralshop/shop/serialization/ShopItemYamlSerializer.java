@@ -15,6 +15,7 @@ import xyz.starly.astralshop.api.shop.ShopItem;
 import xyz.starly.astralshop.shop.ShopItemImpl;
 import xyz.starly.astralshop.shop.handler.ItemTypeHandler;
 import xyz.starly.astralshop.shop.handler.impl.PotionTypeHandler;
+import xyz.starly.astralshop.shop.handler.impl.SpawnerTypeHandler;
 
 import java.util.*;
 
@@ -24,6 +25,7 @@ public class ShopItemYamlSerializer {
 
     static {
         handlers.put(Material.POTION, new PotionTypeHandler());
+        handlers.put(Material.SPAWNER, new SpawnerTypeHandler());
     }
 
     public static ConfigurationSection serialize(ShopItem shopItem) {
@@ -63,6 +65,10 @@ public class ShopItemYamlSerializer {
                 lore.add(ChatColor.translateAlternateColorCodes('&', line));
             }
             meta.setLore(lore);
+        }
+
+        if (section.contains("customModelData")) {
+            meta.setCustomModelData(section.getInt("customModelData"));
         }
 
         if (section.contains("leatherColor") && meta instanceof LeatherArmorMeta) {
