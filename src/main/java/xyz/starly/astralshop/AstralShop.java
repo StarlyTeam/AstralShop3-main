@@ -1,6 +1,7 @@
 package xyz.starly.astralshop;
 
 import lombok.Getter;
+
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.starly.astralshop.api.AstralShopPlugin;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
@@ -11,6 +12,7 @@ import xyz.starly.astralshop.registry.SQLShopRegistry;
 import xyz.starly.astralshop.registry.YamlShopRegistry;
 
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 public class AstralShop extends JavaPlugin implements AstralShopPlugin {
 
@@ -24,20 +26,21 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
     public void onEnable() {
         instance = this;
 
-        if (getConfig().getBoolean("database.use")) {
-            SQLInjector sqlInjector;
+        if (getConfig().getBoolean("mysql.use")) {
+            SQLInjector sqlInjector = null;
 
-            String url = getConfig().getString("url");
-            String user = getConfig().getString("user");
-            String password = getConfig().getString("password");
-            String dbName = getConfig().getString("dbName");
+            String url = getConfig().getString("mysql.url");
+            String user = getConfig().getString("mysql.user");
+            String password = getConfig().getString("mysql.password");
+            String dbName = getConfig().getString("mysql.dbName");
 
             try {
                 sqlInjector = new SQLInjector(url, user, password, dbName);
+                getLogger().info("성공적으로 MYSQL 연결하였습니다.");
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException(e);
+                getLogger().log(Level.WARNING, "JDBC Driver 클래스를 찾을 수 없습니다. " + e.getMessage());
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                getLogger().log(Level.WARNING, "MYSQL 연결 오류 " + e.getMessage());
             }
 
             shopRegistry = new SQLShopRegistry(sqlInjector);
@@ -48,5 +51,7 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
         shopRegistry.loadShops();
         getCommand("shop").setExecutor(new TestShopCommand(shopRegistry));
         getCommand("shopitem").setExecutor(new TestShopItemCommand(shopRegistry));
+
+        saveDefaultConfig();
     }
 }
