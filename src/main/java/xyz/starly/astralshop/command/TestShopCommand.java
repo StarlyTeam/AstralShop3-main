@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
 
-
 @AllArgsConstructor
 public class TestShopCommand implements CommandExecutor {
 
@@ -46,6 +45,10 @@ public class TestShopCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage("§c상점을 찾을 수 없습니다!");
                 }
+                break;
+
+            case "list":
+                shopRegistry.getShops();
                 break;
         }
 
