@@ -4,12 +4,12 @@ import xyz.starly.astralshop.api.registry.ShopRegistry;
 import xyz.starly.astralshop.api.shop.Shop;
 import xyz.starly.astralshop.database.SQLInjector;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class SQLShopRegistry implements ShopRegistry {
-    private Logger LOGGER;
 
     private SQLInjector sqlInjector;
 
@@ -29,12 +29,27 @@ public class SQLShopRegistry implements ShopRegistry {
 
     @Override
     public boolean createShop(String name, String guiTitle) {
-        String sql = "CREATE TABLE " + name + "_shop ( name VARCHAR(259) )";
+        String selectSQL = "SHOW TABLES FROM " + sqlInjector.getDbName() + " LIKE '" + name + "_shop'";
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS `" + name + "_shop` (`pageNum` INTEGER, `guiTitle` VARCHAR(255), `guiRows` INTEGER);";
 
         try {
-            sqlInjector.createTable(sql);
+            ResultSet rs = sqlInjector.executeQuery(selectSQL);
+            if (!rs.next()) {
+                sqlInjector.executeUpdate(createTableSQL);
+
+                String insertSQL = "INSERT INTO " + name + "_shop (pageNum, guiTitle, guiRows) values (?,?,?)";
+                PreparedStatement preparedStatement = sqlInjector.preparedStatement(insertSQL);
+
+                preparedStatement.setInt(1, 1);
+                preparedStatement.setString(2, guiTitle);
+                preparedStatement.setInt(3, 5);
+
+                preparedStatement.executeUpdate();
+
+                return true;
+            }
         } catch (SQLException e) {
-            LOGGER.info("mysql 에러 " + e);
+            e.printStackTrace();
         }
 
         return false;
@@ -42,7 +57,18 @@ public class SQLShopRegistry implements ShopRegistry {
 
     @Override
     public boolean deleteShop(String name) {
-        String sql = "";
+        String selectSQL = "SHOW TABLES FROM " + sqlInjector.getDbName() + " LIKE '" + name + "_shop'";
+
+        try {
+            ResultSet rs = sqlInjector.executeQuery(selectSQL);
+            if (rs.next()) {
+                String deleteSQL = "DROP TABLE " + name + "_shop";
+                sqlInjector.execute(deleteSQL);
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return false;
     }
