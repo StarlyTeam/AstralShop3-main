@@ -1,6 +1,7 @@
 mysql:
-  use: false
-  url: "jdbc:mysql://localhost:3306/"
-  dbName: ""
-  user: "root"
+  use: true
+  host: localhost
+  port: 3306
+  database: ""
+  user: root
   password: ""
