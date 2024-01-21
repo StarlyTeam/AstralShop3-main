@@ -1,5 +1,6 @@
 package xyz.starly.astralshop.registry;
 
+import lombok.SneakyThrows;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
@@ -10,22 +11,25 @@ import xyz.starly.astralshop.shop.serialization.ShopYamlSerializer;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class YamlShopRegistry implements ShopRegistry {
 
     private final Logger LOGGER;
     private final File shopFolder;
-    private final List<Shop> shops;
+    private final Map<String, Shop> shopMap;
 
+    @SuppressWarnings("unused")
     public YamlShopRegistry(JavaPlugin plugin) {
         this.LOGGER = plugin.getLogger();
         this.shopFolder = new File(plugin.getDataFolder(), "shops/");
-        this.shops = new ArrayList<>();
+        this.shopMap = new HashMap<>();
 
         if (!shopFolder.exists()) {
-            shopFolder.mkdirs();
+            boolean isCreated = shopFolder.mkdirs();
         }
     }
 
@@ -35,8 +39,9 @@ public class YamlShopRegistry implements ShopRegistry {
         if (shopFiles != null) {
             for (File shopFile : shopFiles) {
                 try {
+                    String shopName = shopFile.getName().replace(".yml", "");
                     Shop shop = ShopYamlSerializer.loadShop(shopFile);
-                    shops.add(shop);
+                    shopMap.put(shopName, shop);
                 } catch (IOException e) {
                     LOGGER.severe("Could not load shop from file: " + shopFile.getName());
                 }
@@ -49,33 +54,60 @@ public class YamlShopRegistry implements ShopRegistry {
     }
 
     @Override
-    public boolean createShop(@NotNull String name, String guiTitle) {
-        Shop shop = new ShopImpl(name, guiTitle, "", new ArrayList<>());
-        if (shops.contains(shop)) {
+    @SneakyThrows
+    public boolean createShop(@NotNull String name) {
+        if (shopMap.containsKey(name)) {
             return false;
         }
 
-        shops.add(shop);
+        Shop newShop = new ShopImpl(name, "", new ArrayList<>());
+
+        File shopFile = new File(shopFolder, name + ".yml");
+        if (shopFile.exists()) {
+            return false;
+        }
+
+        if (!shopFile.createNewFile()) {
+            LOGGER.warning("상점 파일을 생성하는 도중 오류가 발생하였습니다. " + shopFile.getName());
+            return false;
+        }
+
+        ShopYamlSerializer.saveShop(newShop, shopFile);
+        shopMap.put(name, newShop);
         return true;
     }
 
     @Override
     public boolean deleteShop(@NotNull String name) {
+        if (!(shopMap.containsKey(name))) {
+            return false;
+        }
+
+        File shopFile = new File(shopFolder, name + ".yml");
+
+        if (shopFile.exists()) {
+            if (!shopFile.delete()) {
+                LOGGER.warning("상점 파일을 삭제하는 도중 오류가 발생하였습니다. " + shopFile.getName());
+                return false;
+            }
+        }
+
+        shopMap.remove(name);
         return true;
     }
 
     @Override
     public Shop getShop(@NotNull String name) {
-        for (Shop shop : shops) {
-            if (shop.getName().equalsIgnoreCase(name)) {
-                return shop;
-            }
-        }
-        return null;
+        return shopMap.get(name);
     }
 
     @Override
     public @NotNull List<Shop> getShops() {
-        return shops;
+        return new ArrayList<>(shopMap.values());
+    }
+
+    @Override
+    public List<String> getShopNames() {
+        return new ArrayList<>(shopMap.keySet());
     }
 }
