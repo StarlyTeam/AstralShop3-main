@@ -1,5 +1,6 @@
 package xyz.starly.astralshop.registry;
 
+import org.bukkit.plugin.java.JavaPlugin;
 import xyz.starly.astralshop.AstralShop;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
 import xyz.starly.astralshop.api.shop.Shop;
@@ -14,24 +15,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class SQLShopRegistry implements ShopRegistry {
 
+    private final Logger LOGGER;
     private ConnectionPoolManager connectionPoolManager;
-
-    private Logger LOGGER = AstralShop.getInstance().getLogger();
-
+    private final Map<String, Shop> shopMap;
     private final String SHOP_SUFFIX = "_shop";
 
-    public SQLShopRegistry(ConnectionPoolManager connectionPoolManager) {
+    public SQLShopRegistry(JavaPlugin plugin, ConnectionPoolManager connectionPoolManager) {
+        this.LOGGER = plugin.getLogger();
+        this.shopMap = new HashMap<>();
         this.connectionPoolManager = connectionPoolManager;
     }
 
     @Override
     public void loadShops() {
-
     }
 
     @Override
@@ -40,7 +43,7 @@ public class SQLShopRegistry implements ShopRegistry {
     }
 
     @Override
-    public boolean createShop(String name, String guiTitle) {
+    public boolean createShop(String name) {
         String selectSQL = "SHOW TABLES FROM " + connectionPoolManager.getDatabase() + " LIKE '" + name + SHOP_SUFFIX + "'";
         String createShopTableSQL = "CREATE TABLE IF NOT EXISTS `" + name + SHOP_SUFFIX + "` (`shop_name` VARCHAR(255), `permission` VARCHAR(255), `npc` VARCHAR(255));";
         String createShopPageTableSQL = "CREATE TABLE IF NOT EXISTS `" + name + "_shop_page` (`gui_title` VARCHAR(255), `gui_rows` INTEGER);";
@@ -56,7 +59,7 @@ public class SQLShopRegistry implements ShopRegistry {
                 "`total_buy_count` BIGINT, " +
                 "`popularity` INTEGER" +
                 ");";
-        
+
         try {
             Statement createShopStatement = connectionPoolManager.getConnection().createStatement();
             ResultSet createShopResultSet = createShopStatement.executeQuery(selectSQL);
@@ -131,7 +134,7 @@ public class SQLShopRegistry implements ShopRegistry {
                         ShopPageImpl shopPage = new ShopPageImpl(pageNum, guiTitle, guiRows, null);
                         shopPageList.add(shopPage);
 
-                        Shop shop = new ShopImpl(shopName, guiTitle, null, shopPageList);
+                        Shop shop = new ShopImpl(guiTitle, null, shopPageList);
                         shopList.add(shop);
                     }
 
@@ -143,5 +146,10 @@ public class SQLShopRegistry implements ShopRegistry {
         }
 
         return shopList;
+    }
+
+    @Override
+    public List<String> getShopNames() {
+        return null;
     }
 }
