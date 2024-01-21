@@ -6,6 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.potion.PotionEffect;
 import xyz.starly.astralshop.AstralShop;
 import xyz.starly.astralshop.api.shop.Shop;
@@ -107,6 +108,12 @@ public class ShopYamlSerializer {
 
                     if (item.getItemStack().getItemMeta().hasCustomModelData()) {
                         LOGGER.info("   - CustomModelData: " + item.getItemStack().getItemMeta().getCustomModelData());
+                    }
+
+                    PersistentDataContainer container = item.getItemStack().getItemMeta().getPersistentDataContainer();
+                    if (!container.isEmpty()) {
+                        container.getKeys().forEach(namespacedKey ->
+                                LOGGER.info("   - PDC: " + namespacedKey.getKey() + " : " + namespacedKey.getNamespace()));
                     }
 
                     // POTION

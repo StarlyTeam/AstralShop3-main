@@ -1,23 +1,26 @@
 package xyz.starly.astralshop.shop.serialization;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.SkullMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+import xyz.starly.astralshop.AstralShop;
 import xyz.starly.astralshop.api.shop.ShopItem;
 import xyz.starly.astralshop.shop.ShopItemImpl;
 import xyz.starly.astralshop.shop.handler.ItemTypeHandler;
-import xyz.starly.astralshop.shop.handler.impl.PotionTypeHandler;
-import xyz.starly.astralshop.shop.handler.impl.SpawnerTypeHandler;
+import xyz.starly.astralshop.shop.handler.impl.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ShopItemYamlSerializer {
 
@@ -26,6 +29,23 @@ public class ShopItemYamlSerializer {
     static {
         handlers.put(Material.POTION, new PotionTypeHandler());
         handlers.put(Material.SPAWNER, new SpawnerTypeHandler());
+        handlers.put(Material.GOAT_HORN, new InstrumentTypeHandler());
+        handlers.put(Material.SUSPICIOUS_STEW, new SuspiciousStewTypeHandler());
+        handlers.put(Material.KNOWLEDGE_BOOK, new RecipeTypeHandler());
+        handlers.put(Material.FIREWORK_ROCKET, new FireworkRocketTypeHandler());
+        handlers.put(Material.PLAYER_HEAD, new SkullTypeHandler());
+
+        LeatherArmorColorTypeHandler leatherArmorColorTypeHandler = new LeatherArmorColorTypeHandler();
+        handlers.put(Material.LEATHER_HELMET, leatherArmorColorTypeHandler);
+        handlers.put(Material.LEATHER_CHESTPLATE, leatherArmorColorTypeHandler);
+        handlers.put(Material.LEATHER_LEGGINGS, leatherArmorColorTypeHandler);
+        handlers.put(Material.LEATHER_BOOTS, leatherArmorColorTypeHandler);
+
+        ArmorTrimTypeHandler armorTrimHandler = new ArmorTrimTypeHandler();
+        handlers.put(Material.NETHERITE_CHESTPLATE, armorTrimHandler);
+        handlers.put(Material.NETHERITE_HELMET, armorTrimHandler);
+        handlers.put(Material.NETHERITE_LEGGINGS, armorTrimHandler);
+        handlers.put(Material.NETHERITE_BOOTS, armorTrimHandler);
     }
 
     public static ConfigurationSection serialize(ShopItem shopItem) {
@@ -41,10 +61,7 @@ public class ShopItemYamlSerializer {
         section.set("sellPrice", shopItem.getSellPrice());
         section.set("stock", shopItem.getStock());
         section.set("remainStock", shopItem.getRemainStock());
-
-
         section.set("commands", shopItem.getCommands());
-
         return section;
     }
 
@@ -53,41 +70,31 @@ public class ShopItemYamlSerializer {
         int amount = section.getInt("amount", 1);
 
         ItemStack itemStack = new ItemStack(material, amount);
-        ItemMeta meta = itemStack.getItemMeta();
+        ItemMeta itemMeta = itemStack.getItemMeta();
 
-        if (section.contains("name")) {
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', section.getString("name")));
-        }
-
-        if (section.isList("lore")) {
-            List<String> lore = new ArrayList<>();
-            for (String line : section.getStringList("lore")) {
-                lore.add(ChatColor.translateAlternateColorCodes('&', line));
+        if (itemMeta != null) {
+            if (section.contains("name")) {
+                itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', section.getString("name")));
             }
-            meta.setLore(lore);
-        }
 
-        if (section.contains("customModelData")) {
-            meta.setCustomModelData(section.getInt("customModelData"));
-        }
+            if (section.isList("lore")) {
+                List<String> lore = new ArrayList<>();
+                for (String line : section.getStringList("lore")) {
+                    lore.add(ChatColor.translateAlternateColorCodes('&', line));
+                }
+                itemMeta.setLore(lore);
+            }
 
-        if (section.contains("leatherColor") && meta instanceof LeatherArmorMeta) {
-            LeatherArmorMeta leatherMeta = (LeatherArmorMeta) meta;
-            int colorValue = section.getInt("leatherColor");
-            leatherMeta.setColor(Color.fromRGB(colorValue));
-        }
+            if (section.contains("customModelData")) {
+                itemMeta.setCustomModelData(section.getInt("customModelData"));
+            }
 
-        // TODO 다중 버전 지원 제작
-        if (material == Material.valueOf("PLAYER_HEAD") && meta instanceof SkullMeta) {
-            if (section.contains("skullOwner")) {
-                String skullOwner = section.getString("skullOwner");
-                SkullMeta skullMeta = (SkullMeta) meta;
-                skullMeta.setOwner(skullOwner);
-                itemStack.setItemMeta(skullMeta);
+            if (section.getBoolean("unbreakable")) {
+                itemMeta.setUnbreakable(true);
             }
         }
 
-        itemStack.setItemMeta(meta);
+        itemStack.setItemMeta(itemMeta);
 
         applyEnchantments(itemStack, section);
 
@@ -99,6 +106,9 @@ public class ShopItemYamlSerializer {
         if (handler != null) {
             handler.deserialize(itemStack, section);
         }
+
+        PDCTypeHandler pdcHandler = new PDCTypeHandler();
+        pdcHandler.deserialize(itemStack, section);
 
         ShopItemImpl shopItem = new ShopItemImpl(itemStack);
 

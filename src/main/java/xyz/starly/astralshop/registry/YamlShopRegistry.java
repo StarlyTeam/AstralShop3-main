@@ -4,6 +4,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
 import xyz.starly.astralshop.api.shop.Shop;
+import xyz.starly.astralshop.shop.ShopImpl;
 import xyz.starly.astralshop.shop.serialization.ShopYamlSerializer;
 
 import java.io.File;
@@ -49,6 +50,12 @@ public class YamlShopRegistry implements ShopRegistry {
 
     @Override
     public boolean createShop(@NotNull String name, String guiTitle) {
+        Shop shop = new ShopImpl(name, guiTitle, "", new ArrayList<>());
+        if (shops.contains(shop)) {
+            return false;
+        }
+
+        shops.add(shop);
         return true;
     }
 
