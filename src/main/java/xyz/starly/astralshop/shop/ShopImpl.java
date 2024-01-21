@@ -12,7 +12,6 @@ import java.util.List;
 @Getter
 public class ShopImpl implements Shop {
 
-    @Setter private String name;
     @Setter private String guiTitle;
     @Setter private String npc;
     private final List<ShopPage> shopPages;
