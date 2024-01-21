@@ -13,4 +13,5 @@ depend:
 
 commands:
   shopitem:
-  shop:
+  shopadmin:
+    aliases: [ 상점관리 ]
