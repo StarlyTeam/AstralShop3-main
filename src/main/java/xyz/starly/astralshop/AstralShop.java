@@ -8,7 +8,9 @@ import xyz.starly.astralshop.api.registry.ShopRegistry;
 import xyz.starly.astralshop.command.ShopAdminCommand;
 import xyz.starly.astralshop.command.TestShopItemCommand;
 import xyz.starly.astralshop.database.ConnectionPoolManager;
-import xyz.starly.astralshop.inventory.AdminShopInventoryContainer;
+import xyz.starly.astralshop.inventory.ShopCategoryInventoryImpl;
+import xyz.starly.astralshop.inventory.ShopInventory;
+import xyz.starly.astralshop.listener.AdminShopInventoryListener;
 import xyz.starly.astralshop.registry.SQLShopRegistry;
 import xyz.starly.astralshop.registry.YamlShopRegistry;
 
@@ -40,6 +42,9 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
 
         new ShopAdminCommand(this);
         getCommand("shopitem").setExecutor(new TestShopItemCommand(shopRegistry));
+
+        getServer().getPluginManager().registerEvents(new AdminShopInventoryListener(), this);
+        getServer().getPluginManager().registerEvents(new ShopCategoryInventoryImpl(), this);
     }
 
     @Override
@@ -48,7 +53,7 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
         if (pool != null) pool.closePool();
 
         getServer().getOnlinePlayers().forEach(player -> {
-            if (player.getOpenInventory().getTopInventory().getHolder() instanceof AdminShopInventoryContainer) {
+            if (player.getOpenInventory().getTopInventory().getHolder() instanceof ShopInventory) {
                 player.closeInventory();
             }
         });
