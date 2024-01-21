@@ -12,7 +12,7 @@ public class SpawnerTypeHandler implements ItemTypeHandler {
 
     @Override
     public void serialize(ItemStack itemStack, ConfigurationSection section) {
-
+        // TODO 구현
     }
 
     @Override
