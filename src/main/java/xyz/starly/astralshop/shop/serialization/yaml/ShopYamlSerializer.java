@@ -1,4 +1,4 @@
-package xyz.starly.astralshop.shop.serialization;
+package xyz.starly.astralshop.shop.serialization.yaml;
 
 import org.bukkit.Color;
 import org.bukkit.configuration.ConfigurationSection;

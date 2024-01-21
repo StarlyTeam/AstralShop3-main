@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
 import xyz.starly.astralshop.api.shop.Shop;
 import xyz.starly.astralshop.shop.ShopImpl;
-import xyz.starly.astralshop.shop.serialization.ShopYamlSerializer;
+import xyz.starly.astralshop.shop.serialization.yaml.ShopYamlSerializer;
 
 import java.io.File;
 import java.io.IOException;

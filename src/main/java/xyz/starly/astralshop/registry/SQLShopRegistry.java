@@ -12,7 +12,7 @@ import xyz.starly.astralshop.database.ConnectionPoolManager;
 import xyz.starly.astralshop.shop.ShopImpl;
 import xyz.starly.astralshop.shop.ShopItemImpl;
 import xyz.starly.astralshop.shop.ShopPageImpl;
-import xyz.starly.astralshop.shop.serialization.ShopItemSQLSerializer;
+import xyz.starly.astralshop.shop.serialization.sql.ShopItemSQLSerializer;
 
 import java.sql.*;
 
