@@ -88,11 +88,7 @@ public class TestShopItemCommand implements TabExecutor {
     }
 
     private List<String> getShopNames() {
-        List<String> shopNames = new ArrayList<>();
-        for (Shop shop : shopRegistry.getShops()) {
-            shopNames.add(shop.getName());
-        }
-        return shopNames;
+        return new ArrayList<>(shopRegistry.getShopNames());
     }
 
     private List<String> getPageNumbers(Shop shop) {
