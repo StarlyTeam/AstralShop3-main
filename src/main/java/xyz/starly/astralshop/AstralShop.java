@@ -5,9 +5,10 @@ import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.starly.astralshop.api.AstralShopPlugin;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
-import xyz.starly.astralshop.command.TestShopCommand;
+import xyz.starly.astralshop.command.ShopAdminCommand;
 import xyz.starly.astralshop.command.TestShopItemCommand;
 import xyz.starly.astralshop.database.ConnectionPoolManager;
+import xyz.starly.astralshop.inventory.AdminShopInventoryContainer;
 import xyz.starly.astralshop.registry.SQLShopRegistry;
 import xyz.starly.astralshop.registry.YamlShopRegistry;
 
@@ -30,13 +31,14 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
 
             getLogger().info("성공적으로 MYSQL 연결하였습니다.");
 
-            shopRegistry = new SQLShopRegistry(pool);
+            shopRegistry = new SQLShopRegistry(this, pool);
         } else {
             shopRegistry = new YamlShopRegistry(this);
         }
 
         shopRegistry.loadShops();
-        getCommand("shop").setExecutor(new TestShopCommand(shopRegistry));
+
+        new ShopAdminCommand(this);
         getCommand("shopitem").setExecutor(new TestShopItemCommand(shopRegistry));
     }
 
@@ -44,5 +46,11 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
     public void onDisable() {
         ConnectionPoolManager pool = ConnectionPoolManager.getInternalPool();
         if (pool != null) pool.closePool();
+
+        getServer().getOnlinePlayers().forEach(player -> {
+            if (player.getOpenInventory().getTopInventory().getHolder() instanceof AdminShopInventoryContainer) {
+                player.closeInventory();
+            }
+        });
     }
 }
