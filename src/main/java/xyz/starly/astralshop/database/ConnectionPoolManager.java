@@ -37,10 +37,6 @@ public class ConnectionPoolManager {
             );
     }
 
-    public ConnectionPoolManager(String address, String port, String username, String password, String mysql) {
-        this(address, port, username, password, mysql, 5, 10);
-    }
-
     public ConnectionPoolManager(String address, String port, String username, String password, String mysql, int minimumConnections, int maximumConnections) {
         this.host = address;
         this.port = port;
