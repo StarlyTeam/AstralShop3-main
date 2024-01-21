@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import xyz.starly.astralshop.api.AstralShopPlugin;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
 import xyz.starly.astralshop.command.ShopAdminCommand;
+import xyz.starly.astralshop.command.TestShopCommand;
 import xyz.starly.astralshop.command.TestShopItemCommand;
 import xyz.starly.astralshop.database.ConnectionPoolManager;
 import xyz.starly.astralshop.inventory.ShopCategoryInventoryImpl;
@@ -34,6 +35,7 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
             getLogger().info("성공적으로 MYSQL 연결하였습니다.");
 
             shopRegistry = new SQLShopRegistry(this, pool);
+            getCommand("test").setExecutor(new TestShopCommand((SQLShopRegistry) shopRegistry));
         } else {
             shopRegistry = new YamlShopRegistry(this);
         }
