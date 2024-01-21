@@ -12,23 +12,25 @@ public class InstrumentTypeHandler implements ItemTypeHandler {
 
     @Override
     public void serialize(ItemStack itemStack, ConfigurationSection section) {
-
+        // TODO 구현
     }
 
     @Override
     public void deserialize(ItemStack itemStack, ConfigurationSection section) {
-        if (itemStack.getType() == Material.GOAT_HORN && section.contains("instrument")) {
-            String instrumentName = section.getString("instrument").toLowerCase() + "_goat_horn";
-            MusicInstrumentMeta meta = (MusicInstrumentMeta) itemStack.getItemMeta();
+        try {
+            if (itemStack.getType() == Material.GOAT_HORN && section.contains("instrument")) {
+                String instrumentName = section.getString("instrument").toLowerCase() + "_goat_horn";
+                MusicInstrumentMeta meta = (MusicInstrumentMeta) itemStack.getItemMeta();
 
-            NamespacedKey key = NamespacedKey.minecraft(instrumentName);
-            MusicInstrument instrument = MusicInstrument.getByKey(key);
+                NamespacedKey key = NamespacedKey.minecraft(instrumentName);
+                MusicInstrument instrument = MusicInstrument.getByKey(key);
 
-            if (instrument != null) {
-                meta.setInstrument(instrument);
+                if (instrument != null) {
+                    meta.setInstrument(instrument);
+                }
+
+                itemStack.setItemMeta(meta);
             }
-
-            itemStack.setItemMeta(meta);
-        }
+        } catch (NoClassDefFoundError ignored) {}
     }
 }
