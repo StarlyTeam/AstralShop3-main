@@ -30,7 +30,6 @@ public class ShopYamlSerializer {
     public static void saveShop(Shop shop, File file) throws IOException {
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        config.set("shop.name", shop.getName());
         config.set("shop.gui_title", shop.getGuiTitle());
         config.set("shop.npc", shop.getNpc());
 
@@ -59,13 +58,12 @@ public class ShopYamlSerializer {
     public static Shop loadShop(File file) throws IOException {
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        String name = config.getString("shop.name");
         String guiTitle = config.getString("shop.gui_title");
         String npc = config.getString("shop.npc");
 
         /* TODO 삭제 해야함 | 로그 부분 */
         LOGGER.info(ANSI_CYAN + "=============================================================" + ANSI_RESET);
-        LOGGER.info( ANSI_GREEN + "상점을 로딩하였습니다 : " + name + ANSI_RESET);
+        LOGGER.info( ANSI_GREEN + "상점을 로딩하였습니다");
         LOGGER.info(ANSI_YELLOW + "- gui_title: " + guiTitle + ANSI_RESET);
         LOGGER.info(ANSI_YELLOW + "- npc: " + npc + ANSI_RESET);
         LOGGER.info(" ");
@@ -153,7 +151,7 @@ public class ShopYamlSerializer {
             index++;
         }
 
-        Shop shop = new ShopImpl(name, guiTitle, npc, pages);
+        Shop shop = new ShopImpl(guiTitle, npc, pages);
         return shop;
     }
 }
