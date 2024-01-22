@@ -49,7 +49,7 @@ public class ShopItemYamlSerializer {
 
         ItemStack itemStack = shopItem.getItemStack();
         if (itemStack != null) {
-            section.set("item", itemStack.getType().toString());
+            section.set("material", itemStack.getType().toString());
             section.set("amount", itemStack.getAmount());
         }
 
@@ -62,7 +62,7 @@ public class ShopItemYamlSerializer {
     }
 
     public static ShopItemImpl deserialize(ConfigurationSection section) {
-        Material material = Material.valueOf(section.getString("item"));
+        Material material = Material.valueOf(section.getString("material"));
         int amount = section.getInt("amount", 1);
 
         ItemStack itemStack = new ItemStack(material, amount);
