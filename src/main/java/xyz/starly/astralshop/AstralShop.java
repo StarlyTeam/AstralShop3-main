@@ -15,6 +15,8 @@ import xyz.starly.astralshop.listener.AdminShopInventoryListener;
 import xyz.starly.astralshop.registry.SQLShopRegistry;
 import xyz.starly.astralshop.registry.YamlShopRegistry;
 
+import java.sql.SQLException;
+
 public class AstralShop extends JavaPlugin implements AstralShopPlugin {
 
     @Getter
@@ -31,6 +33,12 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
         if (getConfig().getBoolean("mysql.use")) {
             ConnectionPoolManager.initializingPoolManager(getConfig());
             ConnectionPoolManager pool = ConnectionPoolManager.getInternalPool();
+
+            try {
+                pool.getConnection();
+            } catch (SQLException e) {
+                getLogger().info(e.getMessage());
+            }
 
             getLogger().info("성공적으로 MYSQL 연결하였습니다.");
 
@@ -51,6 +59,8 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
 
     @Override
     public void onDisable() {
+        shopRegistry.saveShops();
+
         ConnectionPoolManager pool = ConnectionPoolManager.getInternalPool();
         if (pool != null) pool.closePool();
 
