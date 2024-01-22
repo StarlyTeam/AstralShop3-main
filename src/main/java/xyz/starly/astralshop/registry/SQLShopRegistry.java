@@ -3,6 +3,7 @@ package xyz.starly.astralshop.registry;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import org.jetbrains.annotations.NotNull;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
 import xyz.starly.astralshop.api.shop.Shop;
 import xyz.starly.astralshop.api.shop.ShopItem;
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
 public class SQLShopRegistry implements ShopRegistry {
 
     private final Logger LOGGER;
-    private ConnectionPoolManager connectionPoolManager;
+    private final ConnectionPoolManager connectionPoolManager;
     private final Map<String, Shop> shopMap;
 
     private final String SHOP_SUFFIX = "_shop";
@@ -76,7 +77,7 @@ public class SQLShopRegistry implements ShopRegistry {
                             ShopItem shopItem = new ShopItemImpl(ShopItemSQLSerializer.deserialize(encodedItemStack));
                             shopItems.put(slot, shopItem);
                         }
-                        
+
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -103,7 +104,7 @@ public class SQLShopRegistry implements ShopRegistry {
                 }
             }
         } catch (SQLException e) {
-            LOGGER.warning("상점을 로드하는 도중 오류가 발생하였습니다. \n" + e.getMessage());
+            LOGGER.warning("상점을 로드하는 도중 오류가 발생하였습니다. " + e.getMessage());
         }
     }
 
@@ -136,7 +137,7 @@ public class SQLShopRegistry implements ShopRegistry {
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
-            LOGGER.warning("상점 아이템을 추가하는 도중 오류가 발생하였습니다. \n" + e.getMessage());
+            LOGGER.warning("상점 아이템을 추가하는 도중 오류가 발생하였습니다. " + e.getMessage());
         }
     }
 
@@ -191,7 +192,7 @@ public class SQLShopRegistry implements ShopRegistry {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            LOGGER.warning("상점을 생성하는 도중 오류가 발생하였습니다. \n" + e.getMessage());
+            LOGGER.warning("상점을 생성하는 도중 오류가 발생하였습니다. " + e.getMessage());
         }
 
         return true;
@@ -214,7 +215,7 @@ public class SQLShopRegistry implements ShopRegistry {
                 return true;
             }
         } catch (SQLException e) {
-            LOGGER.warning("상점을 제거하는 도중 오류가 발생하였습니다. \n" + e.getMessage());
+            LOGGER.warning("상점을 제거하는 도중 오류가 발생하였습니다. " + e.getMessage());
         }
 
         return false;
@@ -267,13 +268,13 @@ public class SQLShopRegistry implements ShopRegistry {
             return shop;
 
         } catch (SQLException e) {
-            LOGGER.warning("상점을 불러오는 도중 오류가 발생하였습니다. \n" + e.getMessage());
+            LOGGER.warning("상점을 불러오는 도중 오류가 발생하였습니다. " + e.getMessage());
         }
         return null;
     }
 
     @Override
-    public List<Shop> getShops() {
+    public @NotNull List<Shop> getShops() {
         return new ArrayList<>(shopMap.values());
     }
 
