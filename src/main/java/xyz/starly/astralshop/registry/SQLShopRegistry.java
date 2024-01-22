@@ -1,6 +1,5 @@
 package xyz.starly.astralshop.registry;
 
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +19,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.logging.Logger;
 
+@SuppressWarnings("all")
 public class SQLShopRegistry implements ShopRegistry {
 
     private final Logger LOGGER;
@@ -61,7 +61,7 @@ public class SQLShopRegistry implements ShopRegistry {
                         }
 
                     } catch (SQLException e) {
-                        throw new RuntimeException(e);
+                        LOGGER.warning("상점을 불러오는 중 오류가 발생하였습니다. " + e.getMessage());
                     }
 
                 } else if (shopName.contains(SHOP_SUFFIX + SHOP_ITEM_SUFFIX) && !shopName.contains(SHOP_SUFFIX + SHOP_PAGE_SUFFIX)) {
@@ -79,7 +79,7 @@ public class SQLShopRegistry implements ShopRegistry {
                         }
 
                     } catch (SQLException e) {
-                        throw new RuntimeException(e);
+                        LOGGER.warning("아이템을 불러오는 중 오류가 발생하였습니다. " + e.getMessage());
                     }
 
                 } else if (shopName.contains(SHOP_SUFFIX + SHOP_PAGE_SUFFIX)) {
@@ -96,49 +96,57 @@ public class SQLShopRegistry implements ShopRegistry {
                             ShopPage shopPage = new ShopPageImpl(pageNum, guiTitle, guiRows, shopItems);
                             shopPageList.add(shopPage);
                             shop = new ShopImpl(shopName, npc, shopPageList);
-                            shopMap.put(shopName, shop);
+
+                            shopMap.put(shopName.replace(SHOP_SUFFIX, "").replace(SHOP_PAGE_SUFFIX, ""), shop);
                         }
                     } catch (SQLException e) {
-                        throw new RuntimeException(e);
+                        LOGGER.warning("상점 페이지를 로드하는 중 오류가 발생하였습니다. " + e.getMessage());
                     }
                 }
             }
         } catch (SQLException e) {
-            LOGGER.warning("상점을 로드하는 도중 오류가 발생하였습니다. " + e.getMessage());
+            LOGGER.warning("상점을 로드하는 도중 치명적인 오류가 발생하였습니다. " + e.getMessage());
         }
     }
 
     @Override
     public void saveShops() {
+        System.out.println("Mysql 저장중...");
 
-    }
+        shopMap.forEach((name, shop) -> {
+            String npc = shop.getNpc();
+            String guiTitle = shop.getGuiTitle();
+            List<ShopPage> shopPages = shop.getShopPages();
 
-    public void addItems(String name, ItemStack itemStack) {
-        String insertSQL = "INSERT INTO " + name + "_shop_items " +
-                "(itemstack, slot, sell_price, buy_price, max_stock, remain_stock, refill_time, total_sell_count, total_buy_count, popularity, commands) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            shopPages.forEach(shopPage -> {
+                Map<Integer, ShopItem> items = shopPage.getItems();
+                items.forEach((slot, shopItem) -> {
+                    String shopItemTable = name + SHOP_SUFFIX + SHOP_ITEM_SUFFIX;
 
-        try {
-            PreparedStatement preparedStatement = connectionPoolManager.getConnection().prepareStatement(insertSQL);
+                    String encoded = ShopItemSQLSerializer.serialize(shopItem);
 
-            ShopItem shopItem = new ShopItemImpl(itemStack);
+                    double sellPrice = shopItem.getSellPrice();
+                    double buyPrice = shopItem.getBuyPrice();
 
-            preparedStatement.setString(1, ShopItemSQLSerializer.serialize(shopItem));
-            preparedStatement.setInt(2, 1);
-            preparedStatement.setInt(3, 1);
-            preparedStatement.setInt(4, 1);
-            preparedStatement.setInt(5, 1);
-            preparedStatement.setInt(6, 1);
-            preparedStatement.setTimestamp(7, new Timestamp(System.currentTimeMillis()));
-            preparedStatement.setLong(8, 1);
-            preparedStatement.setLong(9, 1);
-            preparedStatement.setInt(10, 1);
-            preparedStatement.setString(11, "");
+                    int maxStock = shopItem.getStock();
+                    int remainStock = shopItem.getRemainStock();
 
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            LOGGER.warning("상점 아이템을 추가하는 도중 오류가 발생하였습니다. " + e.getMessage());
-        }
+                    List<String> commands = shopItem.getCommands();
+
+                    try {
+                        String actionSQL = "INSERT INTO `" + shopItemTable + "` (`itemstack`, `slot`, `sell_price`, `buy_price`, `max_stock`, `remain_stock`, `popularity`, `commands`) " +
+                                "VALUES ('" + encoded + "', '" + slot + "', '" + sellPrice + "', '" + buyPrice + "', '" + maxStock + "', '" + remainStock + "', '" + -1 + "', '" + commands + "') " +
+                                "ON DUPLICATE KEY UPDATE itemstack = VALUES(itemstack), slot = VALUES(slot), sell_price = VALUES(sell_price), buy_price = VALUES(buy_price), " +
+                                "max_stock = VALUES(max_stock), remain_stock = VALUES(remain_stock), popularity = VALUES(popularity), commands = VALUES(commands)";
+
+                        connectionPoolManager.getConnection().createStatement().executeUpdate(actionSQL);
+
+                    } catch (SQLException e) {
+                        LOGGER.warning("상점을 저장하는 도중 치명적인 오류가 발생하였습니다. " + e.getMessage());
+                    }
+                });
+            });
+        });
     }
 
     @Override
@@ -147,17 +155,15 @@ public class SQLShopRegistry implements ShopRegistry {
         String createShopTableSQL = "CREATE TABLE IF NOT EXISTS `" + name + SHOP_SUFFIX + "` (`shop_name` VARCHAR(255), `permission` VARCHAR(255), `npc` VARCHAR(255));";
         String createShopPageTableSQL = "CREATE TABLE IF NOT EXISTS `" + name + SHOP_SUFFIX + SHOP_PAGE_SUFFIX + "` (`pageNum` INTEGER,`gui_title` VARCHAR(255), `gui_rows` INTEGER);";
         String createShopItemTableSQL = "CREATE TABLE IF NOT EXISTS `" + name + SHOP_SUFFIX + SHOP_ITEM_SUFFIX + "` (" +
-                "`itemstack` VARCHAR(1000), " +
+                "`itemstack` VARCHAR(5000), " +
                 "`slot` INTEGER(2), " +
-                "`sell_price` INTEGER, " +
-                "`buy_price` INTEGER, " +
+                "`sell_price` DOUBLE, " +
+                "`buy_price` DOUBLE, " +
                 "`max_stock` INTEGER, " +
                 "`remain_stock` INTEGER, " +
-                "`refill_time` TIMESTAMP, " +
-                "`total_sell_count` BIGINT, " +
-                "`total_buy_count` BIGINT, " +
                 "`popularity` INTEGER," +
-                "`commands` VARCHAR(1000)" +
+                "`commands` VARCHAR(1000)," +
+                "PRIMARY KEY(slot)" +
                 ");";
 
         try {
@@ -192,7 +198,7 @@ public class SQLShopRegistry implements ShopRegistry {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            LOGGER.warning("상점을 생성하는 도중 오류가 발생하였습니다. " + e.getMessage());
+            LOGGER.warning("상점을 생성하는 도중 치명적인 오류가 발생하였습니다. " + e.getMessage());
         }
 
         return true;
@@ -215,7 +221,7 @@ public class SQLShopRegistry implements ShopRegistry {
                 return true;
             }
         } catch (SQLException e) {
-            LOGGER.warning("상점을 제거하는 도중 오류가 발생하였습니다. " + e.getMessage());
+            LOGGER.warning("상점을 제거하는 도중 치명적인 오류가 발생하였습니다. " + e.getMessage());
         }
 
         return false;
@@ -223,54 +229,7 @@ public class SQLShopRegistry implements ShopRegistry {
 
     @Override
     public Shop getShop(String name) {
-        Shop shop = null;
-
-        String selectShopSQL = "SELECT * FROM " + name + SHOP_SUFFIX;
-        String selectShopItemsSQL = "SELECT * FROM " + name + SHOP_SUFFIX + SHOP_ITEM_SUFFIX;
-        String selectShopPageSQL = "SELECT * FROM " + name + SHOP_SUFFIX + SHOP_PAGE_SUFFIX;
-
-        try {
-            ResultSet selectShopRs = connectionPoolManager.getConnection().createStatement().executeQuery(selectShopSQL);
-
-            if (!selectShopRs.next()) {
-                return null;
-            }
-
-            ResultSet selectShopItemsRs = connectionPoolManager.getConnection().createStatement().executeQuery(selectShopItemsSQL);
-            ResultSet selectShopPageRs = connectionPoolManager.getConnection().createStatement().executeQuery(selectShopPageSQL);
-
-            Map<Integer, ShopItem> shopItemMap = new HashMap<>();
-
-            while (selectShopPageRs.next()) {
-                int pageNum = selectShopPageRs.getInt(1);
-                String guiPageTitle = selectShopPageRs.getString(2);
-                int guiRows = selectShopPageRs.getInt(3);
-
-                while (selectShopItemsRs.next()) {
-                    List<ShopPage> shopPageList = new ArrayList<>();
-
-                    String encodedItemStack = selectShopItemsRs.getString(1);
-                    int slot = selectShopItemsRs.getInt(2);
-
-                    ShopItem shopItem = new ShopItemImpl(ShopItemSQLSerializer.deserialize(encodedItemStack));
-                    shopItemMap.put(slot, shopItem);
-
-                    ShopPage shopPage = new ShopPageImpl(pageNum, guiPageTitle, guiRows, shopItemMap);
-                    shopPageList.add(shopPage);
-
-                    String guiTitle = selectShopItemsRs.getString(1);
-                    String npc = selectShopItemsRs.getString(3);
-
-                    shop = new ShopImpl(guiTitle, npc, shopPageList);
-                }
-            }
-
-            return shop;
-
-        } catch (SQLException e) {
-            LOGGER.warning("상점을 불러오는 도중 오류가 발생하였습니다. " + e.getMessage());
-        }
-        return null;
+        return shopMap.get(name);
     }
 
     @Override
