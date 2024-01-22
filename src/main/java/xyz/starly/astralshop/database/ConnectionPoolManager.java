@@ -14,6 +14,8 @@ public class ConnectionPoolManager {
     private static ConnectionPoolManager internalPool;
     private HikariDataSource dataSource;
 
+    private Connection connection;
+
     @Setter private String host;
     @Setter private String port;
     @Setter @Getter private String database;
@@ -50,7 +52,11 @@ public class ConnectionPoolManager {
     }
 
     public Connection getConnection() throws SQLException {
-        return dataSource.getConnection();
+        if (connection == null) {
+            connection = dataSource.getConnection();
+        }
+
+        return connection;
     }
 
     private void init() {
