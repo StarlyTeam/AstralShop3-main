@@ -1,7 +1,46 @@
 mysql:
-  use: true
+  use: false
   host: localhost
   port: 3306
   database: ""
   user: root
   password: ""
+
+#   ／￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣＼
+#  ｜  ControlBar appearing on the Buy/Sell GUI screen  ｜
+#  ｜                                                   ｜
+#  ｜       ▶  Actions: [ PREV_PAGE, NEXT_PAGE ]        ｜
+#   ＼＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿／
+shop_control_bar:
+  enabled: true
+  items:
+    1:
+      material: AIR
+    2:
+      material: AIR
+    3:
+      material: AIR
+    4:
+      material: RED_STAINED_GLASS_PANE
+      name: '&c이전 페이지'
+      action: PREV_PAGE
+      paginated:
+        enabled: true
+        orElse:
+          material: AIR
+    5:
+      material: AIR
+    6:
+      material: LIME_STAINED_GLASS_PANE
+      name: '&a다음 페이지'
+      action: NEXT_PAGE
+      paginated:
+        enabled: true
+        orElse:
+          material: AIR
+    7:
+      material: AIR
+    8:
+      material: AIR
+    9:
+      material: AIR
