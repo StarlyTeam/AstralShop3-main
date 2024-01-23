@@ -43,23 +43,26 @@ public class PaginatedShopInventory extends BaseShopPaginatedInventory {
 
         int clickedSlot = event.getRawSlot();
         Player player = (Player) event.getWhoClicked();
+        Inventory clickedInventory = event.getClickedInventory();
 
-        if (clickedSlot >= inventory.getSize() - 9 && clickedSlot < inventory.getSize()) {
-            ShopControlBarItem controlItem = shopControlBar.getItem(clickedSlot % 9);
-            if (controlItem != null) {
-                switch (controlItem.getAction()) {
-                    case PREV_PAGE:
-                        paginationManager.prevPage();
-                        updateInventory(player);
-                        break;
-                    case NEXT_PAGE:
-                        paginationManager.nextPage();
-                        updateInventory(player);
-                        break;
+        if (clickedInventory != null && clickedInventory.equals(inventory)) {
+            if (clickedSlot >= inventory.getSize() - 9 && clickedSlot < inventory.getSize()) {
+                ShopControlBarItem controlItem = shopControlBar.getItem(clickedSlot % 9);
+                if (controlItem != null) {
+                    switch (controlItem.getAction()) {
+                        case PREV_PAGE:
+                            paginationManager.prevPage();
+                            updateInventory(player);
+                            break;
+                        case NEXT_PAGE:
+                            paginationManager.nextPage();
+                            updateInventory(player);
+                            break;
+                    }
                 }
+            } else {
+                handleItemInteraction(event);
             }
-        } else {
-            handleItemInteraction(event);
         }
     }
 

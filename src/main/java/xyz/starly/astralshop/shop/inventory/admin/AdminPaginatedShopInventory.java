@@ -34,12 +34,14 @@ public abstract class AdminPaginatedShopInventory extends BaseShopPaginatedInven
 
         Player player = (Player) event.getWhoClicked();
         int clickedSlot = event.getRawSlot();
-        int inventorySize = inventory.getSize();
+        Inventory clickedInventory = event.getClickedInventory();
 
-        if (clickedSlot >= inventorySize - 9) {
-            handleControlBarInteraction(clickedSlot, player);
-        } else {
-            handleItemInteraction(event);
+        if (clickedInventory != null && clickedInventory.equals(inventory)) {
+            if (clickedSlot >= inventory.getSize() - 9) {
+                handleControlBarInteraction(clickedSlot, player);
+            } else {
+                handleItemInteraction(event);
+            }
         }
     }
 
