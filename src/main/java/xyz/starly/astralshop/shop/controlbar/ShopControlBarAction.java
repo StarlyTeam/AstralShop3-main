@@ -1,13 +1,13 @@
 package xyz.starly.astralshop.shop.controlbar;
 
-public enum ControlBarAction {
+public enum ShopControlBarAction {
 
     PREV_PAGE,
     NEXT_PAGE,
     NONE;
 
-    public static ControlBarAction fromString(String actionStr) {
-        for (ControlBarAction action : values()) {
+    public static ShopControlBarAction fromString(String actionStr) {
+        for (ShopControlBarAction action : values()) {
             if (action.name().equalsIgnoreCase(actionStr)) {
                 return action;
             }

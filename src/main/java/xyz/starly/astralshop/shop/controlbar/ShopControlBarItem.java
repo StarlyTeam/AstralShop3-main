@@ -15,16 +15,16 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Getter
-public class ControlBarItem {
+public class ShopControlBarItem {
 
     private final ShopItem shopItem;
     private final ShopItem orElseShopItem;
-    private final ControlBarAction action;
+    private final ShopControlBarAction action;
     private final boolean paginated;
 
-    public ControlBarItem(ConfigurationSection section) {
+    public ShopControlBarItem(ConfigurationSection section) {
         this.shopItem = ShopItemYamlSerializer.deserialize(section);
-        this.action = ControlBarAction.fromString(section.getString("action"));
+        this.action = ShopControlBarAction.fromString(section.getString("action"));
         this.paginated = section.getBoolean("paginated.enabled", false);
 
         ConfigurationSection orElseSection = section.getConfigurationSection("paginated.orElse");
@@ -32,7 +32,7 @@ public class ControlBarItem {
     }
 
     public ItemStack toItemStack(boolean isPaginated, boolean isLastPage, int currentPage, int totalPages, Player player) {
-        ItemStack itemStack = paginated && ((isLastPage && action == ControlBarAction.NEXT_PAGE) || (!isPaginated && action == ControlBarAction.PREV_PAGE)) && orElseShopItem != null
+        ItemStack itemStack = paginated && ((isLastPage && action == ShopControlBarAction.NEXT_PAGE) || (!isPaginated && action == ShopControlBarAction.PREV_PAGE)) && orElseShopItem != null
                 ? orElseShopItem.getItemStack()
                 : shopItem.getItemStack();
 
@@ -68,6 +68,6 @@ public class ControlBarItem {
                 .replace("%total_page%", String.valueOf(totalPages))
                 .replace("%player_name%", player.getName())
                 .replace("%player_displayname%", player.getDisplayName())
-                .replace("%player_balance%", String.valueOf(AstralShop.getEconomy().getBalance(player)));
+                .replace("%player_balance%", String.valueOf(AstralShop.getInstance().getEconomy().getBalance(player)));
     }
 }
