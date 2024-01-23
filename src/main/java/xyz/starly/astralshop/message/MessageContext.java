@@ -1,4 +1,4 @@
-package xyz.starly.astralshop.language;
+package xyz.starly.astralshop.message;
 
 import kr.starly.core.util.Pair;
 import org.bukkit.ChatColor;

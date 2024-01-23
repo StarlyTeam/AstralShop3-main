@@ -1,4 +1,4 @@
-package xyz.starly.astralshop.language;
+package xyz.starly.astralshop.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
