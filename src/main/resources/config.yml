@@ -8,6 +8,13 @@ mysql:
 
 
 #   ／￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣＼
+#  ｜           Internationalization message            ｜
+#  ｜                                                   ｜
+#  ｜       ▶  Actions: [ PREV_PAGE, NEXT_PAGE ]        ｜
+#   ＼＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿／
+lang: en_us
+
+#   ／￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣＼
 #  ｜  ControlBar appearing on the Buy/Sell GUI screen  ｜
 #  ｜                                                   ｜
 #  ｜       ▶  Actions: [ PREV_PAGE, NEXT_PAGE ]        ｜
