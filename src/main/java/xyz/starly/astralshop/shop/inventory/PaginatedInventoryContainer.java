@@ -50,7 +50,6 @@ public abstract class PaginatedInventoryContainer extends ShopInventory {
         boolean isPaginated = currentPageNumber > 1;
         boolean isLastPage = paginationManager.isLastPage();
 
-        System.out.println("현재 페이지 : " + currentPageNumber);
         controlBar.applyToInventory(inventory, currentPage.getRows(), isPaginated, isLastPage, currentPageNumber, totalPages, player);
     }
 
