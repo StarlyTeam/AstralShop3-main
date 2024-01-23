@@ -2,13 +2,14 @@ package xyz.starly.astralshop.command.sub;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
 import xyz.starly.astralshop.AstralShop;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
 import xyz.starly.astralshop.api.shop.Shop;
-import xyz.starly.astralshop.api.shop.ShopPage;
 import xyz.starly.astralshop.command.SubCommand;
-import xyz.starly.astralshop.shop.inventory.impl.EditShopInventoryContainerImpl;
+import xyz.starly.astralshop.shop.inventory.admin.impl.EditAdminPaginatedShopInventory;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -72,13 +73,13 @@ public class EditShopCommand implements SubCommand {
             return;
         }
 
-        new EditShopInventoryContainerImpl(shop).open(player);
+        new EditAdminPaginatedShopInventory(shop).open(player);
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String label, String[] args) {
         if (args.length == 2) {
-            return shopRegistry.getShopNames();
+            return StringUtil.copyPartialMatches(args[1], shopRegistry.getShopNames(), new ArrayList<>());
         }
         return Collections.emptyList();
     }

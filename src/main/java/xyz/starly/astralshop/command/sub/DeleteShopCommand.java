@@ -1,14 +1,14 @@
 package xyz.starly.astralshop.command.sub;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.util.StringUtil;
 import xyz.starly.astralshop.AstralShop;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
-import xyz.starly.astralshop.api.shop.Shop;
 import xyz.starly.astralshop.command.SubCommand;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DeleteShopCommand implements SubCommand {
 
@@ -67,7 +67,7 @@ public class DeleteShopCommand implements SubCommand {
     @Override
     public List<String> tabComplete(CommandSender sender, String label, String[] args) {
         if (args.length == 2) {
-            return shopRegistry.getShopNames();
+            return StringUtil.copyPartialMatches(args[1], shopRegistry.getShopNames(), new ArrayList<>());
         }
         return Collections.emptyList();
     }
