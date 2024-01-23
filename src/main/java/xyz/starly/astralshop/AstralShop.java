@@ -2,6 +2,8 @@ package xyz.starly.astralshop;
 
 import lombok.Getter;
 
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import xyz.starly.astralshop.api.AstralShopPlugin;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
@@ -21,12 +23,19 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
     @Getter
     private static AstralShop instance;
 
-    @Getter
-    private ShopRegistry shopRegistry;
+    @Getter private ShopRegistry shopRegistry;
+    @Getter private static Economy economy;
 
     @Override
     public void onEnable() {
         instance = this;
+
+        if (!setupEconomy() ) {
+            getLogger().severe(String.format("[%s] - Disabled due to no Vault dependency found!", getDescription().getName()));
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         saveDefaultConfig();
 
         if (getConfig().getBoolean("mysql.use")) {
@@ -53,6 +62,18 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
         getCommand("shopitem").setExecutor(new TestShopItemCommand(shopRegistry));
 
         getServer().getPluginManager().registerEvents(new AdminShopInventoryListener(), this);
+    }
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        economy = rsp.getProvider();
+        return true;
     }
 
     @Override
