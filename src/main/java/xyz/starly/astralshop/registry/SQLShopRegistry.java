@@ -23,91 +23,118 @@ import java.util.logging.Logger;
 public class SQLShopRegistry implements ShopRegistry {
 
     private final Logger LOGGER;
-    private final ConnectionPoolManager connectionPoolManager;
+    private ConnectionPoolManager connectionPoolManager;
     private final Map<String, Shop> shopMap;
 
     private final String SHOP_SUFFIX = "_shop";
     private final String SHOP_ITEM_SUFFIX = "_items";
     private final String SHOP_PAGE_SUFFIX = "_page";
 
-    public SQLShopRegistry(JavaPlugin plugin, ConnectionPoolManager connectionPoolManager) {
+    private JavaPlugin plugin;
+
+    public SQLShopRegistry(JavaPlugin plugin) {
         this.LOGGER = plugin.getLogger();
         this.shopMap = new HashMap<>();
-        this.connectionPoolManager = connectionPoolManager;
+        this.plugin = plugin;
+        connection();
+    }
+
+    private void connection() {
+        ConnectionPoolManager.initializingPoolManager(plugin.getConfig());
+        ConnectionPoolManager pool = ConnectionPoolManager.getInternalPool();
+
+        try {
+            pool.getConnection();
+            this.connectionPoolManager = pool;
+            ;
+        } catch (SQLException e) {
+            LOGGER.info(e.getMessage());
+        }
+
+        LOGGER.info("성공적으로 MYSQL 연결하였습니다.");
     }
 
     @Override
     public void loadShops() {
-        try {
-            ResultSet showResultSet = connectionPoolManager.getConnection().createStatement().executeQuery("show TABLES");
-            List<ShopPage> shopPageList = new ArrayList<>();
-            Shop shop;
-            String npc = null;
+        if (plugin.getConfig().getBoolean("mysql.use")) {
+            try {
+                ResultSet showResultSet = connectionPoolManager.getConnection().createStatement().executeQuery("show TABLES");
+                List<ShopPage> shopPageList = new ArrayList<>();
 
-            Map<Integer, ShopItem> shopItems = new HashMap<>();
+                while (showResultSet.next()) {
+                    String shopName = showResultSet.getString(1);
+                    if (shopName.contains(SHOP_SUFFIX + SHOP_PAGE_SUFFIX)) {
+                        String selectSQL = "SELECT * FROM " + shopName;
 
-            while (showResultSet.next()) {
-                String shopName = showResultSet.getString(1);
-                if (shopName.contains(SHOP_SUFFIX) && !shopName.contains(SHOP_SUFFIX + SHOP_ITEM_SUFFIX)
-                        && !shopName.contains(SHOP_SUFFIX + SHOP_PAGE_SUFFIX)) {
+                        try {
+                            ResultSet resultSet = connectionPoolManager.getConnection().createStatement().executeQuery(selectSQL);
 
-                    String selectSQL = "SELECT * FROM " + shopName;
+                            while (resultSet.next()) {
+                                int pageNum = resultSet.getInt(1);
+                                String guiTitle = resultSet.getString(2);
+                                int guiRows = resultSet.getInt(3);
 
-                    try {
-                        ResultSet resultSet = connectionPoolManager.getConnection().createStatement().executeQuery(selectSQL);
+                                Map<Integer, ShopItem> shopItems = getShopItems(shopName);
 
-                        while (resultSet.next()) {
-                            npc = resultSet.getString(2);
+                                ShopPage shopPage = new ShopPageImpl(pageNum, guiTitle, guiRows, shopItems);
+                                shopPageList.add(shopPage);
+
+                                String npc = getNpcName(shopName);
+                                Shop shop = new ShopImpl(shopName, npc, shopPageList);
+
+                                shopMap.put(shopName.replace(SHOP_SUFFIX, "").replace(SHOP_PAGE_SUFFIX, ""), shop);
+                            }
+                        } catch (SQLException e) {
+                            LOGGER.warning("상점 페이지를 로드하는 중 오류가 발생하였습니다. " + e.getMessage());
                         }
-
-                    } catch (SQLException e) {
-                        LOGGER.warning("상점을 불러오는 중 오류가 발생하였습니다. " + e.getMessage());
-                    }
-
-                } else if (shopName.contains(SHOP_SUFFIX + SHOP_ITEM_SUFFIX) && !shopName.contains(SHOP_SUFFIX + SHOP_PAGE_SUFFIX)) {
-                    String selectSQL = "SELECT * FROM " + shopName;
-
-                    try {
-                        ResultSet resultSet = connectionPoolManager.getConnection().createStatement().executeQuery(selectSQL);
-
-                        while (resultSet.next()) {
-                            String encodedItemStack = resultSet.getString(1);
-                            int slot = resultSet.getInt(2);
-
-                            ShopItem shopItem = new ShopItemImpl(ShopItemSQLSerializer.deserialize(encodedItemStack));
-                            shopItems.put(slot, shopItem);
-                        }
-
-                    } catch (SQLException e) {
-                        LOGGER.warning("아이템을 불러오는 중 오류가 발생하였습니다. " + e.getMessage());
-                    }
-
-                } else if (shopName.contains(SHOP_SUFFIX + SHOP_PAGE_SUFFIX)) {
-                    String selectSQL = "SELECT * FROM " + shopName;
-
-                    try {
-                        ResultSet resultSet = connectionPoolManager.getConnection().createStatement().executeQuery(selectSQL);
-
-                        while (resultSet.next()) {
-                            int pageNum = resultSet.getInt(1);
-                            String guiTitle = resultSet.getString(2);
-                            int guiRows = resultSet.getInt(3);
-
-                            ShopPage shopPage = new ShopPageImpl(pageNum, guiTitle, guiRows, shopItems);
-                            shopPageList.add(shopPage);
-                            shop = new ShopImpl(shopName, npc, shopPageList);
-
-                            shopMap.put(shopName.replace(SHOP_SUFFIX, "").replace(SHOP_PAGE_SUFFIX, ""), shop);
-                        }
-                    } catch (SQLException e) {
-                        LOGGER.warning("상점 페이지를 로드하는 중 오류가 발생하였습니다. " + e.getMessage());
                     }
                 }
+            } catch (SQLException e) {
+                LOGGER.warning("상점을 로드하는 도중 치명적인 오류가 발생하였습니다. " + e.getMessage());
             }
-        } catch (SQLException e) {
-            LOGGER.warning("상점을 로드하는 도중 치명적인 오류가 발생하였습니다. " + e.getMessage());
         }
     }
+
+    private Map<Integer, ShopItem> getShopItems(String shopName) {
+        String selectSQL = "SELECT * FROM " + shopName + SHOP_SUFFIX + SHOP_ITEM_SUFFIX;
+        Map<Integer, ShopItem> shopItems = new HashMap<>();
+
+        try {
+            ResultSet resultSet = connectionPoolManager.getConnection().createStatement().executeQuery(selectSQL);
+
+            while (resultSet.next()) {
+                String encodedItemStack = resultSet.getString(1);
+                int slot = resultSet.getInt(2);
+
+                ShopItem shopItem = new ShopItemImpl(ShopItemSQLSerializer.deserialize(encodedItemStack));
+                shopItems.put(slot, shopItem);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.warning("아이템을 불러오는 중 오류가 발생하였습니다. " + e.getMessage());
+        }
+        return shopItems;
+    }
+
+    private String getNpcName(String shopName) {
+        String npc = "";
+
+        String selectSQL = "SELECT * FROM " + shopName;
+
+        try {
+            ResultSet resultSet = connectionPoolManager.getConnection().createStatement().executeQuery(selectSQL);
+
+            while (resultSet.next()) {
+                npc = resultSet.getString(2);
+            }
+
+        } catch (SQLException e) {
+            LOGGER.warning("상점을 불러오는 중 오류가 발생하였습니다. " + e.getMessage());
+        }
+
+        return npc;
+    }
+
 
     @Override
     public void saveShops() {
