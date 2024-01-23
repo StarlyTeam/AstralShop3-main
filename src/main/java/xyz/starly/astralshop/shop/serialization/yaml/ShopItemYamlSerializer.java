@@ -13,10 +13,7 @@ import xyz.starly.astralshop.shop.ShopItemImpl;
 import xyz.starly.astralshop.shop.handler.ItemTypeHandler;
 import xyz.starly.astralshop.shop.handler.impl.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ShopItemYamlSerializer {
 
@@ -70,7 +67,7 @@ public class ShopItemYamlSerializer {
 
         if (itemMeta != null) {
             if (section.contains("name")) {
-                itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', section.getString("name")));
+                itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(section.getString("name"))));
             }
 
             if (section.isList("lore")) {
@@ -119,6 +116,7 @@ public class ShopItemYamlSerializer {
         return shopItem;
     }
 
+    @SuppressWarnings("deprecation")
     private static void applyEnchantments(ItemStack itemStack, ConfigurationSection section) {
         if (section.isList("enchantments")) {
             for (String enchantStr : section.getStringList("enchantments")) {
@@ -135,9 +133,11 @@ public class ShopItemYamlSerializer {
     }
 
     private static void applyEnchantmentGlint(ItemStack itemStack) {
-        ItemMeta meta = itemStack.getItemMeta();
-        meta.addEnchant(Enchantment.LUCK, 1, true);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        itemStack.setItemMeta(meta);
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta != null) {
+            itemMeta.addEnchant(Enchantment.LUCK, 1, true);
+            itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+            itemStack.setItemMeta(itemMeta);
+        }
     }
 }

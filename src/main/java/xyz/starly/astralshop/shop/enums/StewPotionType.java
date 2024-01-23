@@ -1,10 +1,12 @@
 package xyz.starly.astralshop.shop.enums;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionEffect;
 
 @AllArgsConstructor
+@Getter
 public enum StewPotionType {
 
     NIGHT_VISION(PotionEffectType.NIGHT_VISION, 100),

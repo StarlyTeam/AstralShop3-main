@@ -19,17 +19,19 @@ public class SpawnerTypeHandler implements ItemTypeHandler {
     public void deserialize(ItemStack itemStack, ConfigurationSection section) {
         if (itemStack.getType() == Material.SPAWNER && section.contains("spawnerType")) {
             String spawnerTypeStr = section.getString("spawnerType");
-            EntityType entityType = EntityType.valueOf(spawnerTypeStr.toUpperCase());
+            if (spawnerTypeStr != null) {
+                EntityType entityType = EntityType.valueOf(spawnerTypeStr.toUpperCase());
 
-            if (itemStack.getItemMeta() instanceof BlockStateMeta) {
-                BlockStateMeta meta = (BlockStateMeta) itemStack.getItemMeta();
+                if (itemStack.getItemMeta() instanceof BlockStateMeta) {
+                    BlockStateMeta meta = (BlockStateMeta) itemStack.getItemMeta();
 
-                if (meta.getBlockState() instanceof CreatureSpawner) {
-                    CreatureSpawner spawner = (CreatureSpawner) meta.getBlockState();
-                    spawner.setSpawnedType(entityType);
+                    if (meta.getBlockState() instanceof CreatureSpawner) {
+                        CreatureSpawner spawner = (CreatureSpawner) meta.getBlockState();
+                        spawner.setSpawnedType(entityType);
 
-                    meta.setBlockState(spawner);
-                    itemStack.setItemMeta(meta);
+                        meta.setBlockState(spawner);
+                        itemStack.setItemMeta(meta);
+                    }
                 }
             }
         }

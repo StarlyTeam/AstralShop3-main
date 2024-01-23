@@ -19,6 +19,7 @@ public class ArmorTrimTypeHandler implements ItemTypeHandler {
     }
 
     @Override
+    @SuppressWarnings("UnstableApiUsage")
     public void deserialize(ItemStack itemStack, ConfigurationSection section) {
         try {
             if ((itemStack.getType() == Material.NETHERITE_CHESTPLATE ||
@@ -32,16 +33,20 @@ public class ArmorTrimTypeHandler implements ItemTypeHandler {
                     String materialStr = trimSection.getString("type");
                     String patternStr = trimSection.getString("pattern");
 
-                    TrimMaterial material = Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(materialStr.toLowerCase()));
-                    TrimPattern pattern = Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(patternStr.toLowerCase()));
+                   if (materialStr != null && patternStr != null) {
+                       TrimMaterial material = Registry.TRIM_MATERIAL.get(NamespacedKey.minecraft(materialStr.toLowerCase()));
+                       TrimPattern pattern = Registry.TRIM_PATTERN.get(NamespacedKey.minecraft(patternStr.toLowerCase()));
 
-                    if (material != null && pattern != null) {
-                        ArmorMeta armorMeta = (ArmorMeta) itemStack.getItemMeta();
-                        ArmorTrim trim = new ArmorTrim(material, pattern);
-                        armorMeta.setTrim(trim);
+                       if (material != null && pattern != null) {
+                           ArmorMeta armorMeta = (ArmorMeta) itemStack.getItemMeta();
+                           ArmorTrim trim = new ArmorTrim(material, pattern);
+                           if (armorMeta != null) {
+                               armorMeta.setTrim(trim);
 
-                        itemStack.setItemMeta(armorMeta);
-                    }
+                               itemStack.setItemMeta(armorMeta);
+                           }
+                       }
+                   }
                 }
             }
         } catch (NoSuchFieldError ignored) {}

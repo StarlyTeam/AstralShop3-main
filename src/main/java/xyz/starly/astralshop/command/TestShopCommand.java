@@ -26,9 +26,7 @@ public class TestShopCommand implements CommandExecutor {
 
         List<Shop> shopList = shopRegistry.getShops();
 
-        shopList.forEach(shop -> {
-            System.out.println("테스트 " + shop.getShopPages().get(0).getItems().get(1).getItemStack());
-        });
+        shopList.forEach(shop -> System.out.println("테스트 " + shop.getShopPages().get(0).getItems().get(1).getItemStack()));
 
         return true;
     }

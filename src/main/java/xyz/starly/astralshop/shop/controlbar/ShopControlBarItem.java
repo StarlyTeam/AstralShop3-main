@@ -31,6 +31,7 @@ public class ShopControlBarItem {
         this.orElseShopItem = orElseSection != null ? ShopItemYamlSerializer.deserialize(orElseSection) : null;
     }
 
+    @SuppressWarnings("deprecation")
     public ItemStack toItemStack(boolean isPaginated, boolean isLastPage, int currentPage, int totalPages, Player player) {
         ItemStack itemStack = paginated && ((isLastPage && action == ShopControlBarAction.NEXT_PAGE) || (!isPaginated && action == ShopControlBarAction.PREV_PAGE)) && orElseShopItem != null
                 ? orElseShopItem.getItemStack()
@@ -40,7 +41,7 @@ public class ShopControlBarItem {
             ItemMeta itemMeta = itemStack.getItemMeta();
             if (itemMeta instanceof SkullMeta) {
                 SkullMeta skullMeta = (SkullMeta) itemMeta;
-                String skullOwner = replacePlaceholders(skullMeta.getOwner(), currentPage, totalPages, player);
+                String skullOwner = replacePlaceholders(Objects.requireNonNull(skullMeta.getOwner()), currentPage, totalPages, player);
                 skullMeta.setOwner(skullOwner);
             }
 

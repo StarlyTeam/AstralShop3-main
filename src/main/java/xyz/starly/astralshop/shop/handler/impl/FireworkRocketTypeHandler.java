@@ -26,46 +26,52 @@ public class FireworkRocketTypeHandler implements ItemTypeHandler {
             if (section.contains("firework")) {
                 ConfigurationSection fireworkSection = section.getConfigurationSection("firework");
 
-                if (fireworkSection.contains("duration")) {
-                    int duration = fireworkSection.getInt("duration");
-                    fireworkMeta.setPower(duration);
-                }
-
-                List<Color> colors = new ArrayList<>();
-                if (fireworkSection.isList("colors")) {
-                    for (String colorName : fireworkSection.getStringList("colors")) {
-                        Color color = getColorByName(colorName);
-                        if (color != null) {
-                            colors.add(color);
+                if (fireworkSection != null) {
+                    if (fireworkSection.contains("duration")) {
+                        int duration = fireworkSection.getInt("duration");
+                        if (fireworkMeta != null) {
+                            fireworkMeta.setPower(duration);
                         }
                     }
-                }
 
-                List<Color> fadeColors = new ArrayList<>();
-                if (fireworkSection.isList("fadeColors")) {
-                    for (String colorName : fireworkSection.getStringList("fadeColors")) {
-                        Color color = getColorByName(colorName);
-                        if (color != null) {
-                            fadeColors.add(color);
+                    List<Color> colors = new ArrayList<>();
+                    if (fireworkSection.isList("colors")) {
+                        for (String colorName : fireworkSection.getStringList("colors")) {
+                            Color color = getColorByName(colorName);
+                            if (color != null) {
+                                colors.add(color);
+                            }
                         }
                     }
+
+                    List<Color> fadeColors = new ArrayList<>();
+                    if (fireworkSection.isList("fadeColors")) {
+                        for (String colorName : fireworkSection.getStringList("fadeColors")) {
+                            Color color = getColorByName(colorName);
+                            if (color != null) {
+                                fadeColors.add(color);
+                            }
+                        }
+                    }
+
+                    boolean flicker = fireworkSection.getBoolean("flicker", false);
+                    boolean trail = fireworkSection.getBoolean("trail", false);
+
+                    FireworkEffect.Type shape = FireworkEffect.Type.valueOf(fireworkSection.getString("shape", "BALL").toUpperCase());
+
+                    FireworkEffect effect = FireworkEffect.builder()
+                            .withColor(colors)
+                            .withFade(fadeColors)
+                            .flicker(flicker)
+                            .trail(trail)
+                            .with(shape)
+                            .build();
+
+                    if (fireworkMeta != null) {
+                        fireworkMeta.addEffect(effect);
+                        itemStack.setItemMeta(fireworkMeta);
+                    }
                 }
-
-                boolean flicker = fireworkSection.getBoolean("flicker", false);
-                boolean trail = fireworkSection.getBoolean("trail", false);
-
-                FireworkEffect.Type shape = FireworkEffect.Type.valueOf(fireworkSection.getString("shape", "BALL").toUpperCase());
-
-                FireworkEffect effect = FireworkEffect.builder()
-                        .withColor(colors)
-                        .withFade(fadeColors)
-                        .flicker(flicker)
-                        .trail(trail)
-                        .with(shape)
-                        .build();
-
-                fireworkMeta.addEffect(effect);
-                itemStack.setItemMeta(fireworkMeta);
             }
         }
     }

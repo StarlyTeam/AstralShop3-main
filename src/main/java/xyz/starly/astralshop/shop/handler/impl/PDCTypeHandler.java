@@ -6,10 +6,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import xyz.starly.astralshop.AstralShop;
 import xyz.starly.astralshop.shop.handler.ItemTypeHandler;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PDCTypeHandler implements ItemTypeHandler {
 
@@ -19,6 +19,7 @@ public class PDCTypeHandler implements ItemTypeHandler {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void deserialize(ItemStack itemStack, ConfigurationSection section) {
         if (section.isConfigurationSection("pdc")) {
             ConfigurationSection pdcSection = section.getConfigurationSection("pdc");
@@ -29,7 +30,7 @@ public class PDCTypeHandler implements ItemTypeHandler {
                     for (String key : pdcSection.getKeys(false)) {
                         ConfigurationSection dataSection = pdcSection.getConfigurationSection(key);
                         if (dataSection != null) {
-                            String namespace = dataSection.getString("namespace").toLowerCase();
+                            String namespace = Objects.requireNonNull(dataSection.getString("namespace")).toLowerCase();
                             String type = dataSection.getString("type", "STRING");
                             NamespacedKey namespacedKey = new NamespacedKey(namespace, key);
 
@@ -63,7 +64,7 @@ public class PDCTypeHandler implements ItemTypeHandler {
                                     container.set(namespacedKey, PersistentDataType.BOOLEAN, booleanValue);
                                     break;
                                 case "BYTE_ARRAY":
-                                    byte[] byteArrayValue = dataSection.getString("value").getBytes();
+                                    byte[] byteArrayValue = Objects.requireNonNull(dataSection.getString("value")).getBytes();
                                     container.set(namespacedKey, PersistentDataType.BYTE_ARRAY, byteArrayValue);
                                     break;
                                 case "INTEGER_ARRAY":
@@ -83,7 +84,9 @@ public class PDCTypeHandler implements ItemTypeHandler {
                                 case "STRING":
                                 default:
                                     String stringValue = dataSection.getString("value");
-                                    container.set(namespacedKey, PersistentDataType.STRING, stringValue);
+                                    if (stringValue != null) {
+                                        container.set(namespacedKey, PersistentDataType.STRING, stringValue);
+                                    }
                                     break;
                             }
                         }

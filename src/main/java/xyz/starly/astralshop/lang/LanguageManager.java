@@ -8,16 +8,21 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Logger;
 
 public class LanguageManager {
 
+    private final JavaPlugin plugin;
+    private final Logger LOGGER;
     private YamlConfiguration message;
 
     public LanguageManager(JavaPlugin plugin, File file) {
-        loadLanguage(plugin, file);
+        this.plugin = plugin;
+        this.LOGGER = plugin.getLogger();
+        loadLanguage(file);
     }
 
-    private void loadLanguage(JavaPlugin plugin, File file) {
+    private void loadLanguage(File file) {
         try {
             JarFile jar = new JarFile(file);
             Enumeration<JarEntry> entries = jar.entries();
@@ -31,7 +36,7 @@ public class LanguageManager {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.warning("Cannot found message files:" + e);
         }
 
         String lang = plugin.getConfig().getString("lang");

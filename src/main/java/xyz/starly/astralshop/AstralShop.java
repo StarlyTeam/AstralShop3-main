@@ -54,10 +54,10 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
     private void setupShopRegistry() {
         if (getConfig().getBoolean("mysql.use")) {
             shopRegistry = new SQLShopRegistry(this);
-            shopRegistry.loadShops();
         } else {
             shopRegistry = new YamlShopRegistry(this);
         }
+        shopRegistry.loadShops();
     }
 
     private boolean setupEconomy() {

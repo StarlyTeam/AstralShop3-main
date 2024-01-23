@@ -1,13 +1,8 @@
 package xyz.starly.astralshop.shop.serialization.yaml;
 
-import org.bukkit.Color;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.potion.PotionEffect;
 import xyz.starly.astralshop.AstralShop;
 import xyz.starly.astralshop.api.shop.Shop;
 import xyz.starly.astralshop.api.shop.ShopItem;
@@ -17,10 +12,7 @@ import xyz.starly.astralshop.shop.ShopPageImpl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class ShopYamlSerializer {
@@ -50,11 +42,6 @@ public class ShopYamlSerializer {
         config.save(file);
     }
 
-    private static final String ANSI_RESET = "\u001B[0m";
-    private static final String ANSI_GREEN = "\u001B[32m";
-    private static final String ANSI_YELLOW = "\u001B[33m";
-    private static final String ANSI_CYAN = "\u001B[36m";
-
     public static Shop loadShop(File file) throws IOException {
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
@@ -74,7 +61,7 @@ public class ShopYamlSerializer {
             ConfigurationSection itemsSection = config.getConfigurationSection(basePath + ".items");
             if (itemsSection != null) {
                 for (String key : itemsSection.getKeys(false)) {
-                    ShopItem item = ShopItemYamlSerializer.deserialize(itemsSection.getConfigurationSection(key));
+                    ShopItem item = ShopItemYamlSerializer.deserialize(Objects.requireNonNull(itemsSection.getConfigurationSection(key)));
                     items.put(Integer.parseInt(key), item);
 
                     /* TODO 삭제 해야함 | 로그 부분 2 */
@@ -99,7 +86,6 @@ public class ShopYamlSerializer {
             index++;
         }
 
-        Shop shop = new ShopImpl(guiTitle, npc, pages);
-        return shop;
+        return new ShopImpl(guiTitle, npc, pages);
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 public class ShopItemImpl implements ShopItem {
 
-    private ItemStack itemStack;
+    private final ItemStack itemStack;
     @Setter private double buyPrice;
     @Setter private double sellPrice;
     @Setter private int stock;

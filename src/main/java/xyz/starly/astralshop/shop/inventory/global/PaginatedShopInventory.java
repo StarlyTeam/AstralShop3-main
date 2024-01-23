@@ -34,7 +34,7 @@ public class PaginatedShopInventory extends BaseShopPaginatedInventory {
 
     private void handleItemInteraction(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        // TODO 상점 | 구매/판매 기능
+        player.sendMessage(" ");
     }
 
     @Override

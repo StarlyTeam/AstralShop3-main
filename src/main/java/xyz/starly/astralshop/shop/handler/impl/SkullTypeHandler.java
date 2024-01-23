@@ -15,6 +15,7 @@ public class SkullTypeHandler implements ItemTypeHandler {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void deserialize(ItemStack itemStack, ConfigurationSection section) {
         if (itemStack.getType() == Material.PLAYER_HEAD) {
             SkullMeta skullMeta = (SkullMeta) itemStack.getItemMeta();
@@ -25,8 +26,10 @@ public class SkullTypeHandler implements ItemTypeHandler {
                 itemStack.setItemMeta(customSkull.getItemMeta());
             } else if (section.contains("skullOwner")) {
                 String skullOwner = section.getString("skullOwner");
-                skullMeta.setOwner(skullOwner);
-                itemStack.setItemMeta(skullMeta);
+                if (skullMeta != null) {
+                    skullMeta.setOwner(skullOwner);
+                    itemStack.setItemMeta(skullMeta);
+                }
             }
         }
     }

@@ -11,11 +11,13 @@ import xyz.starly.astralshop.shop.inventory.ShopInventory;
 public class AdminShopInventoryListener implements Listener {
 
     @EventHandler
+    @SuppressWarnings("unused")
     public void onClick(InventoryClickEvent event) {
         handleInventoryEvent(event, event.getView().getTopInventory().getHolder(), true);
     }
 
     @EventHandler
+    @SuppressWarnings("unused")
     public void onClose(InventoryCloseEvent event) {
         handleInventoryEvent(event, event.getView().getTopInventory().getHolder(), false);
     }

@@ -32,17 +32,19 @@ public class PotionTypeHandler implements ItemTypeHandler {
                     String firstPotionTypeStr = potionTypeStrList.get(0);
                     ShopPotionType firstPotionType = ShopPotionType.valueOf(firstPotionTypeStr.toUpperCase());
 
-                    potionMeta.setBasePotionData(new PotionData(PotionType.valueOf(firstPotionType.getName()), firstPotionType.isExtended(), firstPotionType.isUpgraded()));
+                    if (potionMeta != null) {
+                        potionMeta.setBasePotionData(new PotionData(PotionType.valueOf(firstPotionType.getName()), firstPotionType.isExtended(), firstPotionType.isUpgraded()));
 
-                    potionMeta.clearCustomEffects();
-                    for (int i = 1; i < potionTypeStrList.size(); i++) {
-                        String potionTypeStr = potionTypeStrList.get(i);
-                        ShopPotionType potionType = ShopPotionType.valueOf(potionTypeStr.toUpperCase());
-                        PotionEffectType effectType = PotionEffectType.getByName(potionType.getName());
+                        potionMeta.clearCustomEffects();
+                        for (int i = 1; i < potionTypeStrList.size(); i++) {
+                            String potionTypeStr = potionTypeStrList.get(i);
+                            ShopPotionType potionType = ShopPotionType.valueOf(potionTypeStr.toUpperCase());
+                            PotionEffectType effectType = PotionEffectType.getByName(potionType.getName());
 
-                        if (effectType != null) {
-                            PotionEffect effect = new PotionEffect(effectType, potionType.getDuration(), potionType.getAmplifier());
-                            potionMeta.addCustomEffect(effect, true);
+                            if (effectType != null) {
+                                PotionEffect effect = new PotionEffect(effectType, potionType.getDuration(), potionType.getAmplifier());
+                                potionMeta.addCustomEffect(effect, true);
+                            }
                         }
                     }
                 }

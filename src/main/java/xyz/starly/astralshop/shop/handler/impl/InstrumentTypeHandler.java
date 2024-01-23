@@ -8,6 +8,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.MusicInstrumentMeta;
 import xyz.starly.astralshop.shop.handler.ItemTypeHandler;
 
+import java.util.Objects;
+
 public class InstrumentTypeHandler implements ItemTypeHandler {
 
     @Override
@@ -19,17 +21,18 @@ public class InstrumentTypeHandler implements ItemTypeHandler {
     public void deserialize(ItemStack itemStack, ConfigurationSection section) {
         try {
             if (itemStack.getType() == Material.GOAT_HORN && section.contains("instrument")) {
-                String instrumentName = section.getString("instrument").toLowerCase() + "_goat_horn";
-                MusicInstrumentMeta meta = (MusicInstrumentMeta) itemStack.getItemMeta();
+                String instrumentName = Objects.requireNonNull(section.getString("instrument")).toLowerCase() + "_goat_horn";
+                MusicInstrumentMeta instrumentMeta = (MusicInstrumentMeta) itemStack.getItemMeta();
 
                 NamespacedKey key = NamespacedKey.minecraft(instrumentName);
                 MusicInstrument instrument = MusicInstrument.getByKey(key);
 
                 if (instrument != null) {
-                    meta.setInstrument(instrument);
+                    if (instrumentMeta != null) {
+                        instrumentMeta.setInstrument(instrument);
+                        itemStack.setItemMeta(instrumentMeta);
+                    }
                 }
-
-                itemStack.setItemMeta(meta);
             }
         } catch (NoClassDefFoundError ignored) {}
     }

@@ -18,11 +18,15 @@ public class SuspiciousStewTypeHandler implements ItemTypeHandler {
     public void deserialize(ItemStack itemStack, ConfigurationSection section) {
         if (itemStack.getType() == Material.SUSPICIOUS_STEW && section.contains("stewEffect")) {
             String effectName = section.getString("stewEffect");
-            StewPotionType potionType = StewPotionType.valueOf(effectName.toUpperCase());
+            if (effectName != null) {
+                StewPotionType potionType = StewPotionType.valueOf(effectName.toUpperCase());
 
-            SuspiciousStewMeta stewMeta = (SuspiciousStewMeta) itemStack.getItemMeta();
-            stewMeta.addCustomEffect(potionType.getEffect(), true);
-            itemStack.setItemMeta(stewMeta);
+                SuspiciousStewMeta stewMeta = (SuspiciousStewMeta) itemStack.getItemMeta();
+                if (stewMeta != null) {
+                    stewMeta.addCustomEffect(potionType.getEffect(), true);
+                    itemStack.setItemMeta(stewMeta);
+                }
+            }
         }
     }
 }

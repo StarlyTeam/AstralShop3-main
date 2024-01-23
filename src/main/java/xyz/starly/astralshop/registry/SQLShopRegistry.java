@@ -46,7 +46,6 @@ public class SQLShopRegistry implements ShopRegistry {
         try {
             pool.getConnection();
             this.connectionPoolManager = pool;
-            ;
         } catch (SQLException e) {
             LOGGER.info(e.getMessage());
         }
