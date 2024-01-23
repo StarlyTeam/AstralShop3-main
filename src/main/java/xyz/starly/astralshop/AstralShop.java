@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import xyz.starly.astralshop.api.AstralShopPlugin;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
 import xyz.starly.astralshop.command.ShopAdminCommand;
-import xyz.starly.astralshop.command.TestShopCommand;
+import xyz.starly.astralshop.command.ShopCommand;
 import xyz.starly.astralshop.command.TestShopItemCommand;
 import xyz.starly.astralshop.database.ConnectionPoolManager;
 import xyz.starly.astralshop.lang.LanguageManager;
@@ -24,9 +24,7 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
     private static AstralShop instance;
 
     @Getter private ShopRegistry shopRegistry;
-
-    @Getter private static Economy economy;
-
+    @Getter private Economy economy;
     @Getter private LanguageManager languageManager;
 
     @Override
@@ -39,17 +37,18 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
             return;
         }
 
+        saveDefaultConfig();
         languageManager = new LanguageManager(this, getFile());
 
-        saveDefaultConfig();
         setupShopRegistry();
 
         new ShopAdminCommand(this);
-
-        getCommand("shopitem").setExecutor(new TestShopItemCommand(shopRegistry));
-        getCommand("test").setExecutor(new TestShopCommand((SQLShopRegistry) shopRegistry));
+        getCommand("shop").setExecutor(new ShopCommand());
 
         getServer().getPluginManager().registerEvents(new AdminShopInventoryListener(), this);
+
+        // TODO 테스트 코드 | 삭제
+        getCommand("shopitem").setExecutor(new TestShopItemCommand(shopRegistry));
     }
 
     private void setupShopRegistry() {

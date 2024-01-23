@@ -12,7 +12,9 @@ depend:
   - Vault
 
 commands:
-  shopitem:
   shopadmin:
     aliases: [ 상점관리 ]
+  shop:
+    aliases: [ 상점 ]
+  shopitem:
   test:
