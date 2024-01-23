@@ -3,7 +3,6 @@ package xyz.starly.astralshop.shop.controlbar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 import xyz.starly.astralshop.AstralShop;
 
 import java.util.HashMap;
@@ -35,11 +34,21 @@ public class ShopControlBar {
 
     public void applyToInventory(Inventory inventory, int rows, boolean isPaginated, boolean isLastPage, int currentPage, int totalPages, Player player) {
         int baseSlot = (rows - 1) * 9;
-        items.forEach((slot, controlBarItem) -> {
-            int actualSlot = baseSlot + slot;
-            ItemStack newItemStack = controlBarItem.toItemStack(isPaginated, isLastPage, currentPage, totalPages, player);
-            inventory.setItem(actualSlot, newItemStack);
-        });
+        ConfigurationSection section = AstralShop.getInstance().getConfig().getConfigurationSection("shop_control_bar.items");
+        if (section != null) {
+            section.getKeys(false).forEach(key -> {
+                try {
+                    int slot = Integer.parseInt(key) - 1;
+                    int actualSlot = baseSlot + slot;
+
+                    ControlBarItem controlBarItem = new ControlBarItem(section.getConfigurationSection(key));
+
+                    inventory.setItem(actualSlot, controlBarItem.toItemStack(isPaginated, isLastPage, currentPage, totalPages, player));
+                } catch (NumberFormatException e) {
+                    AstralShop.getInstance().getLogger().warning("Invalid slot number format in shop_control_bar: " + key);
+                }
+            });
+        }
     }
 
     public ControlBarItem getItem(int slot) {
