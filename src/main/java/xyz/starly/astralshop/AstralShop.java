@@ -12,7 +12,7 @@ import xyz.starly.astralshop.command.ShopAdminCommand;
 import xyz.starly.astralshop.command.ShopCommand;
 import xyz.starly.astralshop.command.TestShopItemCommand;
 import xyz.starly.astralshop.database.ConnectionPoolManager;
-import xyz.starly.astralshop.lang.MessageContext;
+import xyz.starly.astralshop.language.MessageContext;
 import xyz.starly.astralshop.shop.inventory.ShopInventory;
 import xyz.starly.astralshop.listener.AdminShopInventoryListener;
 import xyz.starly.astralshop.registry.SQLShopRegistry;
