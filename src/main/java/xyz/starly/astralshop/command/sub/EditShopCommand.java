@@ -5,7 +5,9 @@ import org.bukkit.entity.Player;
 import xyz.starly.astralshop.AstralShop;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
 import xyz.starly.astralshop.api.shop.Shop;
+import xyz.starly.astralshop.api.shop.ShopPage;
 import xyz.starly.astralshop.command.SubCommand;
+import xyz.starly.astralshop.shop.inventory.impl.EditShopInventoryContainerImpl;
 
 import java.util.Collections;
 import java.util.List;
@@ -56,17 +58,28 @@ public class EditShopCommand implements SubCommand {
             return;
         }
 
+        Player player = (Player) sender;
+
         if (args.length != 2) {
             sender.sendMessage("올바른 명령어를 입력해 주세요.");
             return;
         }
 
-        String name = args[0];
-        sender.sendMessage(name + "이욤..");
+        String name = args[1];
+        Shop shop = shopRegistry.getShop(name);
+        if (shop == null) {
+            sender.sendMessage("존재하지 않는 상점입니다.");
+            return;
+        }
+
+        new EditShopInventoryContainerImpl(shop).open(player);
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String label, String[] args) {
+        if (args.length == 2) {
+            return shopRegistry.getShopNames();
+        }
         return Collections.emptyList();
     }
 }

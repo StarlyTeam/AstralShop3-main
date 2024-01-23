@@ -1,35 +1,35 @@
-package xyz.starly.astralshop.inventory.container;
+package xyz.starly.astralshop.shop.inventory;
 
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import xyz.starly.astralshop.AstralShop;
 import xyz.starly.astralshop.api.shop.Shop;
-import xyz.starly.astralshop.inventory.ShopInventory;
 
-public abstract class AdminShopInventoryContainerImpl extends ShopInventory {
+public abstract class ShopInventory implements InventoryHolder {
 
     protected final JavaPlugin plugin = AstralShop.getInstance();
+
+    @Getter
+    protected Inventory inventory;
 
     protected Shop shop;
     private final String title;
     private final int rows;
     private final boolean cancel;
 
-    public AdminShopInventoryContainerImpl(Shop shop, String title, int rows, boolean cancel) {
+    public ShopInventory(Shop shop, String title, int rows, boolean cancel) {
         this.shop = shop;
         this.title = title;
         this.rows = rows;
         this.cancel = cancel;
     }
 
-    @Getter
-    private Inventory inventory;
-
-    @Override
     public void open(Player player) {
         if (player != null || player.isOnline()) {
             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {

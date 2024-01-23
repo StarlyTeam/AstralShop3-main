@@ -9,8 +9,7 @@ import xyz.starly.astralshop.command.ShopAdminCommand;
 import xyz.starly.astralshop.command.TestShopCommand;
 import xyz.starly.astralshop.command.TestShopItemCommand;
 import xyz.starly.astralshop.database.ConnectionPoolManager;
-import xyz.starly.astralshop.inventory.ShopCategoryInventoryImpl;
-import xyz.starly.astralshop.inventory.ShopInventory;
+import xyz.starly.astralshop.shop.inventory.ShopInventory;
 import xyz.starly.astralshop.listener.AdminShopInventoryListener;
 import xyz.starly.astralshop.registry.SQLShopRegistry;
 import xyz.starly.astralshop.registry.YamlShopRegistry;
@@ -46,7 +45,6 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
         getCommand("shopitem").setExecutor(new TestShopItemCommand(shopRegistry));
 
         getServer().getPluginManager().registerEvents(new AdminShopInventoryListener(), this);
-        getServer().getPluginManager().registerEvents(new ShopCategoryInventoryImpl(), this);
     }
 
     @Override

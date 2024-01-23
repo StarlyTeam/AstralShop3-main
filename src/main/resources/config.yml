@@ -6,6 +6,7 @@ mysql:
   user: root
   password: ""
 
+
 #   ／￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣＼
 #  ｜  ControlBar appearing on the Buy/Sell GUI screen  ｜
 #  ｜                                                   ｜
@@ -29,9 +30,10 @@ shop_control_bar:
         orElse:
           material: AIR
     5:
-      material: AIR
+      material: BOOK
+      name: '페이지: {currentPage}/{totalPage}'
     6:
-      material: LIME_STAINED_GLASS_PANE
+      material: BLUE_STAINED_GLASS_PANE
       name: '&a다음 페이지'
       action: NEXT_PAGE
       paginated:
