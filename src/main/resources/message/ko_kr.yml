@@ -1,0 +1,5 @@
+message:
+  prefix: '&6테스트 | &r'
+  normal:
+    hello: '안녕하세요! !'
+  error:
