@@ -37,7 +37,7 @@ public class MessageContext {
 
     public void initialize(File file) {
         String langFileName = plugin.getConfig().getString("lang", "en.us");
-        File langFile = new File(plugin.getDataFolder(), "message/" + langFileName + ".yml");
+        File langFile = new File(plugin.getDataFolder(), "lang/" + langFileName + ".yml");
         if (!langFile.exists()) {
             extractDefaultMessages(file);
         }
@@ -54,7 +54,7 @@ public class MessageContext {
                 JarEntry entry = entries.nextElement();
                 String name = entry.getName();
 
-                if (name.startsWith("message/") && name.endsWith(".yml") && !entry.isDirectory()) {
+                if (name.startsWith("lang/") && name.endsWith(".yml") && !entry.isDirectory()) {
                     plugin.saveResource(name, false);
                 }
             }
