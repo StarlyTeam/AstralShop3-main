@@ -1,47 +1,73 @@
 package xyz.starly.astralshop.shop.controlbar;
 
 import lombok.Getter;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+import xyz.starly.astralshop.AstralShop;
+import xyz.starly.astralshop.api.shop.ShopItem;
+import xyz.starly.astralshop.shop.serialization.yaml.ShopItemYamlSerializer;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Getter
 public class ControlBarItem {
 
-    private final Material material;
-    private final String name;
+    private final ShopItem shopItem;
+    private final ShopItem orElseShopItem;
     private final ControlBarAction action;
     private final boolean paginated;
-    private final Material orElse;
 
     public ControlBarItem(ConfigurationSection section) {
-        this.material = Material.valueOf(section.getString("material"));
-        this.name = section.isSet("name") ? section.getString("name") : "";
+        this.shopItem = ShopItemYamlSerializer.deserialize(section);
         this.action = ControlBarAction.fromString(section.getString("action"));
         this.paginated = section.getBoolean("paginated.enabled", false);
-        String orElseMaterialStr = section.getString("paginated.orElse.material", "AIR");
-        this.orElse = Material.valueOf(orElseMaterialStr);
+
+        ConfigurationSection orElseSection = section.getConfigurationSection("paginated.orElse");
+        this.orElseShopItem = orElseSection != null ? ShopItemYamlSerializer.deserialize(orElseSection) : null;
     }
 
-    public ItemStack toItemStack(boolean isPaginated, boolean isLastPage) {
-        Material finalMaterial = this.material;
+    public ItemStack toItemStack(boolean isPaginated, boolean isLastPage, int currentPage, int totalPages, Player player) {
+        ItemStack itemStack = paginated && ((isLastPage && action == ControlBarAction.NEXT_PAGE) || (!isPaginated && action == ControlBarAction.PREV_PAGE)) && orElseShopItem != null
+                ? orElseShopItem.getItemStack()
+                : shopItem.getItemStack();
 
-        if (this.paginated && isLastPage && this.action == ControlBarAction.NEXT_PAGE && this.orElse != null) {
-            finalMaterial = this.orElse;
-        }
-        else if (this.paginated && !isPaginated && this.action == ControlBarAction.PREV_PAGE && this.orElse != null) {
-            finalMaterial = this.orElse;
-        }
-
-        ItemStack item = new ItemStack(finalMaterial);
-        if (name != null && !name.isEmpty()) {
-            ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
-                meta.setDisplayName(name);
+        if (itemStack.hasItemMeta()) {
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            if (itemMeta instanceof SkullMeta) {
+                SkullMeta skullMeta = (SkullMeta) itemMeta;
+                String skullOwner = replacePlaceholders(skullMeta.getOwner(), currentPage, totalPages, player);
+                skullMeta.setOwner(skullOwner);
             }
-            item.setItemMeta(meta);
+
+            if (itemMeta != null) {
+                if (itemMeta.hasDisplayName()) {
+                    String displayName = replacePlaceholders(itemMeta.getDisplayName(), currentPage, totalPages, player);
+                    itemMeta.setDisplayName(displayName);
+                }
+
+                if (itemMeta.hasLore()) {
+                    List<String> lore = Objects.requireNonNull(itemMeta.getLore()).stream()
+                            .map(line -> replacePlaceholders(line, currentPage, totalPages, player))
+                            .collect(Collectors.toList());
+                    itemMeta.setLore(lore);
+                }
+            }
+
+            itemStack.setItemMeta(itemMeta);
         }
-        return item;
+        return itemStack;
+    }
+
+    private String replacePlaceholders(String text, int currentPage, int totalPages, Player player) {
+        return text.replace("%current_page%", String.valueOf(currentPage))
+                .replace("%total_page%", String.valueOf(totalPages))
+                .replace("%player_name%", player.getName())
+                .replace("%player_displayname%", player.getDisplayName())
+                .replace("%player_balance%", String.valueOf(AstralShop.getEconomy().getBalance(player)));
     }
 }

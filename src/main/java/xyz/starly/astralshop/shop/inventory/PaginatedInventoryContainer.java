@@ -22,20 +22,36 @@ public abstract class PaginatedInventoryContainer extends ShopInventory {
     }
 
     @Override
-    protected void initializeInventory(Inventory inventory) {
+    protected void initializeInventory(Inventory inventory, Player player) {
         ShopPage currentPage = paginationManager.getCurrentPageData();
-        displayPageItems(inventory, currentPage);
+        displayPageItems(inventory, currentPage, player);
     }
 
-    private void displayPageItems(Inventory inventory, ShopPage currentPage) {
+    public void updateInventory(Player player) {
+        int currentPageIndex = paginationManager.getCurrentPage() - 1;
+        ShopPage currentPage = shop.getShopPages().get(currentPageIndex);
+
+        int inventorySize = currentPage.getRows() * 9;
+        inventory = plugin.getServer().createInventory(this, inventorySize, currentPage.getGuiTitle());
+
+        displayPageItems(inventory, currentPage, player);
+
+        player.openInventory(inventory);
+    }
+
+    private void displayPageItems(Inventory inventory, ShopPage currentPage, Player player) {
         currentPage.getItems().forEach((slot, shopItem) -> {
             ItemStack itemStack = shopItem.getItemStack();
             inventory.setItem(slot, itemStack);
         });
 
-        boolean isPaginated = paginationManager.getCurrentPage() > 1;
+        int currentPageNumber = paginationManager.getCurrentPage();
+        int totalPages = paginationManager.getTotalPages();
+        boolean isPaginated = currentPageNumber > 1;
         boolean isLastPage = paginationManager.isLastPage();
-        controlBar.applyToInventory(inventory, currentPage.getRows(), isPaginated, isLastPage);
+
+        System.out.println("현재 페이지 : " + currentPageNumber);
+        controlBar.applyToInventory(inventory, currentPage.getRows(), isPaginated, isLastPage, currentPageNumber, totalPages, player);
     }
 
     @Override
@@ -65,20 +81,4 @@ public abstract class PaginatedInventoryContainer extends ShopInventory {
     }
 
     protected abstract void handleItemInteraction(InventoryClickEvent event);
-
-    public void updateInventory(Player player) {
-        int currentPageIndex = paginationManager.getCurrentPage() - 1;
-        ShopPage currentPage = shop.getShopPages().get(currentPageIndex);
-
-        int inventorySize = currentPage.getRows() * 9;
-        inventory = plugin.getServer().createInventory(this, inventorySize, currentPage.getGuiTitle());
-
-        displayPageItems(inventory, currentPage);
-
-        boolean isPaginated = paginationManager.getCurrentPage() > 1;
-        boolean isLastPage = paginationManager.isLastPage();
-        controlBar.applyToInventory(inventory, currentPage.getRows(), isPaginated, isLastPage);
-
-        player.openInventory(inventory);
-    }
 }

@@ -1,10 +1,9 @@
 package xyz.starly.astralshop.shop.controlbar;
 
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import xyz.starly.astralshop.AstralShop;
 
 import java.util.HashMap;
@@ -34,11 +33,12 @@ public class ShopControlBar {
         }
     }
 
-    public void applyToInventory(Inventory inventory, int rows, boolean isPaginated, boolean isLastPage) {
+    public void applyToInventory(Inventory inventory, int rows, boolean isPaginated, boolean isLastPage, int currentPage, int totalPages, Player player) {
         int baseSlot = (rows - 1) * 9;
         items.forEach((slot, controlBarItem) -> {
             int actualSlot = baseSlot + slot;
-            inventory.setItem(actualSlot, controlBarItem.toItemStack(isPaginated, isLastPage));
+            ItemStack newItemStack = controlBarItem.toItemStack(isPaginated, isLastPage, currentPage, totalPages, player);
+            inventory.setItem(actualSlot, newItemStack);
         });
     }
 

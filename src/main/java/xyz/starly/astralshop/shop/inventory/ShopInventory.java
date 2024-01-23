@@ -33,16 +33,16 @@ public abstract class ShopInventory implements InventoryHolder {
     public void open(Player player) {
         if (player != null || player.isOnline()) {
             plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
-                createInventory();
+                createInventory(player);
                 player.openInventory(inventory);
             }, 1L);
         }
     }
 
-    private void createInventory() {
+    private void createInventory(Player player) {
         inventory = plugin.getServer().createInventory(this, rows * 9, title);
 
-        initializeInventory(inventory);
+        initializeInventory(inventory, player);
     }
 
     public void onClick(InventoryClickEvent event) {
@@ -56,7 +56,7 @@ public abstract class ShopInventory implements InventoryHolder {
         inventoryClose(event);
     }
 
-    protected abstract void initializeInventory(Inventory inventory);
+    protected abstract void initializeInventory(Inventory inventory, Player player);
     protected abstract void inventoryClick(InventoryClickEvent event);
     protected abstract void inventoryClose(InventoryCloseEvent event);
 }
