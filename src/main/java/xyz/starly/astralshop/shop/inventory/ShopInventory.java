@@ -39,6 +39,7 @@ public abstract class ShopInventory implements InventoryHolder {
         }
     }
 
+
     private void createInventory(Player player) {
         inventory = plugin.getServer().createInventory(this, rows * 9, title);
 

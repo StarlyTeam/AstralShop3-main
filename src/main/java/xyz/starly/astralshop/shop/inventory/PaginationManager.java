@@ -29,15 +29,29 @@ public class PaginationManager {
         }
     }
 
+    public boolean hasNextPage() {
+        return currentPage < pages.size();
+    }
+
+    public boolean hasPrevPage() {
+        return currentPage > 1;
+    }
+
+    public boolean isValidPage(int pageNumber) {
+        return pageNumber >= 1 && pageNumber <= pages.size();
+    }
+
+    public void setCurrentPage(int pageNumber) {
+        if (isValidPage(pageNumber)) {
+            this.currentPage = pageNumber;
+        }
+    }
+
     public ShopPage getCurrentPageData() {
         return pages.get(currentPage - 1);
     }
 
     public int getTotalPages() {
         return pages.size();
-    }
-
-    public boolean isLastPage() {
-        return currentPage >= pages.size();
     }
 }
