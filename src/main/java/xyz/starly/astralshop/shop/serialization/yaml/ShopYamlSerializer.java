@@ -61,14 +61,6 @@ public class ShopYamlSerializer {
         String guiTitle = config.getString("shop.gui_title");
         String npc = config.getString("shop.npc");
 
-        /* TODO 삭제 해야함 | 로그 부분 */
-        LOGGER.info(ANSI_CYAN + "=============================================================" + ANSI_RESET);
-        LOGGER.info( ANSI_GREEN + "상점을 로딩하였습니다");
-        LOGGER.info(ANSI_YELLOW + "- gui_title: " + guiTitle + ANSI_RESET);
-        LOGGER.info(ANSI_YELLOW + "- npc: " + npc + ANSI_RESET);
-        LOGGER.info(" ");
-        /* TODO 삭제 해야함 | 여기까지 */
-
         List<ShopPage> pages = new ArrayList<>();
         int index = 1;
         while (config.contains("pages.page_" + index)) {
@@ -87,7 +79,7 @@ public class ShopYamlSerializer {
 
                     /* TODO 삭제 해야함 | 로그 부분 2 */
                     LOGGER.info(" - Slot " + key + ":");
-                    LOGGER.info("   - Item: " + item.getItemStack().getType().toString());
+                    LOGGER.info("   - Item: " + item.getItemStack().getType());
                     LOGGER.info("   - Amount: " + item.getItemStack().getAmount());
 
                     LOGGER.info("   - Buy Price: " + item.getBuyPrice());
@@ -95,51 +87,7 @@ public class ShopYamlSerializer {
 
                     LOGGER.info("   - Stock: " + item.getStock());
                     LOGGER.info("   - Remain Stock: " + item.getRemainStock());
-
-                    if (item.getItemStack().getItemMeta().hasDisplayName()) {
-                        LOGGER.info("   - DisplayName: " + item.getItemStack().getItemMeta().getDisplayName());
-                    }
-
-                    if (item.getItemStack().getItemMeta().hasLore()) {
-                        LOGGER.info("   - Lore: " + item.getItemStack().getItemMeta().getLore());
-                    }
-
-                    if (item.getItemStack().getItemMeta().hasCustomModelData()) {
-                        LOGGER.info("   - CustomModelData: " + item.getItemStack().getItemMeta().getCustomModelData());
-                    }
-
-                    PersistentDataContainer container = item.getItemStack().getItemMeta().getPersistentDataContainer();
-                    if (!container.isEmpty()) {
-                        container.getKeys().forEach(namespacedKey ->
-                                LOGGER.info("   - PDC: " + namespacedKey.getKey() + " : " + namespacedKey.getNamespace()));
-                    }
-
-                    // POTION
-                    if (item.getItemStack().getItemMeta() instanceof PotionMeta) {
-                        PotionMeta potionMeta = (PotionMeta) item.getItemStack().getItemMeta();
-                        List<String> potionEffects = new ArrayList<>();
-
-                        for (PotionEffect effect : potionMeta.getCustomEffects()) {
-                            String effectDescription = effect.getType().getName() + " (" + effect.getDuration() / 20 + "초, 증폭: " + effect.getAmplifier() + ")";
-                            potionEffects.add(effectDescription);
-                        }
-
-                        LOGGER.info("   - Potion Types: " + potionEffects);
-                    }
-
-                    // ENCHANTMENT
-                    if (item.getItemStack().getItemMeta().hasEnchants()) {
-                        LOGGER.info("    - Enchantments: " + item.getItemStack().getItemMeta().getEnchants());
-                    }
-
-                    // LEATHER
-                    if (item.getItemStack().getItemMeta() instanceof LeatherArmorMeta) {
-                        if (item.getItemStack().getItemMeta() instanceof LeatherArmorMeta) {
-                            LeatherArmorMeta leatherMeta = (LeatherArmorMeta) item.getItemStack().getItemMeta();
-                            Color color = leatherMeta.getColor();
-                            LOGGER.info("   - Leather Color: " + color.asRGB());
-                        }
-                    }
+                    LOGGER.info("   - Commands: " + item.getCommands());
 
                     LOGGER.info(" ");
                     /* TODO 삭제 해야함 | 여기까지 */
