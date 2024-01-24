@@ -2,58 +2,74 @@ package xyz.starly.astralshop.shop.controlbar;
 
 import lombok.AllArgsConstructor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
+import xyz.starly.astralshop.shop.inventory.DynamicPaginationHelper;
 
 @AllArgsConstructor
 public class DynamicControlBar implements ControlBar {
 
-    private int currentPage;
-    private int totalPages;
+    private final DynamicPaginationHelper paginationHelper;
 
     @Override
     public void applyToInventory(Inventory inventory, Player player) {
         int rows = inventory.getSize() / 9;
-        int baseSlot = (rows - 1) * 9;
+        int controlBarSlot = (rows - 1) * 9;
 
-        inventory.setItem(baseSlot, createControlItem(Material.RED_STAINED_GLASS_PANE, "Prev Page", currentPage > 1));
+        setupControlItems(inventory, controlBarSlot);
+        setupPageItems(inventory, controlBarSlot);
+    }
 
-        for (int i = 1; i < 7; i++) {
-            int actualSlot = baseSlot + i;
-            inventory.setItem(actualSlot, createPageItem(i));
+    private void setupControlItems(Inventory inventory, int controlBarSlot) {
+        boolean hasPrevPage = paginationHelper.getCurrentPage() > 1;
+        boolean hasNextPage = paginationHelper.getCurrentPage() < 64 && paginationHelper.getCurrentPage() < paginationHelper.getTotalPages();
+
+        inventory.setItem(controlBarSlot, createControlItem(Material.RED_STAINED_GLASS_PANE, "Prev Page", hasPrevPage));
+        inventory.setItem(controlBarSlot + 8, createControlItem(Material.BLUE_STAINED_GLASS_PANE, "Next Page", hasNextPage));
+    }
+
+    private void setupPageItems(Inventory inventory, int controlBarSlot) {
+        int startPage = paginationHelper.getStartPage();
+        int endPage = paginationHelper.getEndPage();
+
+        for (int i = 0; i < 7; i++) {
+            int slot = controlBarSlot + i + 1;
+            int pageNumber = startPage + i;
+            ItemStack item = pageNumber <= endPage ? createPageItem(pageNumber) : createCreatePageItem();
+            inventory.setItem(slot, item);
         }
-
-        inventory.setItem(baseSlot + 7, createControlItem(Material.GREEN_STAINED_GLASS_PANE, "Create Page", currentPage == totalPages));
-        inventory.setItem(baseSlot + 8, createControlItem(Material.BLUE_STAINED_GLASS_PANE, "Next Page", currentPage < totalPages));
     }
 
     private ItemStack createControlItem(Material material, String name, boolean active) {
-        ItemStack item = new ItemStack(active ? material : Material.AIR);
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(name);
-            item.setItemMeta(meta);
-        }
-        return item;
+        Material itemMaterial = active ? material : Material.BARRIER;
+        return createItemStack(itemMaterial, name, 1, false);
     }
 
     private ItemStack createPageItem(int pageNumber) {
-        Material material = pageNumber <= totalPages ? Material.BOOK : Material.AIR;
-        ItemStack item = new ItemStack(material, pageNumber);
-        if (pageNumber <= totalPages) {
-            ItemMeta meta = item.getItemMeta();
-            if (meta != null) {
-                meta.setDisplayName("Page " + pageNumber);
-                List<String> lore = new ArrayList<>();
-                lore.add("Items: " + pageNumber);
-                meta.setLore(lore);
-                item.setItemMeta(meta);
+        if (pageNumber > 64) {
+            return null;
+        }
+        return createItemStack(Material.BOOK, "Page " + pageNumber, pageNumber, pageNumber == paginationHelper.getCurrentPage());
+    }
+
+    private ItemStack createCreatePageItem() {
+        return createItemStack(Material.GREEN_STAINED_GLASS_PANE, "Create Page", 1, false);
+    }
+
+    private ItemStack createItemStack(Material material, String displayName, int amount, boolean isCurrentPage) {
+        ItemStack item = new ItemStack(material, amount);
+        ItemMeta meta = item.getItemMeta();
+        if (meta != null) {
+            meta.setDisplayName(displayName);
+            if (isCurrentPage) {
+                meta.addEnchant(Enchantment.LUCK, 1, true);
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
+            item.setItemMeta(meta);
         }
         return item;
     }
