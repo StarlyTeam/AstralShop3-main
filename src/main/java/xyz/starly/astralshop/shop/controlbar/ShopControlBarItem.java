@@ -65,8 +65,10 @@ public class ShopControlBarItem {
     }
 
     private String replacePlaceholders(String text, int currentPage, int totalPages, Player player) {
+        int displayTotalPages = Math.min(totalPages, 64);
+
         return text.replace("%current_page%", String.valueOf(currentPage))
-                .replace("%total_page%", String.valueOf(totalPages))
+                .replace("%total_page%", String.valueOf(displayTotalPages))
                 .replace("%player_name%", player.getName())
                 .replace("%player_displayname%", player.getDisplayName())
                 .replace("%player_balance%", String.valueOf(AstralShop.getInstance().getEconomy().getBalance(player)));
