@@ -18,7 +18,7 @@ public class PaginationManager {
     }
 
     public void nextPage() {
-        if (currentPage < pages.size()) {
+        if (currentPage < pages.size() && currentPage < 64) {
             currentPage++;
         }
     }

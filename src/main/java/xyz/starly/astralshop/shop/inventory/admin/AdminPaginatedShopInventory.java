@@ -54,6 +54,22 @@ public abstract class AdminPaginatedShopInventory extends BaseShopPaginatedInven
         }
     }
 
+    private void handleControlBarInteraction(int clickedSlot, Player player) {
+        int controlSlot = clickedSlot % 9;
+
+        if (controlSlot == 0 && paginationManager.hasPrevPage()) {
+            paginationManager.prevPage();
+        } else if (controlSlot == 8 && paginationManager.hasNextPage()) {
+            paginationManager.nextPage();
+        } else if (controlSlot > 0 && controlSlot < 8) {
+            if (paginationManager.isValidPage(controlSlot)) {
+                paginationManager.setCurrentPage(controlSlot);
+            }
+        }
+
+        updateInventory(player);
+    }
+
     private void handlePageNumberInteraction(int clickedSlot, Player player, DynamicPaginationHelper paginationHelper) {
         int baseSlot = inventory.getSize() - 9;
         int pageNumberSlot = clickedSlot - baseSlot - 1;

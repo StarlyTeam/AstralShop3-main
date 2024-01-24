@@ -32,21 +32,5 @@ public abstract class BaseShopPaginatedInventory extends ShopInventory {
         player.openInventory(inventory);
     }
 
-    protected void handleControlBarInteraction(int clickedSlot, Player player) {
-        int controlSlot = clickedSlot % 9;
-
-        if (controlSlot == 0 && paginationManager.hasPrevPage()) {
-            paginationManager.prevPage();
-        } else if (controlSlot == 8 && paginationManager.hasNextPage() && paginationManager.getCurrentPage() < 64) {
-            paginationManager.nextPage();
-        } else if (controlSlot > 0 && controlSlot < 8) {
-            if (paginationManager.isValidPage(controlSlot)) {
-                paginationManager.setCurrentPage(controlSlot);
-            }
-        }
-
-        updateInventory(player);
-    }
-
     protected abstract void displayPageItems(Inventory inventory, ShopPage currentPage, Player player);
 }
