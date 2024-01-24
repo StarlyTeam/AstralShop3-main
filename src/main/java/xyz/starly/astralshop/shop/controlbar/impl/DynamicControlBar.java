@@ -1,4 +1,4 @@
-package xyz.starly.astralshop.shop.controlbar;
+package xyz.starly.astralshop.shop.controlbar.impl;
 
 import lombok.AllArgsConstructor;
 import org.bukkit.Material;
@@ -8,6 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import xyz.starly.astralshop.shop.controlbar.ControlBar;
 import xyz.starly.astralshop.shop.inventory.DynamicPaginationHelper;
 
 @AllArgsConstructor

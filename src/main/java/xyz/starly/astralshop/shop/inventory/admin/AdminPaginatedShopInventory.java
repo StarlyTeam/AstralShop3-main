@@ -6,7 +6,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import xyz.starly.astralshop.api.shop.Shop;
 import xyz.starly.astralshop.api.shop.ShopPage;
-import xyz.starly.astralshop.shop.controlbar.DynamicControlBar;
+import xyz.starly.astralshop.shop.controlbar.impl.DynamicControlBar;
 import xyz.starly.astralshop.shop.inventory.DynamicPaginationHelper;
 import xyz.starly.astralshop.shop.inventory.BaseShopPaginatedInventory;
 

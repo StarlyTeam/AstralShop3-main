@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import xyz.starly.astralshop.api.shop.Shop;
 import xyz.starly.astralshop.api.shop.ShopItem;
 import xyz.starly.astralshop.api.shop.ShopPage;
-import xyz.starly.astralshop.shop.controlbar.ShopControlBar;
+import xyz.starly.astralshop.shop.controlbar.impl.ShopControlBar;
 import xyz.starly.astralshop.shop.inventory.BaseShopPaginatedInventory;
 
 public class PaginatedShopInventory extends BaseShopPaginatedInventory {

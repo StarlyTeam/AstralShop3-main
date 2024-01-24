@@ -10,11 +10,8 @@ import xyz.starly.astralshop.AstralShop;
 import xyz.starly.astralshop.api.registry.ShopMenuRegistry;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
 import xyz.starly.astralshop.api.shop.Shop;
-import xyz.starly.astralshop.shop.controlbar.ShopControlBarAction;
-import xyz.starly.astralshop.shop.controlbar.ShopMainControlBar;
+import xyz.starly.astralshop.shop.controlbar.impl.ShopMainControlBar;
 import xyz.starly.astralshop.shop.inventory.ShopInventory;
-
-import java.util.Objects;
 
 public class ShopMainInventory extends ShopInventory {
 
