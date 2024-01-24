@@ -1,6 +1,7 @@
 package xyz.starly.astralshop.shop.inventory;
 
 import lombok.Getter;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -22,9 +23,15 @@ public abstract class ShopInventory implements InventoryHolder {
     private final int rows;
     private final boolean cancel;
 
+    public ShopInventory(String title, int rows, boolean cancel) {
+        this.title = ChatColor.translateAlternateColorCodes('&', title);
+        this.rows = rows;
+        this.cancel = cancel;
+    }
+
     public ShopInventory(Shop shop, String title, int rows, boolean cancel) {
         this.shop = shop;
-        this.title = title;
+        this.title = ChatColor.translateAlternateColorCodes('&', title);
         this.rows = rows;
         this.cancel = cancel;
     }
@@ -57,6 +64,8 @@ public abstract class ShopInventory implements InventoryHolder {
     }
 
     protected abstract void initializeInventory(Inventory inventory, Player player);
+
     protected abstract void inventoryClick(InventoryClickEvent event);
+
     protected abstract void inventoryClose(InventoryCloseEvent event);
 }

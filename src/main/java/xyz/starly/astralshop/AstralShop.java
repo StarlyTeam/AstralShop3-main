@@ -13,6 +13,7 @@ import xyz.starly.astralshop.command.ShopCommand;
 import xyz.starly.astralshop.command.TestShopItemCommand;
 import xyz.starly.astralshop.database.ConnectionPoolManager;
 import xyz.starly.astralshop.message.MessageContext;
+import xyz.starly.astralshop.registry.ShopMenuRegistryImpl;
 import xyz.starly.astralshop.shop.inventory.ShopInventory;
 import xyz.starly.astralshop.listener.AdminShopInventoryListener;
 import xyz.starly.astralshop.registry.SQLShopRegistry;
@@ -24,6 +25,7 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
     private static AstralShop instance;
 
     @Getter private ShopRegistry shopRegistry;
+    @Getter private ShopMenuRegistryImpl shopMenuRegistry;
     @Getter private Economy economy;
 
     @Override
@@ -40,6 +42,8 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
         MessageContext.getInstance().initialize(getFile());
 
         setupShopRegistry();
+        shopMenuRegistry = new ShopMenuRegistryImpl(this);
+        shopMenuRegistry.loadMenuItems();
 
         new ShopAdminCommand(this);
         getCommand("shop").setExecutor(new ShopCommand());
@@ -73,7 +77,9 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
 
     @Override
     public void onDisable() {
-        shopRegistry.saveShops();
+        if (shopRegistry != null) {
+            shopRegistry.saveShops();
+        }
 
         ConnectionPoolManager pool = ConnectionPoolManager.getInternalPool();
         if (pool != null) pool.closePool();

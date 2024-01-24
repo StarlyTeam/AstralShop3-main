@@ -11,6 +11,7 @@ import xyz.starly.astralshop.AstralShop;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
 import xyz.starly.astralshop.api.shop.Shop;
 import xyz.starly.astralshop.shop.inventory.global.PaginatedShopInventory;
+import xyz.starly.astralshop.shop.inventory.global.ShopMainInventory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +31,7 @@ public class ShopCommand implements TabExecutor {
         Player player = (Player) sender;
 
         if (args.length == 0) {
-            // TODO 전체 상점 오픈
+            new ShopMainInventory().open(player);
             return true;
         }
 

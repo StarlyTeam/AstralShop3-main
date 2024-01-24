@@ -1,14 +1,15 @@
 package xyz.starly.astralshop.shop.inventory.global;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import xyz.starly.astralshop.api.shop.Shop;
+import xyz.starly.astralshop.api.shop.ShopItem;
 import xyz.starly.astralshop.api.shop.ShopPage;
 import xyz.starly.astralshop.shop.controlbar.ShopControlBar;
-import xyz.starly.astralshop.shop.controlbar.ShopControlBarItem;
 import xyz.starly.astralshop.shop.inventory.BaseShopPaginatedInventory;
 
 public class PaginatedShopInventory extends BaseShopPaginatedInventory {
@@ -34,7 +35,22 @@ public class PaginatedShopInventory extends BaseShopPaginatedInventory {
 
     private void handleItemInteraction(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        player.sendMessage(" ");
+
+        ItemStack currentItem = event.getCurrentItem();
+        if (currentItem == null || currentItem.getType() == Material.AIR) {
+            return;
+        }
+
+        int currentPage = paginationManager.getCurrentPage() - 1;
+        int clickedSlot = event.getSlot();
+
+        ShopItem shopItem = shop.getShopPages().get(currentPage).getItems().get(clickedSlot);
+        double buyPrice = shopItem.getBuyPrice();
+        double sellPrice = shopItem.getSellPrice();
+        player.sendMessage("구매 가격: " + buyPrice);
+        player.sendMessage("판매 가격: " + sellPrice);
+
+        // TODO 구매/판매 시스템
     }
 
     @Override
@@ -43,13 +59,18 @@ public class PaginatedShopInventory extends BaseShopPaginatedInventory {
 
         int clickedSlot = event.getRawSlot();
         Player player = (Player) event.getWhoClicked();
+
+        ItemStack currentItem = event.getCurrentItem();
+        if (currentItem == null || currentItem.getType() == Material.AIR) {
+            return;
+        }
+
         Inventory clickedInventory = event.getClickedInventory();
 
         if (clickedInventory != null && clickedInventory.equals(inventory)) {
             if (clickedSlot >= inventory.getSize() - 9 && clickedSlot < inventory.getSize()) {
-                ShopControlBarItem controlItem = shopControlBar.getItem(clickedSlot % 9);
-                if (controlItem != null) {
-                    switch (controlItem.getAction()) {
+                shopControlBar.getItem(clickedSlot % 9).ifPresent(controlBarItem -> {
+                    switch (controlBarItem.getAction()) {
                         case PREV_PAGE:
                             paginationManager.prevPage();
                             updateInventory(player);
@@ -58,8 +79,14 @@ public class PaginatedShopInventory extends BaseShopPaginatedInventory {
                             paginationManager.nextPage();
                             updateInventory(player);
                             break;
+                        case BACK:
+                            new ShopMainInventory().open(player);
+                            break;
+                        case CLOSE:
+                            player.closeInventory();;
+                            break;
                     }
-                }
+                });
             } else {
                 handleItemInteraction(event);
             }

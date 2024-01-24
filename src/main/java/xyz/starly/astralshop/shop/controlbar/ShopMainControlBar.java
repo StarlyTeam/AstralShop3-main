@@ -9,21 +9,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class ShopControlBar implements ControlBar {
+public class ShopMainControlBar implements ControlBar {
 
-    private final int currentPage;
-    private final int totalPages;
     private final Map<Integer, ShopControlBarItem> items;
 
-    public ShopControlBar(int currentPage, int totalPages) {
-        this.currentPage = currentPage;
-        this.totalPages = totalPages;
+    public ShopMainControlBar() {
         this.items = new HashMap<>();
         loadItems();
     }
 
     private void loadItems() {
-        ConfigurationSection section = AstralShop.getInstance().getConfig().getConfigurationSection("shop_control_bar.items");
+        ConfigurationSection section = AstralShop.getInstance().getConfig().getConfigurationSection("shop_main_control_bar.items");
         if (section != null) {
             section.getKeys(false).forEach(key -> {
                 try {
@@ -31,7 +27,7 @@ public class ShopControlBar implements ControlBar {
                     ShopControlBarItem item = new ShopControlBarItem(section.getConfigurationSection(key));
                     items.put(slot, item);
                 } catch (NumberFormatException e) {
-                    AstralShop.getInstance().getLogger().warning("Invalid slot number format in shop_control_bar: " + key);
+                    AstralShop.getInstance().getLogger().warning("Invalid slot number format in shop_main_control_bar: " + key);
                 }
             });
         }
@@ -39,15 +35,12 @@ public class ShopControlBar implements ControlBar {
 
     @Override
     public void applyToInventory(Inventory inventory, Player player) {
-        ConfigurationSection controlBarSection = AstralShop.getInstance().getConfig().getConfigurationSection("shop_control_bar");
+        ConfigurationSection controlBarSection = AstralShop.getInstance().getConfig().getConfigurationSection("shop_main_control_bar");
         if (controlBarSection != null && controlBarSection.getBoolean("enabled", false)) {
-            int rows = inventory.getSize() / 9;
-            int baseSlot = (rows - 1) * 9;
+            int baseSlot = inventory.getSize() - 9;
             items.forEach((slot, item) -> {
                 int actualSlot = baseSlot + slot;
-                boolean isPaginated = currentPage > 1;
-                boolean isLastPage = currentPage >= totalPages;
-                inventory.setItem(actualSlot, item.toItemStack(isPaginated, isLastPage, currentPage, totalPages, player));
+                inventory.setItem(actualSlot, item.toItemStack(false, false, 0, 0, player));
             });
         }
     }

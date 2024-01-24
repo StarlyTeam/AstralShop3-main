@@ -4,6 +4,8 @@ public enum ShopControlBarAction {
 
     PREV_PAGE,
     NEXT_PAGE,
+    BACK,
+    CLOSE,
     NONE;
 
     public static ShopControlBarAction fromString(String actionStr) {
