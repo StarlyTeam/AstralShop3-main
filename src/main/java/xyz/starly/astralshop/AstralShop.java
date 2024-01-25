@@ -6,6 +6,7 @@ import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import xyz.starly.astralshop.api.AstralShopPlugin;
 import xyz.starly.astralshop.api.registry.ShopRegistry;
 import xyz.starly.astralshop.command.ShopAdminCommand;
@@ -18,6 +19,8 @@ import xyz.starly.astralshop.shop.inventory.ShopInventory;
 import xyz.starly.astralshop.listener.AdminShopInventoryListener;
 import xyz.starly.astralshop.registry.SQLShopRegistry;
 import xyz.starly.astralshop.registry.YamlShopRegistry;
+
+import java.io.File;
 
 public class AstralShop extends JavaPlugin implements AstralShopPlugin {
 
@@ -89,5 +92,9 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
                 player.closeInventory();
             }
         });
+    }
+
+    public @NotNull File getFile() {
+        return super.getFile();
     }
 }

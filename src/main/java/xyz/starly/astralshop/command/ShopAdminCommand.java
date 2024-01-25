@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import xyz.starly.astralshop.command.sub.CreateShopCommand;
 import xyz.starly.astralshop.command.sub.DeleteShopCommand;
 import xyz.starly.astralshop.command.sub.EditShopCommand;
+import xyz.starly.astralshop.command.sub.ReloadCommand;
 
 import java.util.*;
 
@@ -35,6 +36,7 @@ public class ShopAdminCommand implements TabExecutor {
         registerSubCommand(new CreateShopCommand());
         registerSubCommand(new DeleteShopCommand());
         registerSubCommand(new EditShopCommand());
+        registerSubCommand(new ReloadCommand());
     }
 
     private void registerSubCommand(SubCommand subCommand) {
