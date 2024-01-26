@@ -52,11 +52,7 @@ public class ConnectionPoolManager {
     }
 
     public Connection getConnection() throws SQLException {
-        if (connection == null) {
-            connection = dataSource.getConnection();
-        }
-
-        return connection;
+        return dataSource.getConnection();
     }
 
     private void init() {
