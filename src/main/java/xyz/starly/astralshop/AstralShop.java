@@ -14,10 +14,10 @@ import xyz.starly.astralshop.command.ShopCommand;
 import xyz.starly.astralshop.command.TestShopItemCommand;
 import xyz.starly.astralshop.database.ConnectionPoolManager;
 import xyz.starly.astralshop.message.MessageContext;
+import xyz.starly.astralshop.registry.SQLShopRegistry;
 import xyz.starly.astralshop.registry.ShopMenuRegistryImpl;
 import xyz.starly.astralshop.shop.inventory.ShopInventory;
 import xyz.starly.astralshop.listener.AdminShopInventoryListener;
-import xyz.starly.astralshop.registry.SQLShopRegistry;
 import xyz.starly.astralshop.registry.YamlShopRegistry;
 
 import java.io.File;
@@ -59,6 +59,7 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
 
     private void setupShopRegistry() {
         if (getConfig().getBoolean("mysql.use")) {
+            ConnectionPoolManager.initializingPoolManager(getConfig());
             shopRegistry = new SQLShopRegistry(this);
         } else {
             shopRegistry = new YamlShopRegistry(this);
@@ -80,10 +81,6 @@ public class AstralShop extends JavaPlugin implements AstralShopPlugin {
 
     @Override
     public void onDisable() {
-        if (shopRegistry != null) {
-            shopRegistry.saveShops();
-        }
-
         ConnectionPoolManager pool = ConnectionPoolManager.getInternalPool();
         if (pool != null) pool.closePool();
 
