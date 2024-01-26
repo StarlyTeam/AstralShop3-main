@@ -51,6 +51,12 @@ public class YamlShopRegistry implements ShopRegistry {
 
     @Override
     public void saveShops() {
+
+    }
+
+    @Override
+    public void saveShop(Shop shop) {
+        // TODO 구현
     }
 
     @Override
@@ -60,7 +66,7 @@ public class YamlShopRegistry implements ShopRegistry {
             return false;
         }
 
-        Shop newShop = new ShopImpl(name, "", new ArrayList<>());
+        Shop newShop = new ShopImpl(name, name, "", new ArrayList<>());
 
         File shopFile = new File(shopFolder, name + ".yml");
         if (shopFile.exists()) {

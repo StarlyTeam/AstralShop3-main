@@ -22,6 +22,7 @@ public class ShopYamlSerializer {
     public static void saveShop(Shop shop, File file) throws IOException {
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
+        config.set("shop.name", shop.getName());
         config.set("shop.gui_title", shop.getGuiTitle());
         config.set("shop.npc", shop.getNpc());
 
@@ -45,6 +46,7 @@ public class ShopYamlSerializer {
     public static Shop loadShop(File file) throws IOException {
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
+        String name = config.getString("shop.name");
         String guiTitle = config.getString("shop.gui_title");
         String npc = config.getString("shop.npc");
 
@@ -55,29 +57,12 @@ public class ShopYamlSerializer {
             String pageGuiTitle = config.getString(basePath + ".gui_title");
             int rows = config.getInt(basePath + ".gui_rows");
 
-            LOGGER.info("Page " + index + ": " + pageGuiTitle + " with " + rows + " rows");
-
             Map<Integer, ShopItem> items = new HashMap<>();
             ConfigurationSection itemsSection = config.getConfigurationSection(basePath + ".items");
             if (itemsSection != null) {
                 for (String key : itemsSection.getKeys(false)) {
                     ShopItem item = ShopItemYamlSerializer.deserialize(Objects.requireNonNull(itemsSection.getConfigurationSection(key)));
                     items.put(Integer.parseInt(key), item);
-
-                    /* TODO 삭제 해야함 | 로그 부분 2 */
-                    LOGGER.info(" - Slot " + key + ":");
-                    LOGGER.info("   - Item: " + item.getItemStack().getType());
-                    LOGGER.info("   - Amount: " + item.getItemStack().getAmount());
-
-                    LOGGER.info("   - Buy Price: " + item.getBuyPrice());
-                    LOGGER.info("   - Sell Price: " + item.getSellPrice());
-
-                    LOGGER.info("   - Stock: " + item.getStock());
-                    LOGGER.info("   - Remain Stock: " + item.getRemainStock());
-                    LOGGER.info("   - Commands: " + item.getCommands());
-
-                    LOGGER.info(" ");
-                    /* TODO 삭제 해야함 | 여기까지 */
                 }
             }
 
@@ -86,6 +71,6 @@ public class ShopYamlSerializer {
             index++;
         }
 
-        return new ShopImpl(guiTitle, npc, pages);
+        return new ShopImpl(name, guiTitle, npc, pages);
     }
 }
