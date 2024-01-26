@@ -32,8 +32,6 @@ public abstract class AdminPaginatedShopInventory extends BaseShopPaginatedInven
 
     @Override
     protected void inventoryClick(InventoryClickEvent event) {
-        event.setCancelled(true);
-
         Player player = (Player) event.getWhoClicked();
         int clickedSlot = event.getRawSlot();
         Inventory clickedInventory = event.getClickedInventory();
@@ -41,6 +39,8 @@ public abstract class AdminPaginatedShopInventory extends BaseShopPaginatedInven
         if (clickedInventory != null && clickedInventory.equals(inventory)) {
             DynamicPaginationHelper paginationHelper = new DynamicPaginationHelper(paginationManager.getCurrentPage(), paginationManager.getTotalPages());
             if (clickedSlot >= inventory.getSize() - 9) {
+                event.setCancelled(true);
+
                 if (clickedSlot == inventory.getSize() - 9) {
                     handleControlBarInteraction(clickedSlot, player);
                 } else if (clickedSlot >= inventory.getSize() - 8 && clickedSlot < inventory.getSize() - 1) {
