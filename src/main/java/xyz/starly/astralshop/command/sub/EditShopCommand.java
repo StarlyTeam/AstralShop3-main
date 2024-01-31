@@ -12,6 +12,7 @@ import xyz.starly.astralshop.shop.inventory.admin.impl.EditAdminPaginatedShopInv
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EditShopCommand implements SubCommand {
 
@@ -79,7 +80,7 @@ public class EditShopCommand implements SubCommand {
     @Override
     public List<String> tabComplete(CommandSender sender, String label, String[] args) {
         if (args.length == 2) {
-            return StringUtil.copyPartialMatches(args[1], shopRegistry.getShopNames(), new ArrayList<>());
+            return StringUtil.copyPartialMatches(args[1], shopRegistry.getShops().stream().map(Shop::getName).collect(Collectors.toList()), new ArrayList<>());
         }
         return Collections.emptyList();
     }

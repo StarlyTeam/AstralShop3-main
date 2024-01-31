@@ -21,9 +21,10 @@ dependencies {
     compileOnly "org.projectlombok:lombok:1.18.26"
     annotationProcessor "org.projectlombok:lombok:1.18.26"
 
-    compileOnly "org.spigotmc:spigot-api:R0.1:1.12.2"
+    compileOnly "org.spigotmc:spigot-api:R0.1:1.20.1"
     compileOnly "kr.starly.core:StarlyCore:2.0"
     api "xyz.starly.astralshop:AstralShopAPI:1.0"
+    api group: "com.zaxxer", name: "HikariCP", version: "3.4.5"
 
     compileOnly "com.github.MilkBowl:VaultAPI:1.7.1"
 }
@@ -34,7 +35,7 @@ tasks.withType(JavaCompile).configureEach {
 
 shadowJar {
     archiveFileName = "AstralShop.jar"
-    destinationDirectory = file("C:\\Users\\PC\\Desktop\\AstralShop")
+    destinationDirectory = file("C:\\Users\\PC\\대영\\1.20.4 [ Paper ]\\plugins")
 }
 
 build.dependsOn shadowJar

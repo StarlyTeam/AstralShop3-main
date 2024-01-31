@@ -72,25 +72,25 @@ public class SQLShopRegistry implements ShopRegistry {
         }
     }
 
-    @Override
-    public void loadShops() {
-        String sql = "SELECT * FROM shops";
-        try (Connection conn = ConnectionPoolManager.getInternalPool().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                String shopName = rs.getString("name");
-                String guiTitle = rs.getString("gui_title");
-                String npc = rs.getString("npc");
-
-                List<ShopPage> shopPages = loadShopPages(shopName);
-                Shop shop = new ShopImpl(shopName, guiTitle, npc, shopPages);
-            }
-        } catch (SQLException e) {
-            LOGGER.warning("Error load shops: " + e);
-        }
-    }
+//    @Override
+//    public void loadShops() {
+//        String sql = "SELECT * FROM shops";
+//        try (Connection conn = ConnectionPoolManager.getInternalPool().getConnection();
+//             PreparedStatement stmt = conn.prepareStatement(sql);
+//             ResultSet rs = stmt.executeQuery()) {
+//
+//            while (rs.next()) {
+//                String shopName = rs.getString("name");
+//                String guiTitle = rs.getString("gui_title");
+//                String npc = rs.getString("npc");
+//
+//                List<ShopPage> shopPages = loadShopPages(shopName);
+//                Shop shop = new ShopImpl(shopName, guiTitle, npc, shopPages);
+//            }
+//        } catch (SQLException e) {
+//            LOGGER.warning("Error load shops: " + e);
+//        }
+//    }
 
     private List<ShopPage> loadShopPages(String shopName) {
         List<ShopPage> pages = new ArrayList<>();
@@ -152,6 +152,16 @@ public class SQLShopRegistry implements ShopRegistry {
     }
 
     public void saveShops() {
+    }
+
+    @Override
+    public void loadShops() {
+
+    }
+
+    @Override
+    public void loadShop(Shop shop) {
+
     }
 
     @Override
@@ -333,22 +343,5 @@ public class SQLShopRegistry implements ShopRegistry {
             LOGGER.warning("Error getting shops: " + e);
         }
         return shops;
-    }
-
-    @Override
-    public List<String> getShopNames() {
-        List<String> shopNames = new ArrayList<>();
-        String sql = "SELECT name FROM shops";
-        try (Connection conn = ConnectionPoolManager.getInternalPool().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                shopNames.add(rs.getString("name"));
-            }
-        } catch (SQLException e) {
-            LOGGER.warning("Error getting shop names: " + e);
-        }
-        return shopNames;
     }
 }

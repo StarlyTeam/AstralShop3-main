@@ -50,13 +50,27 @@ public class YamlShopRegistry implements ShopRegistry {
     }
 
     @Override
-    public void saveShops() {
+    public void loadShop(Shop shop) {
+        File shopFile = new File(shopFolder, shop.getName() + ".yml");
+        if (!shopFile.exists()) {
+            LOGGER.warning("Could not load shop from file: " + shopFile.getName());
+            return;
+        }
 
+        try {
+            ShopYamlSerializer.loadShop(shopFile);
+        } catch (IOException e) {
+            LOGGER.severe("상점 파일을 불러오는 도중 오류가 발생하였습니다: " + shopFile.getName());
+        }
+    }
+
+    @Override
+    public void saveShops() {
     }
 
     @Override
     public void saveShop(Shop shop) {
-        // TODO 구현
+
     }
 
     @Override
@@ -110,10 +124,5 @@ public class YamlShopRegistry implements ShopRegistry {
     @Override
     public @NotNull List<Shop> getShops() {
         return new ArrayList<>(shopMap.values());
-    }
-
-    @Override
-    public List<String> getShopNames() {
-        return new ArrayList<>(shopMap.keySet());
     }
 }

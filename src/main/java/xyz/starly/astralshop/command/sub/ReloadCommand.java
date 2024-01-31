@@ -66,7 +66,7 @@ public class ReloadCommand implements SubCommand {
             });
 
             astralShop.reloadConfig();
-            shopRegistry.loadShops();
+//            shopRegistry.loadShops();
             shopMenuRegistry.loadMenuItems();
             messageContext.initialize(astralShop.getFile());
 

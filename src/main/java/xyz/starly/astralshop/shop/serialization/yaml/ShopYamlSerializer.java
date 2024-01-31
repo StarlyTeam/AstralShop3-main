@@ -22,7 +22,6 @@ public class ShopYamlSerializer {
     public static void saveShop(Shop shop, File file) throws IOException {
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        config.set("shop.name", shop.getName());
         config.set("shop.gui_title", shop.getGuiTitle());
         config.set("shop.npc", shop.getNpc());
 
@@ -46,7 +45,7 @@ public class ShopYamlSerializer {
     public static Shop loadShop(File file) throws IOException {
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
-        String name = config.getString("shop.name");
+        String name = file.getName().replace(".yml", "");
         String guiTitle = config.getString("shop.gui_title");
         String npc = config.getString("shop.npc");
 

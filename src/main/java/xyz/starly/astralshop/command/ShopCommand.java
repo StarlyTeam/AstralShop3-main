@@ -16,6 +16,7 @@ import xyz.starly.astralshop.shop.inventory.global.ShopMainInventory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ShopCommand implements TabExecutor {
 
@@ -41,6 +42,7 @@ public class ShopCommand implements TabExecutor {
             new PaginatedShopInventory(shop).open(player);
         } else {
             player.sendMessage("존재하지 않는 상점이에요..");
+            System.out.println("테스트" + shopRegistry.getShops());
         }
         return true;
     }
@@ -49,7 +51,7 @@ public class ShopCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 1) {
-            return StringUtil.copyPartialMatches(args[0], shopRegistry.getShopNames(), new ArrayList<>());
+            return StringUtil.copyPartialMatches(args[0], shopRegistry.getShops().stream().map(Shop::getName).collect(Collectors.toList()), new ArrayList<>());
         }
         return Collections.emptyList();
     }

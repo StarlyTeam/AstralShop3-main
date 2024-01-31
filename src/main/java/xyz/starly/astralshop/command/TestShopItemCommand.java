@@ -15,6 +15,7 @@ import xyz.starly.astralshop.registry.YamlShopRegistry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 public class TestShopItemCommand implements TabExecutor {
@@ -89,7 +90,7 @@ public class TestShopItemCommand implements TabExecutor {
     }
 
     private List<String> getShopNames() {
-        return new ArrayList<>(shopRegistry.getShopNames());
+        return shopRegistry.getShops().stream().map(Shop::getName).collect(Collectors.toList());
     }
 
     private List<String> getPageNumbers(Shop shop) {
