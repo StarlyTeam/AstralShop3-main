@@ -1,9 +1,9 @@
 name: AstralShop
-main: xyz.starly.astralshop.AstralShop
-website: https://starly.xyz
+main: kr.starly.astralshop.AstralShop
+website: https://starly.kr/
 authors:
   - Nick
-  - apEnrl
+  - NillPoe
 
 version: 1.0
 api-version: 1.13
