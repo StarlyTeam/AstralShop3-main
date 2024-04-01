@@ -1,8 +1,10 @@
 package kr.starly.astralshop.command.sub;
 
+import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.registry.ShopRegistry;
-import kr.starly.astralshop.AstralShop;
 import kr.starly.astralshop.command.SubCommand;
+import kr.starly.astralshop.message.MessageContext;
+import kr.starly.astralshop.message.MessageType;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
@@ -21,18 +23,8 @@ public class CreateShopCommand implements SubCommand {
     }
 
     @Override
-    public String getEngDescription() {
-        return "Create a shop";
-    }
-
-    @Override
     public String getKorDescription() {
         return "상점을 생성합니다.";
-    }
-
-    @Override
-    public String getEngUsage() {
-        return "<name>";
     }
 
     @Override
@@ -49,16 +41,17 @@ public class CreateShopCommand implements SubCommand {
 
     @Override
     public void execute(CommandSender sender, String label, String[] args) {
+        MessageContext messageContext = MessageContext.getInstance();
         if (args.length != 2) {
-            sender.sendMessage("올바른 명령어를 입력해 주세요.");
+            messageContext.get(MessageType.ERROR, "wrongCommand").send(sender);
             return;
         }
 
         String name = args[1];
         if (shopRegistry.createShop(name)) {
-            sender.sendMessage(name + "의 상점을 생성하였습니다.");
+            messageContext.get(MessageType.NORMAL, "shopCreated", (msg) -> msg.replace("{name}", name)).send(sender);
         } else {
-            sender.sendMessage("이미 존재하는 상점입니다.");
+            messageContext.get(MessageType.ERROR, "shopAlreadyExists").send(sender);
         }
     }
 

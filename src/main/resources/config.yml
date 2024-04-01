@@ -6,50 +6,36 @@ mysql:
   user: root
   password: ""
 
-
 #   ／￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣＼
-#  ｜           Internationalization message            ｜
-#  ｜                                                   ｜
-#  ｜       ▶  Actions: [ PREV_PAGE, NEXT_PAGE ]        ｜
+#  ｜                 Message Settings                  ｜
 #   ＼＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿／
-lang: en_us
+message:
+  prefix: "&6상점 &7| &r"
+  normal:
+    shopCreated: "&a{name} 상점을 생성하였습니다."
+    shopDeleted: "&a{name} 상점을 삭제하였습니다."
+    shopClosedWhileMaintaining: "&b상점 점검으로 인하여 상점이 닫혔습니다."
+    reloadComplete: "&a리로드를 완료하였습니다. ({duration})"
 
-#   ／￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣＼
-#  ｜  ControlBar appearing on the Buy/Sell GUI screen  ｜
-#  ｜                                                   ｜
-#  ｜       ▶  Actions: [ PREV_PAGE, NEXT_PAGE ]        ｜
-#   ＼＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿／
-shop_control_bar:
-  enabled: true
-  items:
-    1:
-      material: AIR
-    2:
-      material: AIR
-    3:
-      material: AIR
-    4:
-      material: RED_STAINED_GLASS_PANE
-      name: '&c이전 페이지'
-      action: PREV_PAGE
-      paginated:
-        enabled: true
-        orElse:
-          material: AIR
-    5:
-      material: BOOK
-      name: '페이지: {currentPage}/{totalPage}'
-    6:
-      material: BLUE_STAINED_GLASS_PANE
-      name: '&a다음 페이지'
-      action: NEXT_PAGE
-      paginated:
-        enabled: true
-        orElse:
-          material: AIR
-    7:
-      material: AIR
-    8:
-      material: AIR
-    9:
-      material: AIR
+    handler-itemBought1: "&b{price}&f원을 지불하여 &b{name} &7x &b{amount}&f개를 구매하였습니다."
+    handler-itemBought2: "&f재고가 부족하여 &b{price}&f원을 지불하고 &b{name} &7x &b{amount}&f개만 구매하였습니다."
+    handler-itemBought3: "&f인벤토리의 공간이 부족하여 &b{price}&f원을 지불하고 &b{name} &7x &b{amount}&f개만 구매하였습니다."
+    handler-itemBought4: "&f잔액이 부족하여 &b{price}&f원을 지불하고 &b{name} &7x &b{amount}&f개만 구매하였습니다."
+    handler-itemSold1: "&b{price}&f원을 지불받고 &b{name} &7x &b{amount}&f개를 판매하였습니다."
+    handler-itemSold2: "&f재고가 가득 차 &b{price}&f원을 지불받고 &b{name} &7x &b{amount}&f개만 판매하였습니다."
+    handler-itemSold3: "&f인벤토리에 아이템이 부족하여 &b{price}&f원을 지불받고 &b{name} &7x &b{amount}&f개만 판매하였습니다."
+  error:
+    noConsole: "&c콘솔에서는 사용할 수 없는 명령어입니다."
+    noPermission: "&c권한이 없습니다."
+    wrongCommand: "&c잘못된 명령어입니다."
+    shopAlreadyExists: "&c이미 존재하는 상점입니다."
+    shopNotExists: "&c존재하지 않는 상점입니다."
+    shopDisabled: "&c상점이 문을 닫았습니다."
+
+    handler-cannotBuy: "&c해당 상품은 구매하실 수 없습니다."
+    handler-cannotSell: "&c해당 상품은 판매하실 수 없습니다."
+    handler-failedToBuy1: "&c재고가 부족하여 아이템을 구매하실 수 없습니다."
+    handler-failedToBuy2: "&c인벤토리의 공간이 부족하여 아이템을 구매하실 수 없습니다."
+    handler-failedToBuy3: "&c잔액이 부족하여 아이템을 구매하실 수 없습니다."
+    handler-failedToSell1: "&c재고가 가득 차 아이템을 판매하실 수 없습니다."
+    handler-failedToSell2: "&c인벤토리에 아이템이 부족하여 아이템을 판매하실 수 없습니다."

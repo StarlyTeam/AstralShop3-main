@@ -2,10 +2,12 @@ package kr.starly.astralshop.shop.inventory;
 
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopPage;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 
-public abstract class BaseShopPaginatedInventory extends ShopInventory {
+@Getter
+public abstract class BaseShopPaginatedInventory extends BaseShopInventory {
 
     protected final PaginationManager paginationManager;
 
@@ -15,22 +17,24 @@ public abstract class BaseShopPaginatedInventory extends ShopInventory {
     }
 
     @Override
-    protected void initializeInventory(Inventory inventory, Player player) {
+    protected void createInventory(Player player) {
         ShopPage currentPage = paginationManager.getCurrentPageData();
-        displayPageItems(inventory, currentPage, player);
+        this.title = currentPage.getGuiTitle();
+        this.rows = currentPage.getRows();
+
+        super.createInventory(player);
     }
 
-    protected void updateInventory(Player player) {
-        int currentPageIndex = paginationManager.getCurrentPage() - 1;
-        ShopPage currentPage = shop.getShopPages().get(currentPageIndex);
+    @Override
+    public void updateInventory(Player player) {
+        boolean listenEvent = isEventListening();
+        try {
+            setEventListening(false);
 
-        int inventorySize = currentPage.getRows() * 9;
-        inventory = plugin.getServer().createInventory(this, inventorySize, currentPage.getGuiTitle());
-
-        displayPageItems(inventory, currentPage, player);
-
-        player.openInventory(inventory);
+            createInventory(player);
+            player.openInventory(inventory);
+        } finally {
+            setEventListening(listenEvent);
+        }
     }
-
-    protected abstract void displayPageItems(Inventory inventory, ShopPage currentPage, Player player);
 }

@@ -1,6 +1,6 @@
 package kr.starly.astralshop.listener;
 
-import kr.starly.astralshop.shop.inventory.ShopInventory;
+import kr.starly.astralshop.shop.inventory.BaseShopInventory;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -23,8 +23,7 @@ public class AdminShopInventoryListener implements Listener {
     }
 
     private void handleInventoryEvent(InventoryEvent event, InventoryHolder inventoryHolder, boolean isClickEvent) {
-        if (inventoryHolder instanceof ShopInventory) {
-            ShopInventory container = (ShopInventory) inventoryHolder;
+        if (inventoryHolder instanceof BaseShopInventory container) {
             if (isClickEvent) {
                 container.onClick((InventoryClickEvent) event);
             } else {

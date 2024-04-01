@@ -1,10 +1,17 @@
 package kr.starly.astralshop.registry;
 
+import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.registry.ShopRegistry;
 import kr.starly.astralshop.api.shop.Shop;
+import kr.starly.astralshop.api.shop.ShopAccessibility;
+import kr.starly.astralshop.api.shop.ShopPage;
+import kr.starly.astralshop.listener.EntityInteractListener;
 import kr.starly.astralshop.shop.ShopImpl;
+import kr.starly.astralshop.shop.ShopPageImpl;
+import kr.starly.astralshop.shop.inventory.BaseShopInventory;
 import kr.starly.astralshop.shop.serialization.yaml.ShopYamlSerializer;
 import lombok.SneakyThrows;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,9 +46,9 @@ public class YamlShopRegistry implements ShopRegistry {
         if (shopFiles != null) {
             for (File shopFile : shopFiles) {
                 try {
-                    String shopName = shopFile.getName().replace(".yml", "");
+                    String name = shopFile.getName().replace(".yml", "");
                     Shop shop = ShopYamlSerializer.loadShop(shopFile);
-                    shopMap.put(shopName, shop);
+                    shopMap.put(name, shop);
                 } catch (IOException e) {
                     LOGGER.severe("Could not load shop from file: " + shopFile.getName());
                 }
@@ -50,27 +57,43 @@ public class YamlShopRegistry implements ShopRegistry {
     }
 
     @Override
-    public void loadShop(Shop shop) {
-        File shopFile = new File(shopFolder, shop.getName() + ".yml");
+    public Shop loadShop(String name) {
+        File shopFile = new File(shopFolder, name + ".yml");
         if (!shopFile.exists()) {
             LOGGER.warning("Could not load shop from file: " + shopFile.getName());
-            return;
+            return null;
         }
 
         try {
-            ShopYamlSerializer.loadShop(shopFile);
+            return ShopYamlSerializer.loadShop(shopFile);
         } catch (IOException e) {
             LOGGER.severe("상점 파일을 불러오는 도중 오류가 발생하였습니다: " + shopFile.getName());
+            return null;
         }
     }
 
     @Override
     public void saveShops() {
+        shopMap.values().forEach(this::saveShop);
     }
 
     @Override
+    @SneakyThrows
     public void saveShop(Shop shop) {
+        String name = shop.getName();
 
+        File shopFile = new File(shopFolder, name + ".yml");
+        if (!shopFile.exists()) return;
+
+        ShopYamlSerializer.saveShop(shop, shopFile);
+
+        // Refresh
+        AstralShop.getInstance().getServer().getOnlinePlayers().forEach((player) -> {
+            Inventory openInventory = player.getOpenInventory().getTopInventory();
+            if (openInventory.getHolder() instanceof BaseShopInventory openInventory1) {
+                openInventory1.updateInventory(player);
+            }
+        });
     }
 
     @Override
@@ -80,7 +103,9 @@ public class YamlShopRegistry implements ShopRegistry {
             return false;
         }
 
-        Shop newShop = new ShopImpl(name, name, "", 6, new ArrayList<>());
+        List<ShopPage> shopPages = new ArrayList<>();
+        Shop newShop = new ShopImpl(name, false, ShopAccessibility.PRIVATE, name, "", shopPages);
+        shopPages.add(new ShopPageImpl(1, newShop.getGuiTitle(), 6, new HashMap<>()));
 
         File shopFile = new File(shopFolder, name + ".yml");
         if (shopFile.exists()) {
@@ -88,7 +113,7 @@ public class YamlShopRegistry implements ShopRegistry {
         }
 
         if (!shopFile.createNewFile()) {
-            LOGGER.warning("상점 파일을 생성하는 도중 오류가 발생하였습니다. " + shopFile.getName());
+            LOGGER.warning("Could not delete shop: " + shopFile.getName());
             return false;
         }
 
@@ -107,7 +132,7 @@ public class YamlShopRegistry implements ShopRegistry {
 
         if (shopFile.exists()) {
             if (!shopFile.delete()) {
-                LOGGER.warning("상점 파일을 삭제하는 도중 오류가 발생하였습니다. " + shopFile.getName());
+                LOGGER.warning("Could not delete shop: " + shopFile.getName());
                 return false;
             }
         }

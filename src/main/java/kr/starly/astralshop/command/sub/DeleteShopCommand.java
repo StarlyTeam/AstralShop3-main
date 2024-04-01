@@ -2,15 +2,14 @@ package kr.starly.astralshop.command.sub;
 
 import kr.starly.astralshop.api.registry.ShopRegistry;
 import kr.starly.astralshop.api.shop.Shop;
-import kr.starly.astralshop.AstralShop;
+import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.command.SubCommand;
+import kr.starly.astralshop.message.MessageContext;
+import kr.starly.astralshop.message.MessageType;
 import org.bukkit.command.CommandSender;
-import org.bukkit.util.StringUtil;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class DeleteShopCommand implements SubCommand {
 
@@ -25,18 +24,8 @@ public class DeleteShopCommand implements SubCommand {
     }
 
     @Override
-    public String getEngDescription() {
-        return "Delete a shop";
-    }
-
-    @Override
     public String getKorDescription() {
         return "상점을 삭제합니다.";
-    }
-
-    @Override
-    public String getEngUsage() {
-        return "<shop>";
     }
 
     @Override
@@ -53,23 +42,24 @@ public class DeleteShopCommand implements SubCommand {
 
     @Override
     public void execute(CommandSender sender, String label, String[] args) {
+        MessageContext messageContext = MessageContext.getInstance();
         if (args.length != 2) {
-            sender.sendMessage("올바른 명령어를 입력해 주세요.");
+            messageContext.get(MessageType.ERROR, "wrongCommand").send(sender);
             return;
         }
 
         String name = args[1];
         if (shopRegistry.deleteShop(name)) {
-            sender.sendMessage(name + "의 상점을 삭제하였습니다.");
+            messageContext.get(MessageType.NORMAL, "shopDeleted", (msg) -> msg.replace("{name}", name)).send(sender);
         } else {
-            sender.sendMessage("존재하지 않는 상점입니다.");
+            messageContext.get(MessageType.ERROR, "shopNotExists").send(sender);
         }
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String label, String[] args) {
         if (args.length == 2) {
-            return StringUtil.copyPartialMatches(args[1], shopRegistry.getShops().stream().map(Shop::getName).collect(Collectors.toList()), new ArrayList<>());
+            return shopRegistry.getShops().stream().map(Shop::getName).toList();
         }
         return Collections.emptyList();
     }

@@ -1,6 +1,7 @@
 package kr.starly.astralshop.shop;
 
 import kr.starly.astralshop.api.shop.Shop;
+import kr.starly.astralshop.api.shop.ShopAccessibility;
 import kr.starly.astralshop.api.shop.ShopPage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,8 +14,11 @@ import java.util.List;
 public class ShopImpl implements Shop {
 
     @Setter private String name;
+    @Setter private boolean enabled;
+    @Setter private ShopAccessibility accessibility;
+
     @Setter private String guiTitle;
     @Setter private String npc;
-    @Setter private int rows;
+
     private final List<ShopPage> shopPages;
 }

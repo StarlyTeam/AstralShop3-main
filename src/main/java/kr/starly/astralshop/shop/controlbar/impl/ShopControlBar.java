@@ -1,8 +1,9 @@
 package kr.starly.astralshop.shop.controlbar.impl;
 
-import kr.starly.astralshop.AstralShop;
+import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.shop.controlbar.ControlBar;
 import kr.starly.astralshop.shop.controlbar.ShopControlBarItem;
+import kr.starly.astralshop.shop.inventory.PaginationHelper;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -11,16 +12,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class ShopControlBar implements ControlBar {
+public class ShopControlBar implements ControlBar { // TODO
 
-    private final int currentPage;
-    private final int totalPages;
-    private final Map<Integer, ShopControlBarItem> items;
+    private final PaginationHelper paginationManager;
 
-    public ShopControlBar(int currentPage, int totalPages) {
-        this.currentPage = currentPage;
-        this.totalPages = totalPages;
-        this.items = new HashMap<>();
+    private final Map<Integer, ShopControlBarItem> items = new HashMap<>();
+
+    public ShopControlBar(PaginationHelper paginationManager) {
+        this.paginationManager = paginationManager;
         loadItems();
     }
 
@@ -47,9 +46,9 @@ public class ShopControlBar implements ControlBar {
             int baseSlot = (rows - 1) * 9;
             items.forEach((slot, item) -> {
                 int actualSlot = baseSlot + slot;
-                boolean isPaginated = currentPage > 1;
-                boolean isLastPage = currentPage >= totalPages;
-                inventory.setItem(actualSlot, item.toItemStack(isPaginated, isLastPage, currentPage, totalPages, player));
+                boolean isPaginated = paginationManager.getCurrentPage() > 1;
+                boolean isLastPage = paginationManager.getCurrentPage() >= paginationManager.getTotalPages();
+                inventory.setItem(actualSlot, item.toItemStack(isPaginated, isLastPage, paginationManager.getCurrentPage(), paginationManager.getTotalPages(), player));
             });
         }
     }

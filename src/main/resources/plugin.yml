@@ -1,5 +1,5 @@
 name: AstralShop
-main: kr.starly.astralshop.AstralShop
+main: kr.starly.astralshop.AstralShopPlugin
 website: https://starly.kr/
 authors:
   - Nick
@@ -8,7 +8,9 @@ authors:
 version: 1.0
 api-version: 1.13
 
-depend:
+softdepend:
+  - StarlyCore
+  - PlaceholderAPI
   - Vault
 
 commands:
@@ -16,5 +18,3 @@ commands:
     aliases: [ 상점관리 ]
   shop:
     aliases: [ 상점 ]
-  shopitem:
-  test:

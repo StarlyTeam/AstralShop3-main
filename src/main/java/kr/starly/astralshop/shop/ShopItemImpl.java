@@ -14,14 +14,12 @@ import java.util.List;
 public class ShopItemImpl implements ShopItem {
 
     private final ItemStack itemStack;
+
     @Setter private double buyPrice;
     @Setter private double sellPrice;
     @Setter private int stock;
     @Setter private int remainStock;
-    @Setter private List<String> commands;
 
-    public ShopItemImpl(ItemStack itemStack) {
-        this.itemStack = itemStack;
-        this.commands = new ArrayList<>();
-    }
+    @Setter private boolean hideLore;
+    @Setter private List<String> commands;
 }

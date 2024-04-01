@@ -7,17 +7,38 @@ plugins {
 group = "kr.starly.astralshop"
 version = rootProject.version
 
-repositories {}
+repositories {
+    maven { url = "https://repo.codemc.io/repository/maven-snapshots/" }
+}
+
 dependencies {
     api "com.zaxxer:HikariCP:4.0.3"
+    api "org.json:json:20240303"
+    api "org.xerial:sqlite-jdbc:3.45.2.0"
+    api "net.wesjd:anvilgui:1.9.2-SNAPSHOT"
 
-    compileOnly "kr.starly.core:StarlyCore:2.1"
     api project(":AstralShop-api")
-    compileOnly "net.milkbowl:VaultAPI:1.7.1"
 }
 
 shadowJar {
-    archiveFileName = "AstralShop-${project.version}.jar"
+    relocate "com.zaxxer.hikari", "kr.starly.astralshop.hikari"
+    relocate "org.json", "kr.starly.astralshop.json"
+    relocate "org.sqlite", "kr.starly.astralshop.sqlite"
+    relocate "net.wesjd.anvilgui", "kr.starly.astralshop.anvilgui"
+
+    archiveBaseName.set("AstralShop")
+    archiveClassifier.set("")
+    archiveVersion.set("${project.version}")
 }
 
-build.dependsOn shadowJar
+tasks.register("copyJar") {
+    doLast {
+        copy {
+            from "build/libs/AstralShop-${project.version}.jar"
+            into "../output/"
+        }
+    }
+}
+
+jar.finalizedBy shadowJar
+build.dependsOn copyJar

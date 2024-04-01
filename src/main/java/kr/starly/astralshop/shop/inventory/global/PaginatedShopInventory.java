@@ -1,99 +1,80 @@
 package kr.starly.astralshop.shop.inventory.global;
 
-import kr.starly.astralshop.api.shop.Shop;
-import kr.starly.astralshop.api.shop.ShopItem;
-import kr.starly.astralshop.api.shop.ShopPage;
-import kr.starly.astralshop.shop.controlbar.impl.ShopControlBar;
+import kr.starly.astralshop.api.shop.*;
 import kr.starly.astralshop.shop.inventory.BaseShopPaginatedInventory;
-import org.bukkit.Material;
+import kr.starly.astralshop.shop.inventory.PaginationHelper;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
-public class PaginatedShopInventory extends BaseShopPaginatedInventory {
-
-    private ShopControlBar shopControlBar;
+public abstract class PaginatedShopInventory extends BaseShopPaginatedInventory {
 
     public PaginatedShopInventory(Shop shop) {
-        super(shop, shop.getShopPages().get(0).getGuiTitle(), shop.getShopPages().get(0).getRows(), true);
-    }
-
-    @Override
-    protected void displayPageItems(Inventory inventory, ShopPage currentShopPage, Player player) {
-        currentShopPage.getItems().forEach((slot, shopItem) -> {
-            ItemStack itemStack = shopItem.getItemStack();
-            inventory.setItem(slot, itemStack);
-        });
-
-        int currentPage = paginationManager.getCurrentPage();
-        int totalPages = paginationManager.getTotalPages();
-        this.shopControlBar = new ShopControlBar(currentPage, totalPages);
-        shopControlBar.applyToInventory(inventory, player);
-    }
-
-    private void handleItemInteraction(InventoryClickEvent event) {
-        Player player = (Player) event.getWhoClicked();
-
-        ItemStack currentItem = event.getCurrentItem();
-        if (currentItem == null || currentItem.getType() == Material.AIR) {
-            return;
-        }
-
-        int currentPage = paginationManager.getCurrentPage() - 1;
-        int clickedSlot = event.getSlot();
-
-        ShopItem shopItem = shop.getShopPages().get(currentPage).getItems().get(clickedSlot);
-        double buyPrice = shopItem.getBuyPrice();
-        double sellPrice = shopItem.getSellPrice();
-        player.sendMessage("구매 가격: " + buyPrice);
-        player.sendMessage("판매 가격: " + sellPrice);
-
-        // TODO 구매/판매 시스템
+        super(shop, shop.getGuiTitle(), shop.getShopPages().get(0).getRows(), true);
     }
 
     @Override
     protected void inventoryClick(InventoryClickEvent event) {
-        event.setCancelled(true);
-
-        int clickedSlot = event.getRawSlot();
         Player player = (Player) event.getWhoClicked();
-
-        ItemStack currentItem = event.getCurrentItem();
-        if (currentItem == null || currentItem.getType() == Material.AIR) {
-            return;
-        }
-
+        ClickType click = event.getClick();
+        int clickedSlot = event.getSlot();
         Inventory clickedInventory = event.getClickedInventory();
 
-        if (clickedInventory != null && clickedInventory.equals(inventory)) {
-            if (clickedSlot >= inventory.getSize() - 9 && clickedSlot < inventory.getSize()) {
-                shopControlBar.getItem(clickedSlot % 9).ifPresent(controlBarItem -> {
-                    switch (controlBarItem.getAction()) {
-                        case PREV_PAGE:
-                            paginationManager.prevPage();
-                            updateInventory(player);
-                            break;
-                        case NEXT_PAGE:
-                            paginationManager.nextPage();
-                            updateInventory(player);
-                            break;
-                        case BACK:
-                            new ShopMainInventory().open(player);
-                            break;
-                        case CLOSE:
-                            player.closeInventory();;
-                            break;
-                    }
-                });
+        if (clickedInventory != null) {
+            PaginationHelper paginationHelper = new PaginationHelper(paginationManager);
+            if (clickedSlot >= inventory.getSize() - 9) {
+                event.setCancelled(true);
+
+                if (clickedSlot == inventory.getSize() - 9) {
+                    handleControlBarInteraction(clickedSlot, player);
+                } else if (clickedSlot >= inventory.getSize() - 8 && clickedSlot < inventory.getSize() - 1) {
+                    handlePageNumberInteraction(clickedSlot, click, player, paginationHelper);
+                } else if (clickedSlot == inventory.getSize() - 1) {
+                    handleControlBarInteraction(clickedSlot, player);
+                }
             } else {
                 handleItemInteraction(event);
             }
         }
     }
 
-    @Override
-    protected void inventoryClose(InventoryCloseEvent event) {
+    private void handleControlBarInteraction(int clickedSlot, Player player) {
+        int controlSlot = clickedSlot % 9;
+
+        if (controlSlot == 0 && paginationManager.hasPrevPage()) {
+            paginationManager.prevPage();
+        } else if (controlSlot == 8 && paginationManager.hasNextPage()) {
+            paginationManager.nextPage();
+        } else if (controlSlot > 0 && controlSlot < 8) {
+            if (paginationManager.getCurrentPage() != controlSlot) return;
+
+            if (paginationManager.isValidPage(controlSlot)) {
+                paginationManager.setCurrentPage(controlSlot);
+            }
+        }
+
+        updateInventory(player);
     }
+
+    private void handlePageNumberInteraction(int clickedSlot, ClickType click, Player player, PaginationHelper paginationHelper) {
+        int baseSlot = inventory.getSize() - 9;
+        int pageNumberSlot = clickedSlot - baseSlot - 1;
+        int targetPage = paginationHelper.getStartPage() + pageNumberSlot;
+
+        boolean isCreatePageButton = pageNumberSlot >= 6 && targetPage >= paginationHelper.getTotalPages() + 1;
+        if (isCreatePageButton || !paginationHelper.isValidPage(targetPage)) return;
+
+        if (click == ClickType.LEFT) {
+            paginationManager.setCurrentPage(targetPage);
+        }
+
+        updateInventory(player);
+    }
+
+    @Override
+    protected void inventoryClose(InventoryCloseEvent event) {}
+
+    protected abstract void handleItemInteraction(InventoryClickEvent event);
 }

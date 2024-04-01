@@ -1,10 +1,12 @@
 package kr.starly.astralshop.command;
 
+import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.registry.ShopRegistry;
 import kr.starly.astralshop.api.shop.Shop;
-import kr.starly.astralshop.AstralShop;
-import kr.starly.astralshop.shop.inventory.global.PaginatedShopInventory;
-import kr.starly.astralshop.shop.inventory.global.ShopMainInventory;
+import kr.starly.astralshop.api.shop.ShopAccessibility;
+import kr.starly.astralshop.message.MessageContext;
+import kr.starly.astralshop.message.MessageType;
+import kr.starly.astralshop.shop.inventory.global.impl.UserShop;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -16,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ShopCommand implements TabExecutor {
 
@@ -24,35 +25,46 @@ public class ShopCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player)) {
-            sender.sendMessage("플레이어만 사용할 수 있는 명령어입니다.");
+        MessageContext messageContext = MessageContext.getInstance();
+        if (!(sender instanceof Player player)) {
+            messageContext.get(MessageType.ERROR, "noConsole").send(sender);
             return false;
-        }
-
-        Player player = (Player) sender;
-
-        if (args.length == 0) {
-            new ShopMainInventory().open(player);
-            return true;
+        } else if (args.length == 0) {
+            messageContext.get(MessageType.ERROR, "wrongCommand").send(player);
+            return false;
         }
 
         String name = args[0];
         Shop shop = shopRegistry.getShop(name);
         if (shop != null) {
-            new PaginatedShopInventory(shop).open(player);
+            if (!shop.isEnabled() && !player.isOp()) {
+                messageContext.get(MessageType.ERROR, "shopDisabled").send(player);
+                return false;
+            }
+
+            ShopAccessibility accessibility = shop.getAccessibility();
+            if (accessibility == ShopAccessibility.PROTECTED || accessibility == ShopAccessibility.PRIVATE) {
+                if (!player.hasPermission("starly.astralshop.open." + shop.getName())) {
+                    messageContext.get(MessageType.ERROR, "noPermission").send(player);
+                    return false;
+                }
+            }
+
+            new UserShop(shop).open(player);
+            return true;
         } else {
-            player.sendMessage("존재하지 않는 상점입니다.");
-            System.out.println("테스트" + shopRegistry.getShops());
+            messageContext.get(MessageType.ERROR, "shopNotExists").send(player);
+            return false;
         }
-        return true;
     }
 
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 1) {
-            return StringUtil.copyPartialMatches(args[0], shopRegistry.getShops().stream().map(Shop::getName).collect(Collectors.toList()), new ArrayList<>());
+            return StringUtil.copyPartialMatches(args[0], shopRegistry.getShops().stream().map(Shop::getName).toList(), new ArrayList<>());
         }
+
         return Collections.emptyList();
     }
 }

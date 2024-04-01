@@ -10,11 +10,7 @@ public interface SubCommand {
 
     String getKorName();
 
-    String getEngDescription();
-
     String getKorDescription();
-
-    String getEngUsage();
 
     String getKorUsage();
 

@@ -1,5 +1,0 @@
-message:
-  prefix: '&6test | &r'
-  normal:
-    hello: 'Gonnichiwha !'
-  error:

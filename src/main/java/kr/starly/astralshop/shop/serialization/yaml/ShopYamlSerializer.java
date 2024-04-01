@@ -1,9 +1,9 @@
 package kr.starly.astralshop.shop.serialization.yaml;
 
 import kr.starly.astralshop.api.shop.Shop;
+import kr.starly.astralshop.api.shop.ShopAccessibility;
 import kr.starly.astralshop.api.shop.ShopItem;
 import kr.starly.astralshop.api.shop.ShopPage;
-import kr.starly.astralshop.AstralShop;
 import kr.starly.astralshop.shop.ShopImpl;
 import kr.starly.astralshop.shop.ShopPageImpl;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,13 +13,14 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.logging.Logger;
 
 public class ShopYamlSerializer {
 
     public static void saveShop(Shop shop, File file) throws IOException {
-        FileConfiguration config = YamlConfiguration.loadConfiguration(file);
+        FileConfiguration config = new YamlConfiguration();
 
+        config.set("shop.enabled", shop.isEnabled());
+        config.set("shop.accessibility", shop.getAccessibility().name());
         config.set("shop.gui_title", shop.getGuiTitle());
         config.set("shop.npc", shop.getNpc());
 
@@ -44,9 +45,10 @@ public class ShopYamlSerializer {
         FileConfiguration config = YamlConfiguration.loadConfiguration(file);
 
         String name = file.getName().replace(".yml", "");
+        boolean enabled = config.getBoolean("shop.enabled");
+        ShopAccessibility accessibility = ShopAccessibility.valueOf(config.getString("shop.accessibility"));
         String guiTitle = config.getString("shop.gui_title");
         String npc = config.getString("shop.npc");
-        int rows = config.getInt("shop.rows");
 
         List<ShopPage> pages = new ArrayList<>();
         int index = 1;
@@ -69,6 +71,6 @@ public class ShopYamlSerializer {
             index++;
         }
 
-        return new ShopImpl(name, guiTitle, npc, rows, pages);
+        return new ShopImpl(name, enabled, accessibility, guiTitle, npc, pages);
     }
 }

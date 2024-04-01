@@ -25,7 +25,7 @@ public class ConnectionPoolManager {
     private long connectionTimeout;
     private String testQuery;
 
-    public static void initializingPoolManager(FileConfiguration config) {
+    public static void initializePoolManager(FileConfiguration config) {
         if (internalPool == null)
             internalPool = new ConnectionPoolManager(
                     config.getString("mysql.host"),

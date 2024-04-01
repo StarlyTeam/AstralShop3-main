@@ -1,11 +1,11 @@
 package kr.starly.astralshop.command.sub;
 
-import kr.starly.astralshop.api.registry.ShopMenuRegistry;
 import kr.starly.astralshop.api.registry.ShopRegistry;
-import kr.starly.astralshop.AstralShop;
+import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.command.SubCommand;
 import kr.starly.astralshop.message.MessageContext;
-import kr.starly.astralshop.shop.inventory.ShopInventory;
+import kr.starly.astralshop.message.MessageType;
+import kr.starly.astralshop.shop.inventory.BaseShopInventory;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
@@ -24,18 +24,8 @@ public class ReloadCommand implements SubCommand {
     }
 
     @Override
-    public String getEngDescription() {
-        return "Reload Config";
-    }
-
-    @Override
     public String getKorDescription() {
         return "콘피그를 리로드합니다.";
-    }
-
-    @Override
-    public String getEngUsage() {
-        return "";
     }
 
     @Override
@@ -50,32 +40,30 @@ public class ReloadCommand implements SubCommand {
 
     @Override
     public void execute(CommandSender sender, String label, String[] args) {
+        MessageContext messageContext = MessageContext.getInstance();
         if (args.length == 1) {
             long startTime = System.currentTimeMillis();
 
-            AstralShop astralShop = AstralShop.getInstance();
-            ShopRegistry shopRegistry = astralShop.getShopRegistry();
-            ShopMenuRegistry shopMenuRegistry = astralShop.getShopMenuRegistry();
-            MessageContext messageContext = MessageContext.getInstance();
+            AstralShop plugin = AstralShop.getInstance();
+            ShopRegistry shopRegistry = plugin.getShopRegistry();
 
-            astralShop.getServer().getOnlinePlayers().forEach(player -> {
-                if (player.getOpenInventory().getTopInventory().getHolder() instanceof ShopInventory) {
+            plugin.getServer().getOnlinePlayers().forEach(player -> {
+                if (player.getOpenInventory().getTopInventory().getHolder() instanceof BaseShopInventory) {
                     player.closeInventory();
-                    player.sendMessage("상점 점검으로 인해 상점이 닫혔습니다.");
+                    messageContext.get(MessageType.NORMAL, "shopClosedWhileMaintaining").send(player);
                 }
             });
 
-            astralShop.reloadConfig();
-//            shopRegistry.loadShops();
-            shopMenuRegistry.loadMenuItems();
-            messageContext.initialize(astralShop.getFile());
+            plugin.reloadConfig();
+            shopRegistry.saveShops();
+            shopRegistry.loadShops();
+            messageContext.loadMessagesFromConfig(plugin.getConfig());
 
             long endTime = System.currentTimeMillis();
             double duration = (endTime - startTime) / 1000.0;
-
-            sender.sendMessage("콘피그 리로드 완료. (" + String.format("%.3f", duration) + "s)");
+            messageContext.get(MessageType.NORMAL, "reloadComplete", (msg) -> msg.replace("{duration}", String.format("%.3f", duration) + "s")).send(sender);
         } else {
-            sender.sendMessage("올바른 명령어를 입력해 주세요.");
+            messageContext.get(MessageType.ERROR, "wrongCommand").send(sender);
         }
     }
 

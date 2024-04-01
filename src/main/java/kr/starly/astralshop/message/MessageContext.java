@@ -1,6 +1,6 @@
 package kr.starly.astralshop.message;
 
-import kr.starly.astralshop.AstralShop;
+import kr.starly.astralshop.api.AstralShop;
 import kr.starly.core.util.Pair;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -29,47 +29,16 @@ public class MessageContext {
         return instance;
     }
 
-    private MessageContext() {
-    }
+    private MessageContext() {}
 
-    private final JavaPlugin plugin = AstralShop.getInstance();
     private final Map<Pair<MessageType, String>, String> map = new HashMap<>();
 
-    public void initialize(File file) {
-        String langFileName = plugin.getConfig().getString("lang", "en.us");
-        File langFile = new File(plugin.getDataFolder(), "lang/" + langFileName + ".yml");
-        if (!langFile.exists()) {
-            extractDefaultMessages(file);
-        }
-        loadMessagesFromConfig(langFile);
-    }
-
-    @SuppressWarnings("all")
-    private void extractDefaultMessages(File file) {
-        try {
-            JarFile jar = new JarFile(file);
-            Enumeration<JarEntry> entries = jar.entries();
-
-            while (entries.hasMoreElements()) {
-                JarEntry entry = entries.nextElement();
-                String name = entry.getName();
-
-                if (name.startsWith("lang/") && name.endsWith(".yml") && !entry.isDirectory()) {
-                    plugin.saveResource(name, false);
-                }
-            }
-        } catch (IOException e) {
-            plugin.getLogger().warning("Cannot find message files: " + e);
-        }
-    }
-
-    private void loadMessagesFromConfig(File configFile) {
-        FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+    public void loadMessagesFromConfig(FileConfiguration config) {
         map.clear();
         Arrays.stream(MessageType.values()).forEach(messageType -> {
             ConfigurationSection section = config.getConfigurationSection(messageType.getKey());
             if (section != null) {
-                section.getKeys(false).forEach(key -> set(messageType, key, section.getString(key)));
+                section.getKeys(true).forEach(key -> set(messageType, key, section.getString(key)));
             }
         });
     }

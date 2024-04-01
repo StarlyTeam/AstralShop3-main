@@ -1,9 +1,12 @@
 package kr.starly.astralshop.shop.controlbar;
 
+import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.shop.ShopItem;
-import kr.starly.astralshop.AstralShop;
+import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.shop.serialization.yaml.ShopItemYamlSerializer;
 import lombok.Getter;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -33,15 +36,14 @@ public class ShopControlBarItem {
 
     @SuppressWarnings("deprecation")
     public ItemStack toItemStack(boolean isPaginated, boolean isLastPage, int currentPage, int totalPages, Player player) {
-        ItemStack itemStack = paginated && ((isLastPage && action == ShopControlBarAction.NEXT_PAGE) || (!isPaginated && action == ShopControlBarAction.PREV_PAGE)) && orElseShopItem != null
-                ? orElseShopItem.getItemStack()
-                : shopItem.getItemStack();
+        ItemStack itemStack = paginated && orElseShopItem != null
+                && ((isLastPage && action == ShopControlBarAction.NEXT_PAGE) || (!isPaginated && action == ShopControlBarAction.PREV_PAGE))
+                ? orElseShopItem.getItemStack() : shopItem.getItemStack();
 
-        if (itemStack.hasItemMeta()) {
+        if (itemStack != null && itemStack.getType() != Material.AIR && itemStack.hasItemMeta()) {
             ItemMeta itemMeta = itemStack.getItemMeta();
-            if (itemMeta instanceof SkullMeta) {
-                SkullMeta skullMeta = (SkullMeta) itemMeta;
-                String skullOwner = replacePlaceholders(Objects.requireNonNull(skullMeta.getOwner()), currentPage, totalPages, player);
+            if (itemMeta instanceof SkullMeta skullMeta) {
+                String skullOwner = replacePlaceholders(skullMeta.getOwner(), currentPage, totalPages, player);
                 skullMeta.setOwner(skullOwner);
             }
 
@@ -54,7 +56,7 @@ public class ShopControlBarItem {
                 if (itemMeta.hasLore()) {
                     List<String> lore = Objects.requireNonNull(itemMeta.getLore()).stream()
                             .map(line -> replacePlaceholders(line, currentPage, totalPages, player))
-                            .collect(Collectors.toList());
+                            .toList();
                     itemMeta.setLore(lore);
                 }
             }
@@ -67,10 +69,8 @@ public class ShopControlBarItem {
     private String replacePlaceholders(String text, int currentPage, int totalPages, Player player) {
         int displayTotalPages = Math.min(totalPages, 64);
 
-        return text.replace("%current_page%", String.valueOf(currentPage))
-                .replace("%total_page%", String.valueOf(displayTotalPages))
-                .replace("%player_name%", player.getName())
-                .replace("%player_displayname%", player.getDisplayName())
-                .replace("%player_balance%", String.valueOf(AstralShop.getInstance().getEconomy().getBalance(player)));
+        return (AstralShop.getInstance().isPapiAvailable() ? PlaceholderAPI.setPlaceholders(player, text) : text)
+                .replace("%current_page%", String.valueOf(currentPage))
+                .replace("%total_page%", String.valueOf(displayTotalPages));
     }
 }

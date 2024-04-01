@@ -1,17 +1,22 @@
 package kr.starly.astralshop.shop.inventory.admin;
 
+import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopPage;
 import kr.starly.astralshop.shop.ShopPageImpl;
-import kr.starly.astralshop.shop.controlbar.impl.DynamicControlBar;
+import kr.starly.astralshop.shop.controlbar.ControlBar;
+import kr.starly.astralshop.shop.controlbar.impl.PaginationControlBar;
 import kr.starly.astralshop.shop.inventory.BaseShopPaginatedInventory;
-import kr.starly.astralshop.shop.inventory.DynamicPaginationHelper;
+import kr.starly.astralshop.shop.inventory.PaginationHelper;
+import kr.starly.astralshop.shop.inventory.admin.impl.ShopPageSettings;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.List;
 
 public abstract class AdminPaginatedShopInventory extends BaseShopPaginatedInventory {
 
@@ -20,34 +25,35 @@ public abstract class AdminPaginatedShopInventory extends BaseShopPaginatedInven
     }
 
     @Override
-    protected void displayPageItems(Inventory inventory, ShopPage currentShopPage, Player player) {
-        currentShopPage.getItems().forEach((slot, shopItem) -> {
+    protected void initializeInventory(Inventory inventory, Player player) {
+        int size = rows * 9;
+        paginationManager.getCurrentPageData().getItems().forEach((slot, shopItem) -> {
+            if (slot >= size) return;
+
             ItemStack itemStack = shopItem.getItemStack();
             inventory.setItem(slot, itemStack);
         });
 
-        int currentPage = paginationManager.getCurrentPage();
-        int totalPages = paginationManager.getTotalPages();
-        DynamicPaginationHelper paginationHelper = new DynamicPaginationHelper(currentPage, totalPages);
-        DynamicControlBar dynamicControlBar = new DynamicControlBar(paginationHelper);
-        dynamicControlBar.applyToInventory(inventory, player);
+        PaginationHelper paginationHelper = new PaginationHelper(paginationManager);
+        ControlBar controlBar = new PaginationControlBar(paginationHelper, true);
+        controlBar.applyToInventory(inventory, player);
     }
 
     @Override
     protected void inventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        int clickedSlot = event.getRawSlot();
+        int clickedSlot = event.getSlot();
         Inventory clickedInventory = event.getClickedInventory();
 
-        if (clickedInventory != null && clickedInventory.equals(inventory)) {
-            DynamicPaginationHelper paginationHelper = new DynamicPaginationHelper(paginationManager.getCurrentPage(), paginationManager.getTotalPages());
+        if (clickedInventory != null) {
             if (clickedSlot >= inventory.getSize() - 9) {
                 event.setCancelled(true);
 
                 if (clickedSlot == inventory.getSize() - 9) {
                     handleControlBarInteraction(clickedSlot, player);
-                } else if (clickedSlot >= inventory.getSize() - 8 && clickedSlot < inventory.getSize() - 1) {
-                    handlePageNumberInteraction(clickedSlot, player, paginationHelper);
+                } else if (clickedSlot > inventory.getSize() - 9 && clickedSlot < inventory.getSize() - 1) {
+                    PaginationHelper paginationHelper = new PaginationHelper(paginationManager);
+                    handlePageNumberInteraction(clickedSlot, event.getClick(), player, paginationHelper);
                 } else if (clickedSlot == inventory.getSize() - 1) {
                     handleControlBarInteraction(clickedSlot, player);
                 }
@@ -65,6 +71,8 @@ public abstract class AdminPaginatedShopInventory extends BaseShopPaginatedInven
         } else if (controlSlot == 8 && paginationManager.hasNextPage()) {
             paginationManager.nextPage();
         } else if (controlSlot > 0 && controlSlot < 8) {
+            if (paginationManager.getCurrentPage() != controlSlot) return;
+
             if (paginationManager.isValidPage(controlSlot)) {
                 paginationManager.setCurrentPage(controlSlot);
             }
@@ -73,24 +81,42 @@ public abstract class AdminPaginatedShopInventory extends BaseShopPaginatedInven
         updateInventory(player);
     }
 
-    private void handlePageNumberInteraction(int clickedSlot, Player player, DynamicPaginationHelper paginationHelper) {
+    private void handlePageNumberInteraction(int clickedSlot, ClickType click, Player player, PaginationHelper paginationHelper) {
         int baseSlot = inventory.getSize() - 9;
         int pageNumberSlot = clickedSlot - baseSlot - 1;
         int targetPage = paginationHelper.getStartPage() + pageNumberSlot;
 
-        boolean isCreatePageButton = pageNumberSlot >= 6 && targetPage >= paginationHelper.getTotalPages() + 1;
-
+        boolean isCreatePageButton = pageNumberSlot >= 6 && targetPage > paginationManager.getTotalPages();
         if (isCreatePageButton || !paginationHelper.isValidPage(targetPage)) {
+            if (click != ClickType.LEFT) return;
+
             handleCreatePageInteraction(player, paginationHelper);
             return;
         }
 
-        paginationManager.setCurrentPage(targetPage);
+        if (click == ClickType.LEFT) {
+            paginationManager.setCurrentPage(targetPage);
+        } else if (click == ClickType.SHIFT_LEFT) {
+            new ShopPageSettings(shop, shop.getShopPages().get(targetPage - 1)).open(player);
+            return;
+        } else if (click == ClickType.SHIFT_RIGHT) {
+            List<ShopPage> pages = paginationManager.getPages();
+            if (pages.size() == 1) return;
+
+            pages.remove(targetPage - 1);
+            for (int i = 0; i < pages.size(); i++) pages.get(i).setPageNum(i + 1);
+
+            int currentPage = paginationManager.getCurrentPage();
+            if (targetPage <= currentPage) paginationManager.setCurrentPage(currentPage - 1);
+
+            AstralShop.getInstance().getShopRegistry().saveShop(shop);
+        }
+
         updateInventory(player);
     }
 
-    private void handleCreatePageInteraction(Player player, DynamicPaginationHelper paginationHelper) {
-        shop.getShopPages().add(new ShopPageImpl(paginationHelper.getTotalPages() + 1, shop.getGuiTitle(), shop.getRows(), new HashMap<>()));
+    private void handleCreatePageInteraction(Player player, PaginationHelper paginationHelper) {
+        shop.getShopPages().add(new ShopPageImpl(paginationHelper.getTotalPages() + 1, shop.getGuiTitle(), 6, new HashMap<>()));
 
         paginationManager.setCurrentPage(paginationHelper.getTotalPages() + 1);
         updateInventory(player);

@@ -4,6 +4,8 @@ import kr.starly.astralshop.command.sub.CreateShopCommand;
 import kr.starly.astralshop.command.sub.DeleteShopCommand;
 import kr.starly.astralshop.command.sub.EditShopCommand;
 import kr.starly.astralshop.command.sub.ReloadCommand;
+import kr.starly.astralshop.message.MessageContext;
+import kr.starly.astralshop.message.MessageType;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
@@ -27,7 +29,6 @@ public class ShopAdminCommand implements TabExecutor {
         PluginCommand command = plugin.getCommand("shopadmin");
         if (command != null) {
             command.setExecutor(this);
-            command.setTabCompleter(this);
             registerSubCommands();
         }
     }
@@ -54,20 +55,26 @@ public class ShopAdminCommand implements TabExecutor {
                 if (isKor(label)) {
                     sender.sendMessage(" §e§l| §f/상점관리 " + subCommand.getKorName() + " " + subCommand.getKorUsage() + " : " + subCommand.getKorDescription());
                 } else {
-                    sender.sendMessage(" §e§l| §f/shopadmin " + subCommand.getEngName() + " " + subCommand.getEngUsage() + " : " + subCommand.getEngDescription());
+                    sender.sendMessage(" §e§l| §f/shopadmin " + subCommand.getEngName() + " " + subCommand.getKorUsage() + " : " + subCommand.getKorDescription());
                 }
             }
             sender.sendMessage("");
             return true;
         }
 
+        MessageContext messageContext = MessageContext.getInstance();
         SubCommand subCmdInstance = subCommands.get(args[0].toLowerCase());
-        if (subCmdInstance != null && subCmdInstance.hasPermission(sender)) {
+        if (subCmdInstance != null) {
+            if (!subCmdInstance.hasPermission(sender)) {
+                messageContext.get(MessageType.ERROR, "noPermission").send(sender);
+                return false;
+            }
+
             subCmdInstance.execute(sender, label, args);
             return true;
         }
 
-        sender.sendMessage("§c존재하지 않는 명령어입니다.");
+        messageContext.get(MessageType.NORMAL, "wrongCommand").send(sender);
         return false;
     }
 
@@ -78,6 +85,8 @@ public class ShopAdminCommand implements TabExecutor {
 
         if (args.length == 1) {
             for (SubCommand subCommand : subCommands.values()) {
+                if (!subCommand.hasPermission(sender)) continue;
+
                 if (isKor(label)) {
                     completions.add(subCommand.getKorName());
                 } else {
@@ -86,7 +95,7 @@ public class ShopAdminCommand implements TabExecutor {
             }
         } else {
             SubCommand subCmdInstance = subCommands.get(args[0].toLowerCase());
-            if (subCmdInstance != null) {
+            if (subCmdInstance != null && subCmdInstance.hasPermission(sender)) {
                 completions = subCmdInstance.tabComplete(sender, label, args);
             }
         }

@@ -21,6 +21,7 @@ public class ShopItemYamlSerializer {
         section.set("sellPrice", shopItem.getSellPrice());
         section.set("stock", shopItem.getStock());
         section.set("remainStock", shopItem.getRemainStock());
+        section.set("hideLore", shopItem.isHideLore());
         section.set("commands", shopItem.getCommands());
         return section;
     }
@@ -28,21 +29,14 @@ public class ShopItemYamlSerializer {
     public static ShopItem deserialize(ConfigurationSection section) {
         ItemStack itemStack = section.getItemStack("itemStack");
 
-        if (section.getBoolean("enchantmentGlint", false)) {
-            applyEnchantmentGlint(itemStack);
-        }
-
-        ShopItem shopItem = new ShopItemImpl(itemStack);
-
-        shopItem.setBuyPrice(section.getDouble("buyPrice"));
-        shopItem.setSellPrice(section.getDouble("sellPrice"));
-        shopItem.setStock(section.getInt("stock"));
-        shopItem.setRemainStock(section.getInt("remainStock"));
-
+        double buyPrice = section.getDouble("buyPrice");
+        double sellPrice = section.getDouble("sellPrice");
+        int stock = section.getInt("stock");
+        int remainStock = section.getInt("remainStock");
+        boolean hideLore = section.getBoolean("hideLore");
         List<String> commands = section.getStringList("commands");
-        shopItem.setCommands(commands);
 
-        return shopItem;
+        return new ShopItemImpl(itemStack, buyPrice, sellPrice, stock, remainStock, hideLore, commands);
     }
 
     private static void applyEnchantmentGlint(ItemStack itemStack) {
