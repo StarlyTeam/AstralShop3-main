@@ -142,12 +142,12 @@ public class YamlShopRegistry implements ShopRegistry {
     }
 
     @Override
-    public Shop getShop(@NotNull String name) {
-        return shopMap.get(name);
+    public @NotNull List<Shop> getShops() {
+        return new ArrayList<>(shopMap.values());
     }
 
     @Override
-    public @NotNull List<Shop> getShops() {
-        return new ArrayList<>(shopMap.values());
+    public Shop getShop(@NotNull String name) {
+        return shopMap.get(name);
     }
 }

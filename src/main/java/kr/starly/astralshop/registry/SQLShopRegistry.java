@@ -304,6 +304,24 @@ public class SQLShopRegistry implements ShopRegistry {
     }
 
     @Override
+    public @NotNull List<Shop> getShops() {
+        List<Shop> shops = new ArrayList<>();
+        String sql = "SELECT * FROM shops";
+        try (Connection conn = ConnectionPoolManager.getInternalPool().getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                String name = rs.getString("name");
+                shops.add(getShop(name));
+            }
+        } catch (SQLException e) {
+            LOGGER.warning("Error getting shops: " + e);
+        }
+        return shops;
+    }
+
+    @Override
     public Shop getShop(String name) {
         String sql = "SELECT * FROM shops WHERE name=?";
         try (Connection conn = ConnectionPoolManager.getInternalPool().getConnection();
@@ -325,23 +343,5 @@ public class SQLShopRegistry implements ShopRegistry {
             LOGGER.warning("Error getting shop: " + e);
         }
         return null;
-    }
-
-    @Override
-    public @NotNull List<Shop> getShops() {
-        List<Shop> shops = new ArrayList<>();
-        String sql = "SELECT * FROM shops";
-        try (Connection conn = ConnectionPoolManager.getInternalPool().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
-
-            while (rs.next()) {
-                String name = rs.getString("name");
-                shops.add(getShop(name));
-            }
-        } catch (SQLException e) {
-            LOGGER.warning("Error getting shops: " + e);
-        }
-        return shops;
     }
 }
