@@ -9,8 +9,6 @@ import kr.starly.astralshop.api.shop.ShopAccessibility;
 import kr.starly.astralshop.api.shop.ShopItem;
 import kr.starly.astralshop.api.shop.ShopPage;
 import kr.starly.astralshop.database.ConnectionPoolManager;
-import kr.starly.astralshop.listener.EntityInteractListener;
-import kr.starly.astralshop.service.SimpleTransactionHandler;
 import kr.starly.astralshop.shop.ShopImpl;
 import kr.starly.astralshop.shop.ShopItemImpl;
 import kr.starly.astralshop.shop.ShopPageImpl;
@@ -35,10 +33,10 @@ import java.util.logging.Logger;
 
 public class SQLShopRegistry implements ShopRegistry {
 
-    private final Logger LOGGER;
+    private final Logger logger;
 
     public SQLShopRegistry(JavaPlugin plugin) {
-        this.LOGGER = plugin.getLogger();
+        this.logger = plugin.getLogger();
         initializeTables();
     }
 
@@ -81,7 +79,7 @@ public class SQLShopRegistry implements ShopRegistry {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.execute();
         } catch (SQLException e) {
-            LOGGER.warning("Error creating table: " + e);
+            logger.warning("Error creating table: " + e);
         }
     }
 
@@ -107,7 +105,7 @@ public class SQLShopRegistry implements ShopRegistry {
                 pages.add(page);
             }
         } catch (SQLException e) {
-            LOGGER.warning("Error load shop pages: " + e);
+            logger.warning("Error load shop pages: " + e);
         }
 
         return pages;
@@ -144,7 +142,7 @@ public class SQLShopRegistry implements ShopRegistry {
                 items.put(slot, shopItem);
             }
         } catch (SQLException e) {
-            LOGGER.warning("Error load shop items: " + e);
+            logger.warning("Error load shop items: " + e);
         }
         return items;
     }
@@ -177,7 +175,7 @@ public class SQLShopRegistry implements ShopRegistry {
                 saveShopPage(conn, shop.getName(), page);
             }
         } catch (SQLException e) {
-            LOGGER.warning("Error saving shop: " + e);
+            logger.warning("Error saving shop: " + e);
         }
 
         // Refresh
@@ -256,7 +254,7 @@ public class SQLShopRegistry implements ShopRegistry {
 
             return true;
         } catch (SQLException e) {
-            LOGGER.warning("Error creating shop: " + e);
+            logger.warning("Error creating shop: " + e);
             return false;
         }
     }
@@ -281,7 +279,7 @@ public class SQLShopRegistry implements ShopRegistry {
                 return affectedRows > 0;
             }
         } catch (SQLException e) {
-            LOGGER.warning("Error deleting shop: " + e);
+            logger.warning("Error deleting shop: " + e);
             return false;
         }
     }
@@ -299,7 +297,7 @@ public class SQLShopRegistry implements ShopRegistry {
                 shops.add(getShop(name));
             }
         } catch (SQLException e) {
-            LOGGER.warning("Error getting shops: " + e);
+            logger.warning("Error getting shops: " + e);
         }
         return shops;
     }
@@ -330,7 +328,7 @@ public class SQLShopRegistry implements ShopRegistry {
                 return new ShopImpl(name, enabled, accessibility, guiTitle, npc, transactionHandler, shopPages);
             }
         } catch (SQLException e) {
-            LOGGER.warning("Error getting shop: " + e);
+            logger.warning("Error getting shop: " + e);
         }
         return null;
     }
