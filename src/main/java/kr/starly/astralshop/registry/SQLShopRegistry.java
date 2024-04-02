@@ -79,7 +79,7 @@ public class SQLShopRegistry implements ShopRegistry {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.execute();
         } catch (SQLException e) {
-            logger.warning("Error creating table: " + e);
+            logger.warning("Error occurred while creating table: " + e);
         }
     }
 
@@ -105,7 +105,7 @@ public class SQLShopRegistry implements ShopRegistry {
                 pages.add(page);
             }
         } catch (SQLException e) {
-            logger.warning("Error load shop pages: " + e);
+            logger.warning("Error occurred while loading shop pages: " + e);
         }
 
         return pages;
@@ -142,7 +142,7 @@ public class SQLShopRegistry implements ShopRegistry {
                 items.put(slot, shopItem);
             }
         } catch (SQLException e) {
-            logger.warning("Error load shop items: " + e);
+            logger.warning("Error occurred while loading shop items: " + e);
         }
         return items;
     }
@@ -175,7 +175,7 @@ public class SQLShopRegistry implements ShopRegistry {
                 saveShopPage(conn, shop.getName(), page);
             }
         } catch (SQLException e) {
-            logger.warning("Error saving shop: " + e);
+            logger.warning("Error occurred while saving shop: " + e);
         }
 
         // Refresh
@@ -254,7 +254,7 @@ public class SQLShopRegistry implements ShopRegistry {
 
             return true;
         } catch (SQLException e) {
-            logger.warning("Error creating shop: " + e);
+            logger.warning("Error occurred while creating shop: " + e);
             return false;
         }
     }
@@ -272,14 +272,13 @@ public class SQLShopRegistry implements ShopRegistry {
     @Override
     public boolean deleteShop(@NotNull String name) {
         try (Connection conn = ConnectionPoolManager.getInternalPool().getConnection()) {
-            String sql = "DELETE FROM shops WHERE name=?";
-            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            try (PreparedStatement pstmt = conn.prepareStatement("DELETE FROM shops WHERE name=?")) {
                 pstmt.setString(1, name);
                 int affectedRows = pstmt.executeUpdate();
                 return affectedRows > 0;
             }
         } catch (SQLException e) {
-            logger.warning("Error deleting shop: " + e);
+            logger.warning("Error occurred while deleting shop: " + e);
             return false;
         }
     }
@@ -287,9 +286,8 @@ public class SQLShopRegistry implements ShopRegistry {
     @Override
     public @NotNull List<Shop> getShops() {
         List<Shop> shops = new ArrayList<>();
-        String sql = "SELECT * FROM shops";
         try (Connection conn = ConnectionPoolManager.getInternalPool().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
+             PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM shops");
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
@@ -297,16 +295,15 @@ public class SQLShopRegistry implements ShopRegistry {
                 shops.add(getShop(name));
             }
         } catch (SQLException e) {
-            logger.warning("Error getting shops: " + e);
+            logger.warning("Error occurred while getting shops: " + e);
         }
         return shops;
     }
 
     @Override
     public Shop getShop(String name) {
-        String sql = "SELECT * FROM shops WHERE name=?";
         try (Connection conn = ConnectionPoolManager.getInternalPool().getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM shops WHERE name=?")) {
             pstmt.setString(1, name);
             ResultSet rs = pstmt.executeQuery();
 
@@ -328,7 +325,7 @@ public class SQLShopRegistry implements ShopRegistry {
                 return new ShopImpl(name, enabled, accessibility, guiTitle, npc, transactionHandler, shopPages);
             }
         } catch (SQLException e) {
-            logger.warning("Error getting shop: " + e);
+            logger.warning("Error occurred while loading shop: " + e);
         }
         return null;
     }
