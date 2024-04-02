@@ -26,5 +26,4 @@ public class ShopTransactionImpl implements ShopTransaction {
 
     private final ShopItem item;
     private final int amount;
-    private double price;
 }

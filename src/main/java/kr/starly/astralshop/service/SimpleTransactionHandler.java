@@ -63,7 +63,7 @@ public class SimpleTransactionHandler implements TransactionHandler {
                     yield null;
                 }
 
-                yield new ShopTransactionImpl(player, ShopTransactionType.BUY, date, shop, page, slot, item, event.getClick().isShiftClick() ? 64 : 1, -1);
+                yield new ShopTransactionImpl(player, ShopTransactionType.BUY, date, shop, page, slot, item, event.getClick().isShiftClick() ? 64 : 1);
             }
 
             case RIGHT, SHIFT_RIGHT -> {
@@ -75,7 +75,7 @@ public class SimpleTransactionHandler implements TransactionHandler {
                     yield null;
                 }
 
-                yield new ShopTransactionImpl(player, ShopTransactionType.SELL, date, shop, page, slot, item, event.getClick().isShiftClick() ? 64 : 1, -1);
+                yield new ShopTransactionImpl(player, ShopTransactionType.SELL, date, shop, page, slot, item, event.getClick().isShiftClick() ? 64 : 1);
             }
 
             default -> null;
