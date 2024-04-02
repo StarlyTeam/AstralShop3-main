@@ -27,18 +27,24 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class SimpleTransactionHandler implements TransactionHandler {
 
-    private final AstralShop plugin;
     private final MessageContext messageContext;
+    private final AstralShop plugin;
+
     private Economy economy;
 
     public SimpleTransactionHandler() {
-        plugin = AstralShop.getInstance();
-        messageContext = MessageContext.getInstance();
+        this.messageContext = MessageContext.getInstance();
+        this.plugin = AstralShop.getInstance();
 
         if (!setupEconomy()) {
-            plugin.getLogger().severe("의존성 플러그인(Vault)을 발견하지 못했습니다.");
+            plugin.getLogger().severe("의존성 플러그인(Vault, Economy)을 발견하지 못했습니다.");
             plugin.getServer().getPluginManager().disablePlugin(plugin);
         }
+    }
+
+    @Override
+    public String getName() {
+        return "기본";
     }
 
     @Override

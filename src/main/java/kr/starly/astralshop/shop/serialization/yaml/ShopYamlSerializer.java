@@ -1,5 +1,8 @@
 package kr.starly.astralshop.shop.serialization.yaml;
 
+import kr.starly.astralshop.api.AstralShop;
+import kr.starly.astralshop.api.addon.TransactionHandler;
+import kr.starly.astralshop.api.registry.TransactionHandlerRegistry;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopAccessibility;
 import kr.starly.astralshop.api.shop.ShopItem;
@@ -23,6 +26,7 @@ public class ShopYamlSerializer {
         config.set("shop.accessibility", shop.getAccessibility().name());
         config.set("shop.gui_title", shop.getGuiTitle());
         config.set("shop.npc", shop.getNpc());
+        config.set("shop.transaction_handler", shop.getTransactionHandler().getName());
 
         int index = 1;
         for (ShopPage page : shop.getShopPages()) {
@@ -46,9 +50,16 @@ public class ShopYamlSerializer {
 
         String name = file.getName().replace(".yml", "");
         boolean enabled = config.getBoolean("shop.enabled");
-        ShopAccessibility accessibility = ShopAccessibility.valueOf(config.getString("shop.accessibility"));
+        ShopAccessibility accessibility = ShopAccessibility.valueOf(
+                config.getString("shop.accessibility")
+        );
         String guiTitle = config.getString("shop.gui_title");
         String npc = config.getString("shop.npc");
+        String transactionHandlerName = config.getString("shop.transaction_handler");
+
+        TransactionHandlerRegistry transactionHandlerRegistry = AstralShop.getInstance().getTransactionHandlerRegistry();
+        TransactionHandler transactionHandler = transactionHandlerRegistry.getHandler(transactionHandlerName);
+        if (transactionHandler == null) transactionHandler = transactionHandlerRegistry.getHandler("기본");
 
         List<ShopPage> pages = new ArrayList<>();
         int index = 1;
@@ -71,6 +82,6 @@ public class ShopYamlSerializer {
             index++;
         }
 
-        return new ShopImpl(name, enabled, accessibility, guiTitle, npc, pages);
+        return new ShopImpl(name, enabled, accessibility, guiTitle, npc, transactionHandler, pages);
     }
 }

@@ -1,11 +1,9 @@
 package kr.starly.astralshop.shop.controlbar;
 
-import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.shop.ShopItem;
-import kr.starly.astralshop.api.AstralShop;
+import kr.starly.astralshop.hook.PlaceholderAPIHook;
 import kr.starly.astralshop.shop.serialization.yaml.ShopItemYamlSerializer;
 import lombok.Getter;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -15,7 +13,6 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Getter
 public class ShopControlBarItem {
@@ -69,7 +66,7 @@ public class ShopControlBarItem {
     private String replacePlaceholders(String text, int currentPage, int totalPages, Player player) {
         int displayTotalPages = Math.min(totalPages, 64);
 
-        return (AstralShop.getInstance().isPapiAvailable() ? PlaceholderAPI.setPlaceholders(player, text) : text)
+        return PlaceholderAPIHook.getHook().setPlaceholders(player, text)
                 .replace("%current_page%", String.valueOf(currentPage))
                 .replace("%total_page%", String.valueOf(displayTotalPages));
     }

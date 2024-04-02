@@ -1,6 +1,7 @@
 package kr.starly.astralshop.registry;
 
 import kr.starly.astralshop.api.AstralShop;
+import kr.starly.astralshop.api.addon.TransactionHandler;
 import kr.starly.astralshop.api.registry.ShopRegistry;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopAccessibility;
@@ -103,8 +104,9 @@ public class YamlShopRegistry implements ShopRegistry {
             return false;
         }
 
+        TransactionHandler transactionHandler = AstralShop.getInstance().getTransactionHandlerRegistry().getHandler("기본");
         List<ShopPage> shopPages = new ArrayList<>();
-        Shop newShop = new ShopImpl(name, false, ShopAccessibility.PRIVATE, name, "", shopPages);
+        Shop newShop = new ShopImpl(name, false, ShopAccessibility.PRIVATE, name, "", transactionHandler, shopPages);
         shopPages.add(new ShopPageImpl(1, newShop.getGuiTitle(), 6, new HashMap<>()));
 
         File shopFile = new File(shopFolder, name + ".yml");

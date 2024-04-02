@@ -32,7 +32,7 @@ public class UserShop extends PaginatedShopInventory {
         paginationManager.getCurrentPageData().getItems().forEach((slot, shopItem) -> {
             if (slot >= rows * 9) return;
 
-            ItemStack itemStack = plugin.getTransactionHandler().toItemStack(shopItem);
+            ItemStack itemStack = shop.getTransactionHandler().toItemStack(shopItem);
             if (itemStack == null || itemStack.getType() == Material.AIR) return;
 
             inventory.setItem(slot, itemStack);
@@ -63,7 +63,7 @@ public class UserShop extends PaginatedShopInventory {
         });
 
         // Transaction
-        TransactionHandler transactionHandler = AstralShop.getInstance().getTransactionHandler();
+        TransactionHandler transactionHandler = shop.getTransactionHandler();
         ShopTransaction transaction = transactionHandler.handleClick(event, shop, currentPage, clickedSlot, shopItem);
         if (transaction != null && transaction.getPlayer() == player) {
             ShopTransactionEvent transactionEvent = new ShopTransactionEvent(transaction);

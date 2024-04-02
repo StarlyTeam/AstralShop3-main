@@ -1,5 +1,6 @@
 package kr.starly.astralshop.shop;
 
+import kr.starly.astralshop.api.addon.TransactionHandler;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopAccessibility;
 import kr.starly.astralshop.api.shop.ShopPage;
@@ -20,5 +21,6 @@ public class ShopImpl implements Shop {
     @Setter private String guiTitle;
     @Setter private String npc;
 
+    @Setter private TransactionHandler transactionHandler;
     private final List<ShopPage> shopPages;
 }

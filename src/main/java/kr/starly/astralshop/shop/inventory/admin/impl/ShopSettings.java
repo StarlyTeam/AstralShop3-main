@@ -1,7 +1,9 @@
 package kr.starly.astralshop.shop.inventory.admin.impl;
 
 import kr.starly.astralshop.api.AstralShop;
+import kr.starly.astralshop.api.addon.TransactionHandler;
 import kr.starly.astralshop.api.registry.ShopRegistry;
+import kr.starly.astralshop.api.registry.TransactionHandlerRegistry;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopAccessibility;
 import kr.starly.astralshop.dispatcher.EntityInteractDispatcher;
@@ -80,11 +82,21 @@ public class ShopSettings extends BaseShopInventory {
                 new ItemBuilder(Material.SHIELD)
                         .setName("&6접근성")
                         .setLore(
-                                "&e&l| &f현재 값: &6&b" + shop.getAccessibility().getLabel(),
+                                "&e&l| &f현재 값: &b" + shop.getAccessibility().getLabel(),
                                 "",
                                 "&e&l| &b공개&7: &f퍼미션 없이 사용할 수 있습니다.",
                                 "&e&l| &b일부공개&7: &fNPC만 퍼미션 없이 사용할 수 있습니다.",
                                 "&e&l| &b비공개&7: &f퍼미션이 있어야 사용할 수 있습니다.",
+                                "&e&l| &6좌클릭 &f시, 값을 변경합니다."
+                        )
+                        .build()
+        );
+        inventory.setItem(22,
+                new ItemBuilder(Material.EMERALD)
+                        .setName("&6거래 방식")
+                        .setLore(
+                                "&e&l| &f현재 값: &b" + shop.getTransactionHandler().getName(),
+                                "",
                                 "&e&l| &6좌클릭 &f시, 값을 변경합니다."
                         )
                         .build()
@@ -158,6 +170,13 @@ public class ShopSettings extends BaseShopInventory {
             int nextIndex = currentIndex == options.size() - 1 ? 0 : currentIndex + 1;
 
             shop.setAccessibility(options.get(nextIndex));
+        } else if (slot == 22 && click == ClickType.LEFT) {
+            TransactionHandlerRegistry transactionHandlerRegistry = plugin.getTransactionHandlerRegistry();
+            List<TransactionHandler> options = new ArrayList<>(transactionHandlerRegistry.getHandlers().values());
+            int currentIndex = options.indexOf(shop.getTransactionHandler());
+            int nextIndex = currentIndex == options.size() - 1 ? 0 : currentIndex + 1;
+
+            shop.setTransactionHandler(options.get(nextIndex));
         } else if (slot == 23 && click == ClickType.LEFT) {
             shopRegistry.saveShop(shop);
         } else if (slot == 24 && click == ClickType.SHIFT_LEFT) {
