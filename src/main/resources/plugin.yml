@@ -8,8 +8,10 @@ authors:
 version: 3.1
 api-version: 1.13
 
-softdepend:
+depend:
   - StarlyCore
+
+softdepend:
   - PlaceholderAPI
   - Vault
 
