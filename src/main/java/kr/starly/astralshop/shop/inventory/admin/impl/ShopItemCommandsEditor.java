@@ -27,8 +27,8 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
     private final int page;
     private final int slot;
 
-    private final ShopPage pageData;
-    private final ShopItem itemData;
+    private ShopPage pageData;
+    private ShopItem itemData;
 
     public ShopItemCommandsEditor(Shop shop, int page, int slot) {
         super(shop, "%s [%d@%d 명령어]".formatted(shop.getName(), page, slot), 6, true);
@@ -150,6 +150,7 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
             return;
         }
 
+        saveShop();
         updateInventory(player);
     }
 
@@ -159,5 +160,12 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
 
         setEventListening(false);
         new ShopItemEditor(shop, page, slot).open((Player) event.getPlayer());
+    }
+
+    @Override
+    public void updateData() {
+        super.updateData();
+        this.pageData = shop.getShopPages().get(page - 1);
+        this.itemData = pageData.getItems().get(slot);
     }
 }

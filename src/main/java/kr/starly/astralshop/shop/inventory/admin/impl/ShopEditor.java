@@ -33,6 +33,8 @@ public class ShopEditor extends AdminPaginatedShopInventory {
         Player player = (Player) event.getWhoClicked();
 
         if (event.getClick() == ClickType.SHIFT_RIGHT) {
+            savePage(inventory);
+
             setEventListening(false);
             new ShopItemEditor(shop, paginationManager.getCurrentPage(), event.getSlot()).open(player);
         }
@@ -59,7 +61,7 @@ public class ShopEditor extends AdminPaginatedShopInventory {
     }
 
     private void savePage(Inventory inventory) {
-        ShopPage currentPage = shop.getShopPages().get(paginationManager.getCurrentPage() - 1);
+        ShopPage currentPage = paginationManager.getCurrentPageData();
         Map<Integer, ShopItem> newItems = currentPage.getItems();
 
         int sizeWithoutControlBar = inventory.getSize() - 9;

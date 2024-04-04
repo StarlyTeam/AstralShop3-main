@@ -29,9 +29,8 @@ public class ShopItemEditor extends BaseShopInventory {
 
     private final int page;
     private final int slot;
-
-    private final ShopPage pageData;
-    private final ShopItem itemData;
+    private ShopPage pageData;
+    private ShopItem itemData;
 
     public ShopItemEditor(Shop shop, int page, int slot) {
         super(shop, "%s [%d@%d]".formatted(shop.getName(), page, slot), 3, true);
@@ -243,6 +242,10 @@ public class ShopItemEditor extends BaseShopInventory {
                             int newValue = Integer.parseInt(stateSnapshot.getText());
 
                             itemData.setStock(newValue);
+                            if (itemData.getRemainStock() > newValue) {
+                                itemData.setRemainStock(newValue);
+                            }
+
                             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1f, 1f);
                         } catch (NumberFormatException ignored) {
                             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
@@ -318,6 +321,7 @@ public class ShopItemEditor extends BaseShopInventory {
             return;
         }
 
+        saveShop();
         updateInventory(player);
     }
 
@@ -329,5 +333,12 @@ public class ShopItemEditor extends BaseShopInventory {
         ShopEditor shopEditor = new ShopEditor(shop);
         shopEditor.getPaginationManager().setCurrentPage(page);
         shopEditor.open((Player) event.getPlayer());
+    }
+
+    @Override
+    public void updateData() {
+        super.updateData();
+        this.pageData = shop.getShopPages().get(page - 1);
+        this.itemData = pageData.getItems().get(slot);
     }
 }

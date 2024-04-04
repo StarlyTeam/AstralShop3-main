@@ -4,9 +4,7 @@ import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.registry.ShopRegistry;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopPage;
-import kr.starly.astralshop.shop.ShopPageImpl;
 import kr.starly.astralshop.shop.inventory.BaseShopInventory;
-import kr.starly.astralshop.shop.inventory.PaginationManager;
 import kr.starly.core.builder.ItemBuilder;
 import lombok.Getter;
 import net.wesjd.anvilgui.AnvilGUI;
@@ -27,10 +25,10 @@ public class ShopPageSettings extends BaseShopInventory {
 
     private final ShopRegistry shopRegistry = AstralShop.getInstance().getShopRegistry();
 
-    private final ShopPage page;
+    private ShopPage pageData;
 
-    public ShopPageSettings(Shop shop, ShopPage page) {
-        super(shop, shop.getName() + " [페이지" + page.getPageNum() + " 관리]", 5, true);
+    public ShopPageSettings(Shop shop, ShopPage pageData) {
+        super(shop, shop.getName() + " [페이지" + pageData.getPageNum() + " 관리]", 5, true);
 
         ItemStack item;
         try {
@@ -44,7 +42,7 @@ public class ShopPageSettings extends BaseShopInventory {
                         .build()
         );
 
-        this.page = page;
+        this.pageData = pageData;
     }
 
     @Override
@@ -53,7 +51,7 @@ public class ShopPageSettings extends BaseShopInventory {
                 new ItemBuilder(Material.NAME_TAG)
                         .setName("&6페이지 제목")
                         .setLore(
-                                "&e&l| &f현재 값: &6" + page.getGuiTitle(),
+                                "&e&l| &f현재 값: &6" + pageData.getGuiTitle(),
                                 "",
                                 "&e&l| &6좌클릭 &f시, 값을 변경합니다."
                         )
@@ -63,7 +61,7 @@ public class ShopPageSettings extends BaseShopInventory {
                 new ItemBuilder(Material.STRING)
                         .setName("&6줄 수")
                         .setLore(
-                                "&e&l| &f현재 값: &6" + page.getRows(),
+                                "&e&l| &f현재 값: &6" + pageData.getRows(),
                                 "",
                                 "&e&l| &6좌클릭 &f시, 줄 수를 &c1 &f줄입니다.",
                                 "&e&l| &6우클릭 &f시, 줄 수를 &a1 &f늘립니다."
@@ -101,7 +99,7 @@ public class ShopPageSettings extends BaseShopInventory {
                         if (clickedSlot != AnvilGUI.Slot.OUTPUT) return new ArrayList<>();
 
                         String newTitle = ChatColor.translateAlternateColorCodes('&', stateSnapshot.getText());
-                        page.setGuiTitle(newTitle);
+                        pageData.setGuiTitle(newTitle);
 
                         return List.of(AnvilGUI.ResponseAction.close());
                     })
@@ -112,22 +110,23 @@ public class ShopPageSettings extends BaseShopInventory {
                     .open(player);
             return;
         } else if (slot == 22 && click == ClickType.LEFT) {
-            int currentRows = page.getRows();
+            int currentRows = pageData.getRows();
             if (currentRows <= 2) return;
 
-            page.setRows(currentRows - 1);
+            pageData.setRows(currentRows - 1);
         } else if (slot == 22 && click == ClickType.RIGHT) {
-            int currentRows = page.getRows();
+            int currentRows = pageData.getRows();
             if (currentRows >= 6) return;
 
-            page.setRows(currentRows + 1);
+            pageData.setRows(currentRows + 1);
         } else if (slot == 23 && click == ClickType.SHIFT_LEFT) {
-            shop.getShopPages().remove(page);
+            shop.getShopPages().remove(pageData);
 
             player.closeInventory();
             return;
         } else return;
 
+        saveShop();
         updateInventory(player);
     }
 
@@ -137,7 +136,13 @@ public class ShopPageSettings extends BaseShopInventory {
 
         setEventListening(false);
         ShopEditor shopEditor = new ShopEditor(shop);
-        shopEditor.getPaginationManager().setCurrentPage(page.getPageNum());
+        shopEditor.getPaginationManager().setCurrentPage(pageData.getPageNum());
         shopEditor.open((Player) event.getPlayer());
+    }
+
+    @Override
+    public void updateData() {
+        super.updateData();
+        this.pageData = shop.getShopPages().get(pageData.getPageNum() - 1);
     }
 }

@@ -177,14 +177,6 @@ public class SQLShopRegistry implements ShopRegistry {
         } catch (SQLException e) {
             logger.warning("Error occurred while saving shop: " + e);
         }
-
-        // Refresh
-        AstralShop.getInstance().getServer().getOnlinePlayers().forEach((player) -> {
-            Inventory openInventory = player.getOpenInventory().getTopInventory();
-            if (openInventory.getHolder() instanceof BaseShopInventory openInventory1) {
-                openInventory1.updateInventory(player);
-            }
-        });
     }
 
     private void saveShopPage(Connection conn, String name, ShopPage page) throws SQLException {

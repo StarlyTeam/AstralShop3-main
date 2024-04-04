@@ -1,7 +1,6 @@
 package kr.starly.astralshop;
 
 import kr.starly.astralshop.api.AstralShop;
-import kr.starly.astralshop.api.addon.TransactionHandler;
 import kr.starly.astralshop.api.registry.ItemAttributeRegistry;
 import kr.starly.astralshop.api.registry.ShopRegistry;
 import kr.starly.astralshop.api.registry.TransactionHandlerRegistry;
@@ -17,7 +16,7 @@ import kr.starly.astralshop.registry.ItemAttributeRegistryImpl;
 import kr.starly.astralshop.registry.SQLShopRegistry;
 import kr.starly.astralshop.registry.TransactionHandlerRegistryImpl;
 import kr.starly.astralshop.registry.YamlShopRegistry;
-import kr.starly.astralshop.service.SimpleTransactionHandler;
+import kr.starly.astralshop.shop.transaction.SimpleTransactionHandler;
 import kr.starly.astralshop.shop.inventory.BaseShopInventory;
 import lombok.Getter;
 
@@ -41,6 +40,10 @@ public class AstralShopPlugin extends AstralShop {
         saveDefaultConfig();
         MessageContext.getInstance().loadMessagesFromConfig(getConfig());
 
+        // TransactionHandler Registry
+        this.transactionHandlerRegistry = new TransactionHandlerRegistryImpl();
+        transactionHandlerRegistry.register(new SimpleTransactionHandler());
+
         // Shop Registry
         if (getConfig().getBoolean("mysql.use")) {
             ConnectionPoolManager.initializePoolManager(getConfig());
@@ -52,10 +55,6 @@ public class AstralShopPlugin extends AstralShop {
 
         // ItemAttribute Registry
         this.itemAttributeRegistry = new ItemAttributeRegistryImpl();
-
-        // TransactionHandler Registry
-        this.transactionHandlerRegistry = new TransactionHandlerRegistryImpl();
-        transactionHandlerRegistry.register(new SimpleTransactionHandler());
 
         // Command
         new ShopAdminCommand(this);

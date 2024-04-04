@@ -11,20 +11,18 @@ import org.bukkit.inventory.InventoryHolder;
 public class AdminShopInventoryListener implements Listener {
 
     @EventHandler
-    @SuppressWarnings("unused")
     public void onClick(InventoryClickEvent event) {
-        handleInventoryEvent(event, event.getView().getTopInventory().getHolder(), true);
+        handleInventoryEvent(event);
     }
 
     @EventHandler
-    @SuppressWarnings("unused")
     public void onClose(InventoryCloseEvent event) {
-        handleInventoryEvent(event, event.getView().getTopInventory().getHolder(), false);
+        handleInventoryEvent(event);
     }
 
-    private void handleInventoryEvent(InventoryEvent event, InventoryHolder inventoryHolder, boolean isClickEvent) {
-        if (inventoryHolder instanceof BaseShopInventory container) {
-            if (isClickEvent) {
+    private void handleInventoryEvent(InventoryEvent event) {
+        if (event.getInventory().getHolder() instanceof BaseShopInventory container) {
+            if (event instanceof InventoryClickEvent) {
                 container.onClick((InventoryClickEvent) event);
             } else {
                 container.onClose((InventoryCloseEvent) event);

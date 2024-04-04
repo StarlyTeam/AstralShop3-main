@@ -1,6 +1,7 @@
 package kr.starly.astralshop.shop.inventory;
 
 import kr.starly.astralshop.api.AstralShop;
+import kr.starly.astralshop.api.registry.ShopRegistry;
 import kr.starly.astralshop.api.shop.Shop;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,13 +18,12 @@ import org.bukkit.inventory.ItemStack;
 public abstract class BaseShopInventory implements InventoryHolder {
 
     protected final AstralShop plugin = AstralShop.getInstance();
+    private final ShopRegistry shopRegistry = plugin.getShopRegistry();
 
-    @Getter
-    protected Inventory inventory;
-
-    protected Shop shop;
-    protected String title;
-    protected int rows;
+    @Getter protected Inventory inventory;
+    @Getter protected Shop shop;
+    @Getter protected String title;
+    @Getter protected int rows;
 
     protected boolean cancelClick;
     protected boolean listenEvent;
@@ -102,17 +102,21 @@ public abstract class BaseShopInventory implements InventoryHolder {
     }
 
     public void onClick(InventoryClickEvent event) {
+        if (event.getClickedInventory() == null) return;
+
         if (cancelClick) {
             event.setCancelled(true);
         }
 
-        if (listenEvent) {
+        if (listenEvent && event.getClickedInventory().equals(inventory)) {
+            updateData();
             inventoryClick(event);
         }
     }
 
     public void onClose(InventoryCloseEvent event) {
-        if (listenEvent) {
+        if (listenEvent && event.getInventory().equals(inventory)) {
+            updateData();
             inventoryClose(event);
         }
     }
@@ -132,5 +136,13 @@ public abstract class BaseShopInventory implements InventoryHolder {
         } finally {
             setEventListening(listenEvent);
         }
+    }
+
+    public void updateData() {
+        shop = shopRegistry.getShop(shop.getName());
+    }
+
+    public void saveShop() {
+        shopRegistry.saveShop(shop);
     }
 }

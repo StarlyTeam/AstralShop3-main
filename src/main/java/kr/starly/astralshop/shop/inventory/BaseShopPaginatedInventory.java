@@ -4,12 +4,11 @@ import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopPage;
 import lombok.Getter;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 
 @Getter
 public abstract class BaseShopPaginatedInventory extends BaseShopInventory {
 
-    protected final PaginationManager paginationManager;
+    protected PaginationManager paginationManager;
 
     public BaseShopPaginatedInventory(Shop shop, String title, int rows, boolean cancel) {
         super(shop, title, rows, cancel);
@@ -26,15 +25,11 @@ public abstract class BaseShopPaginatedInventory extends BaseShopInventory {
     }
 
     @Override
-    public void updateInventory(Player player) {
-        boolean listenEvent = isEventListening();
-        try {
-            setEventListening(false);
+    public void updateData() {
+        super.updateData();
 
-            createInventory(player);
-            player.openInventory(inventory);
-        } finally {
-            setEventListening(listenEvent);
-        }
+        int currentPage = paginationManager.getCurrentPage();
+        this.paginationManager = new PaginationManager(shop.getShopPages());
+        this.paginationManager.setCurrentPage(currentPage);
     }
 }

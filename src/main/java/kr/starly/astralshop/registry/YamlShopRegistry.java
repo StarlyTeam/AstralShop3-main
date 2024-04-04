@@ -87,14 +87,6 @@ public class YamlShopRegistry implements ShopRegistry {
         if (!shopFile.exists()) return;
 
         ShopYamlSerializer.saveShop(shop, shopFile);
-
-        // Refresh
-        AstralShop.getInstance().getServer().getOnlinePlayers().forEach((player) -> {
-            Inventory openInventory = player.getOpenInventory().getTopInventory();
-            if (openInventory.getHolder() instanceof BaseShopInventory openInventory1) {
-                openInventory1.updateInventory(player);
-            }
-        });
     }
 
     @Override
