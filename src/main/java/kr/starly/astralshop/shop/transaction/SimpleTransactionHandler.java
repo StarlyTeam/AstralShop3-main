@@ -188,7 +188,7 @@ public class SimpleTransactionHandler implements TransactionHandler {
                     }
 
                     itemStack1.setAmount(itemStack1.getAmount() - toRemove);
-                    economy.depositPlayer(player, itemData.getSellPrice());
+                    economy.depositPlayer(player, itemData.getSellPrice() * toRemove);
                     totalSold.addAndGet(toRemove);
                 });
 
