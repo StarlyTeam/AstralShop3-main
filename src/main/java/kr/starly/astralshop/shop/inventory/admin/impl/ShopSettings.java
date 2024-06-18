@@ -31,12 +31,7 @@ public class ShopSettings extends BaseShopInventory {
     public ShopSettings(Shop shop) {
         super(shop, shop.getName() + " [상점 관리]", 6, true);
 
-        ItemStack item;
-        try {
-            item = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
-        } catch (NoSuchFieldError ignored) {
-            item = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
-        }
+        ItemStack item = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
         setOutline(
                 new ItemBuilder(item)
                         .setName("&r")
@@ -46,26 +41,9 @@ public class ShopSettings extends BaseShopInventory {
 
     @Override
     protected void initializeInventory(Inventory inventory, Player player) {
-        ItemStack enableStatusItem;
-        try {
-            enableStatusItem = new ItemStack(Material.WOOL, 1, shop.isEnabled() ? (short) 25 : (short) 21);
-        } catch (NoSuchFieldError ignored) {
-            enableStatusItem = new ItemStack(Material.valueOf(shop.isEnabled() ? "GREEN_WOOL" : "RED_WOOL"));
-        }
-
-        Material saveValuesMaterial;
-        try {
-            saveValuesMaterial = Material.GOLD_PICKAXE;
-        } catch (NoSuchFieldError ignored) {
-            saveValuesMaterial = Material.valueOf("GOLDEN_PICKAXE");
-        }
-
-        ItemStack npcItem;
-        try {
-            npcItem = new ItemStack(Material.MONSTER_EGG, 1, (short) 120);
-        } catch (NoSuchFieldError ignored) {
-            npcItem = new ItemStack(Material.valueOf("VILLAGER_SPAWN_EGG"));
-        }
+        ItemStack enableStatusItem = new ItemStack(Material.valueOf(shop.isEnabled() ? "GREEN_WOOL" : "RED_WOOL"));
+        Material saveValuesMaterial = Material.valueOf("GOLDEN_PICKAXE");
+        ItemStack npcItem = new ItemStack(Material.valueOf("VILLAGER_SPAWN_EGG"));
 
         inventory.setItem(20,
                 new ItemBuilder(enableStatusItem)

@@ -30,12 +30,7 @@ public class ShopPageSettings extends BaseShopInventory {
     public ShopPageSettings(Shop shop, ShopPage pageData) {
         super(shop, shop.getName() + " [페이지" + pageData.getPageNum() + " 관리]", 5, true);
 
-        ItemStack item;
-        try {
-            item = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
-        } catch (NoSuchFieldError ignored) {
-            item = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
-        }
+        ItemStack item = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
         setOutline(
                 new ItemBuilder(item)
                         .setName("&r")

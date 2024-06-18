@@ -36,14 +36,8 @@ public class PaginationControlBar implements ControlBar {
         boolean hasPrevPage = paginationHelper.getCurrentPage() > 1;
         boolean hasNextPage = paginationHelper.getCurrentPage() < 64 && paginationHelper.getCurrentPage() < paginationHelper.getTotalPages();
 
-        ItemStack item1, item2;
-        try {
-            item1 = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
-            item2 = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 11);
-        } catch (NoSuchFieldError ignored) {
-            item1 = new ItemStack(Material.valueOf("RED_STAINED_GLASS_PANE"));
-            item2 = new ItemStack(Material.valueOf("BLUE_STAINED_GLASS_PANE"));
-        }
+        ItemStack item1 = new ItemStack(Material.valueOf("RED_STAINED_GLASS_PANE"));
+        ItemStack item2 = new ItemStack(Material.valueOf("BLUE_STAINED_GLASS_PANE"));
 
         inventory.setItem(controlBarSlot, createControlItem(item1, "&d이전 페이지", hasPrevPage));
         inventory.setItem(controlBarSlot + 8, createControlItem(item2, "&d다음 페이지", hasNextPage));
@@ -82,23 +76,13 @@ public class PaginationControlBar implements ControlBar {
     }
 
     private ItemStack createCreatePageItem() {
-        ItemStack item;
-        try {
-            item = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 13);
-        } catch (NoSuchFieldError ignored) {
-            item = new ItemStack(Material.valueOf("GREEN_STAINED_GLASS_PANE"));
-        }
+        ItemStack item = new ItemStack(Material.valueOf("GREEN_STAINED_GLASS_PANE"));
 
         return createItemStack(item, "&e페이지 생성", false);
     }
 
     private ItemStack createEmptyPageItem() {
-        ItemStack item;
-        try {
-            item = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
-        } catch (NoSuchFieldError ignored) {
-            item = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
-        }
+        ItemStack item = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
 
         return createItemStack(item, "&7빈 페이지", false);
     }

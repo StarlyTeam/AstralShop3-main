@@ -35,12 +35,7 @@ public class ShopItemEditor extends BaseShopInventory {
     public ShopItemEditor(Shop shop, int page, int slot) {
         super(shop, "%s [%d@%d]".formatted(shop.getName(), page, slot), 3, true);
 
-        ItemStack item;
-        try {
-            item = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
-        } catch (NoSuchFieldError ignored) {
-            item = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
-        }
+        ItemStack item = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
         setOutline(
                 new ItemBuilder(item)
                         .setName("&r")
@@ -67,19 +62,8 @@ public class ShopItemEditor extends BaseShopInventory {
 
     @Override
     protected void initializeInventory(Inventory inventory, Player player) {
-        Material commandsMaterial;
-        try {
-            commandsMaterial = Material.COMMAND_REPEATING;
-        } catch (NoSuchFieldError ignored) {
-            commandsMaterial = Material.valueOf("REPEATING_COMMAND_BLOCK");
-        }
-
-        Material hideLoreMaterial;
-        try {
-            hideLoreMaterial = Material.SIGN;
-        } catch (NoSuchFieldError ignored) {
-            hideLoreMaterial = Material.valueOf("OAK_SIGN");
-        }
+        Material commandsMaterial = Material.valueOf("REPEATING_COMMAND_BLOCK");
+        Material hideLoreMaterial = Material.valueOf("OAK_SIGN");
 
         List<String> commandsLore = new ArrayList<>();
         itemData.getCommands().forEach((commandLine) -> commandsLore.add("&b&l| &f" + commandLine));

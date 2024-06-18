@@ -41,20 +41,10 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
 
     @Override
     protected void initializeInventory(Inventory inventory, Player player) {
-        ItemStack grayGlassPane;
-        try {
-            grayGlassPane = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 7);
-        } catch (NoSuchFieldError ignored) {
-            grayGlassPane = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
-        }
+        ItemStack grayGlassPane = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
         grayGlassPane = new ItemBuilder(grayGlassPane).setName("&r").build();
 
-        Material commandMaterial;
-        try {
-            commandMaterial = Material.COMMAND_REPEATING;
-        } catch (NoSuchFieldError ignored) {
-            commandMaterial = Material.valueOf("REPEATING_COMMAND_BLOCK");
-        }
+        Material commandMaterial = Material.valueOf("REPEATING_COMMAND_BLOCK");
 
         List<String> commands = itemData.getCommands();
         for (int i = 0; i < Math.min(45, commands.size()); i++) {
