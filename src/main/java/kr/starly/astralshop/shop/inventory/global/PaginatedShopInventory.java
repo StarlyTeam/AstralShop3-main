@@ -1,6 +1,6 @@
 package kr.starly.astralshop.shop.inventory.global;
 
-import kr.starly.astralshop.api.shop.*;
+import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.shop.inventory.BaseShopPaginatedInventory;
 import kr.starly.astralshop.shop.inventory.PaginationHelper;
 import org.bukkit.entity.Player;

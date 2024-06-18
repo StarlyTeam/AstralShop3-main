@@ -1,22 +1,14 @@
 package kr.starly.astralshop.message;
 
-import kr.starly.astralshop.api.AstralShop;
-import kr.starly.core.util.Pair;
+import kr.starly.libs.util.Pair;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 
 public class MessageContext {
 

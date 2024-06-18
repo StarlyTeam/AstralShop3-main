@@ -9,7 +9,7 @@ import kr.starly.astralshop.api.shop.ShopAccessibility;
 import kr.starly.astralshop.dispatcher.EntityInteractDispatcher;
 import kr.starly.astralshop.listener.EntityInteractListener;
 import kr.starly.astralshop.shop.inventory.BaseShopInventory;
-import kr.starly.core.builder.ItemBuilder;
+import kr.starly.libs.inventory.item.builder.ItemBuilder;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -34,8 +34,8 @@ public class ShopSettings extends BaseShopInventory {
         ItemStack item = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
         setOutline(
                 new ItemBuilder(item)
-                        .setName("&r")
-                        .build()
+                        .setDisplayName("&r")
+                        .get()
         );
     }
 
@@ -47,82 +47,82 @@ public class ShopSettings extends BaseShopInventory {
 
         inventory.setItem(20,
                 new ItemBuilder(enableStatusItem)
-                        .setName("&6활성화")
-                        .setLore(
+                        .setDisplayName("&6활성화")
+                        .setLegacyLore(List.of(
                                 "&e&l| &f현재 값: " + (shop.isEnabled() ? "&a활성화" : "&c비활성화"),
                                 "",
                                 "&e&l| &c비활성화 &f시, 관리자만 상점을 열 수 있습니다.",
                                 "&e&l| &6좌클릭 &f시, 값을 변경합니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
         inventory.setItem(21,
                 new ItemBuilder(Material.SHIELD)
-                        .setName("&6접근성")
-                        .setLore(
+                        .setDisplayName("&6접근성")
+                        .setLegacyLore(List.of(
                                 "&e&l| &f현재 값: &b" + shop.getAccessibility().getLabel(),
                                 "",
                                 "&e&l| &b공개&7: &f퍼미션 없이 사용할 수 있습니다.",
                                 "&e&l| &b일부공개&7: &fNPC만 퍼미션 없이 사용할 수 있습니다.",
                                 "&e&l| &b비공개&7: &f퍼미션이 있어야 사용할 수 있습니다.",
                                 "&e&l| &6좌클릭 &f시, 값을 변경합니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
         inventory.setItem(23,
                 new ItemBuilder(Material.EMERALD)
-                        .setName("&6거래 방식")
-                        .setLore(
+                        .setDisplayName("&6거래 방식")
+                        .setLegacyLore(List.of(
                                 "&e&l| &f현재 값: &b" + shop.getTransactionHandler().getName(),
                                 "",
                                 "&e&l| &6좌클릭 &f시, 값을 변경합니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
         inventory.setItem(24,
                 new ItemBuilder(Material.BARRIER)
-                        .setName("&c상점 삭제")
-                        .setLore(
+                        .setDisplayName("&c상점 삭제")
+                        .setLegacyLore(List.of(
                                 "&e&l| &6Shift+좌클릭 &f시, 상점을 삭제합니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
         inventory.setItem(29,
                 new ItemBuilder(Material.CHEST)
-                        .setName("&6아이템 편집")
-                        .setLore(
+                        .setDisplayName("&6아이템 편집")
+                        .setLegacyLore(List.of(
                                 "&e&l| &6좌클릭 &f시, 아이템 편집기를 엽니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
         inventory.setItem(30,
                 new ItemBuilder(npcItem)
-                        .setName("&6NPC")
-                        .setLore(
+                        .setDisplayName("&6NPC")
+                        .setLegacyLore(List.of(
                                 "&e&l| &f현재 값: &6" + (shop.getNpc().isEmpty() ? "&c없음" : shop.getNpc()),
                                 "",
                                 "&e&l| &6좌클릭 &f시, 값을 변경합니다.",
                                 "&e&l| &6Shift+우클릭 &f시, 값을 초기화합니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
         inventory.setItem(32,
                 new ItemBuilder(Material.NAME_TAG)
-                        .setName("&6제목 - 기본값")
-                        .setLore(
+                        .setDisplayName("&6제목 - 기본값")
+                        .setLegacyLore(List.of(
                                 "&e&l| &f현재 값: &6" + shop.getGuiTitle(),
                                 "",
                                 "&e&l| &6좌클릭 &f시, 값을 변경합니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
         inventory.setItem(33,
                 new ItemBuilder(Material.NAME_TAG)
-                        .setName("&6제목 - 일괄변경")
-                        .setLore(
+                        .setDisplayName("&6제목 - 일괄변경")
+                        .setLegacyLore(List.of(
                                 "&e&l| &6좌클릭 &f시, 값을 변경합니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
     }
 
@@ -186,8 +186,8 @@ public class ShopSettings extends BaseShopInventory {
                     .interactableSlots(AnvilGUI.Slot.OUTPUT)
                     .itemLeft(
                             new ItemBuilder(Material.PAPER)
-                                    .setName("&r")
-                                    .build()
+                                    .setDisplayName("&r")
+                                    .get()
                     )
                     .onClick((clickedSlot, stateSnapshot) -> {
                         if (clickedSlot != AnvilGUI.Slot.OUTPUT) return new ArrayList<>();
@@ -211,8 +211,8 @@ public class ShopSettings extends BaseShopInventory {
                     .interactableSlots(AnvilGUI.Slot.OUTPUT)
                     .itemLeft(
                             new ItemBuilder(Material.PAPER)
-                                    .setName("&r")
-                                    .build()
+                                    .setDisplayName("&r")
+                                    .get()
                     )
                     .onClick((clickedSlot, stateSnapshot) -> {
                         if (clickedSlot != AnvilGUI.Slot.OUTPUT) return new ArrayList<>();

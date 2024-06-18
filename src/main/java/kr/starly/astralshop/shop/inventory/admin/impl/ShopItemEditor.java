@@ -8,7 +8,7 @@ import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopItem;
 import kr.starly.astralshop.api.shop.ShopPage;
 import kr.starly.astralshop.shop.inventory.BaseShopInventory;
-import kr.starly.core.builder.ItemBuilder;
+import kr.starly.libs.inventory.item.builder.ItemBuilder;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -38,8 +38,8 @@ public class ShopItemEditor extends BaseShopInventory {
         ItemStack item = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
         setOutline(
                 new ItemBuilder(item)
-                        .setName("&r")
-                        .build()
+                        .setDisplayName("&r")
+                        .get()
         );
 
         this.page = page;
@@ -73,32 +73,32 @@ public class ShopItemEditor extends BaseShopInventory {
 
         inventory.setItem(11,
                 new ItemBuilder(Material.EMERALD)
-                        .setName("&6구매 가격")
-                        .setLore(
+                        .setDisplayName("&6구매 가격")
+                        .setLegacyLore(List.of(
                                 "&e&l| &f현재 값: &6" + itemData.getBuyPrice(),
                                 "",
                                 "&e&l| &b유저&f가 구매할 때의 가격입니다.",
                                 "&e&l| &b음수&f를 입력하면 &c구매불가 &f상태가 됩니다.",
                                 "&e&l| &6좌클릭 &f시, 값을 변경합니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
         inventory.setItem(12,
                 new ItemBuilder(Material.EMERALD)
-                        .setName("&6판매 가격")
-                        .setLore(
+                        .setDisplayName("&6판매 가격")
+                        .setLegacyLore(List.of(
                                 "&e&l| &f현재 값: &6" + itemData.getSellPrice(),
                                 "",
                                 "&e&l| &b유저&f가 판매할 때의 가격입니다.",
                                 "&e&l| &b음수&f를 입력하면 &c판매불가 &f상태가 됩니다.",
                                 "&e&l| &6좌클릭 &f시, 값을 변경합니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
         inventory.setItem(13,
                 new ItemBuilder(Material.ANVIL)
-                        .setName("&6재고")
-                        .setLore(
+                        .setDisplayName("&6재고")
+                        .setLegacyLore(List.of(
                                 "&e&l| &f최대 값: &6" + itemData.getStock(),
                                 "&e&l| &f현재 값: &6" + itemData.getRemainStock(),
                                 "",
@@ -106,24 +106,24 @@ public class ShopItemEditor extends BaseShopInventory {
                                 "&e&l| &6좌클릭 &f시, 최대 값을 변경합니다.",
                                 "&e&l| &6우클릭 &f시, 현재 값을 변경합니다.",
                                 "&e&l| &6Shift+좌클릭 &f시, 재고를 최대로 채웁니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
         inventory.setItem(14,
                 new ItemBuilder(hideLoreMaterial)
-                        .setName("&6로어")
-                        .setLore(
+                        .setDisplayName("&6로어")
+                        .setLegacyLore(List.of(
                                 "&e&l| &f현재 값: " + (itemData.isHideLore() ? "&c숨김" : "&a표시"),
                                 "",
                                 "&e&l| &6좌클릭 &f시, 값을 변경합니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
         inventory.setItem(15,
                 new ItemBuilder(commandsMaterial)
-                        .setName("&6명령어")
-                        .setLore(commandsLore)
-                        .build()
+                        .setDisplayName("&6명령어")
+                        .setLegacyLore(commandsLore)
+                        .get()
         );
 
         int[] attributeIconIndexes = new int[]{
@@ -154,8 +154,8 @@ public class ShopItemEditor extends BaseShopInventory {
                     .interactableSlots(AnvilGUI.Slot.OUTPUT)
                     .itemLeft(
                             new ItemBuilder(Material.PAPER)
-                                    .setName("&r")
-                                    .build()
+                                    .setDisplayName("&r")
+                                    .get()
                     )
                     .onClick((clickedSlot, stateSnapshot) -> {
                         if (clickedSlot != AnvilGUI.Slot.OUTPUT) return new ArrayList<>();
@@ -185,8 +185,8 @@ public class ShopItemEditor extends BaseShopInventory {
                     .interactableSlots(AnvilGUI.Slot.OUTPUT)
                     .itemLeft(
                             new ItemBuilder(Material.PAPER)
-                                    .setName("&r")
-                                    .build()
+                                    .setDisplayName("&r")
+                                    .get()
                     )
                     .onClick((clickedSlot, stateSnapshot) -> {
                         if (clickedSlot != AnvilGUI.Slot.OUTPUT) return new ArrayList<>();
@@ -216,8 +216,8 @@ public class ShopItemEditor extends BaseShopInventory {
                     .interactableSlots(AnvilGUI.Slot.OUTPUT)
                     .itemLeft(
                             new ItemBuilder(Material.PAPER)
-                                    .setName("&r")
-                                    .build()
+                                    .setDisplayName("&r")
+                                    .get()
                     )
                     .onClick((clickedSlot, stateSnapshot) -> {
                         if (clickedSlot != AnvilGUI.Slot.OUTPUT) return new ArrayList<>();
@@ -251,8 +251,8 @@ public class ShopItemEditor extends BaseShopInventory {
                     .interactableSlots(AnvilGUI.Slot.OUTPUT)
                     .itemLeft(
                             new ItemBuilder(Material.PAPER)
-                                    .setName("&r")
-                                    .build()
+                                    .setDisplayName("&r")
+                                    .get()
                     )
                     .onClick((clickedSlot, stateSnapshot) -> {
                         if (clickedSlot != AnvilGUI.Slot.OUTPUT) return new ArrayList<>();

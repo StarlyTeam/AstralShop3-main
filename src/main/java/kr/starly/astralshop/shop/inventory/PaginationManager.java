@@ -3,7 +3,6 @@ package kr.starly.astralshop.shop.inventory;
 import kr.starly.astralshop.api.shop.ShopPage;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter

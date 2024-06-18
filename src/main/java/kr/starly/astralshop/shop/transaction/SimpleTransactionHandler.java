@@ -2,7 +2,6 @@ package kr.starly.astralshop.shop.transaction;
 
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.addon.TransactionHandler;
-import kr.starly.astralshop.api.registry.ShopRegistry;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopItem;
 import kr.starly.astralshop.api.shop.ShopTransaction;
@@ -10,9 +9,8 @@ import kr.starly.astralshop.message.MessageType;
 import kr.starly.astralshop.shop.ShopTransactionImpl;
 import kr.starly.astralshop.api.shop.ShopTransactionType;
 import kr.starly.astralshop.message.MessageContext;
-import kr.starly.core.builder.ItemBuilder;
-import kr.starly.core.util.ItemStackNameUtil;
-import kr.starly.core.util.Language;
+import kr.starly.libs.inventory.item.builder.ItemBuilder;
+import kr.starly.libs.nms.NmsMultiVersion;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -24,6 +22,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -59,7 +58,7 @@ public class SimpleTransactionHandler implements TransactionHandler {
             case LEFT, SHIFT_LEFT -> {
                 if (item.getBuyPrice() < 0) {
                     if (!item.isHideLore()) {
-                        messageContext.get(MessageType.ERROR, "handler-cannotBuy").send(player);
+                        messageContext.get(MessageType.ERROR, "simple-handler.cannotBuy").send(player);
                     }
 
                     yield null;
@@ -71,7 +70,7 @@ public class SimpleTransactionHandler implements TransactionHandler {
             case RIGHT, SHIFT_RIGHT -> {
                 if (item.getSellPrice() < 0) {
                     if (!item.isHideLore()) {
-                        messageContext.get(MessageType.ERROR, "handler-cannotSell").send(player);
+                        messageContext.get(MessageType.ERROR, "simple-handler.cannotSell").send(player);
                     }
 
                     yield null;
@@ -139,23 +138,23 @@ public class SimpleTransactionHandler implements TransactionHandler {
                 double finalPrice = totalBought * itemData.getBuyPrice();
                 int finalTotalBought = totalBought;
                 if (totalBought == amount) {
-                    messageContext.get(MessageType.NORMAL, "handler-itemBought1", (msg) -> msg
-                            .replace("{name}", ItemStackNameUtil.getNameInLanguage(itemStack, Language.KOREAN))
+                    messageContext.get(MessageType.NORMAL, "simple-handler.itemBought1", (msg) -> msg
+                            .replace("{name}", NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))
                             .replace("{price}", "%.2f".formatted(finalPrice))
                             .replace("{amount}", String.valueOf(finalTotalBought))
                     ).send(player);
                 } else if (totalBought == 0) {
-                    if (isStockOut) messageContext.get(MessageType.ERROR, "handler-failedToBuy1").send(player);
-                    else if (isFull) messageContext.get(MessageType.ERROR, "handler-failedToBuy2").send(player);
-                    else messageContext.get(MessageType.ERROR, "handler-failedToBuy3").send(player);
+                    if (isStockOut) messageContext.get(MessageType.ERROR, "simple-handler.failedToBuy1").send(player);
+                    else if (isFull) messageContext.get(MessageType.ERROR, "simple-handler.failedToBuy2").send(player);
+                    else messageContext.get(MessageType.ERROR, "simple-handler.failedToBuy3").send(player);
                 } else {
                     String key;
-                    if (isStockOut) key = "handler-itemBought2";
-                    else if (isFull) key = "handler-itemBought3";
-                    else key = "handler-itemBought4";
+                    if (isStockOut) key = "simple-handler.itemBought2";
+                    else if (isFull) key = "simple-handler.itemBought3";
+                    else key = "simple-handler.itemBought4";
 
                     messageContext.get(MessageType.NORMAL, key, (msg) -> msg
-                            .replace("{name}", ItemStackNameUtil.getNameInLanguage(itemStack, Language.KOREAN))
+                            .replace("{name}", NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))
                             .replace("{price}", "%.2f".formatted(finalPrice))
                             .replace("{amount}", String.valueOf(finalTotalBought))
                     ).send(player);
@@ -194,21 +193,21 @@ public class SimpleTransactionHandler implements TransactionHandler {
 
                 double finalPrice = totalSold.get() * itemData.getSellPrice();
                 if (totalSold.get() == amount) {
-                    messageContext.get(MessageType.NORMAL, "handler-itemSold1", (msg) -> msg
-                            .replace("{name}", ItemStackNameUtil.getNameInLanguage(itemStack, Language.KOREAN))
+                    messageContext.get(MessageType.NORMAL, "simple-handler.itemSold1", (msg) -> msg
+                            .replace("{name}", NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))
                             .replace("{price}", "%.2f".formatted(finalPrice))
                             .replace("{amount}", String.valueOf(totalSold.get()))
                     ).send(player);
                 } else if (totalSold.get() == 0) {
-                    if (isStockFull.get()) messageContext.get(MessageType.ERROR, "handler-failedToSell1").send(player);
-                    else messageContext.get(MessageType.ERROR, "handler-failedToSell2").send(player);
+                    if (isStockFull.get()) messageContext.get(MessageType.ERROR, "simple-handler.failedToSell1").send(player);
+                    else messageContext.get(MessageType.ERROR, "simple-handler.failedToSell2").send(player);
                 } else {
                     String key;
-                    if (isStockFull.get()) key = "handler-itemSold2";
-                    else key = "handler-itemSold3";
+                    if (isStockFull.get()) key = "simple-handler.itemSold2";
+                    else key = "simple-handler.itemSold3";
 
                     messageContext.get(MessageType.NORMAL, key, (msg) -> msg
-                            .replace("{name}", ItemStackNameUtil.getNameInLanguage(itemStack, Language.KOREAN))
+                            .replace("{name}", NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))
                             .replace("{price}", "%.2f".formatted(finalPrice))
                             .replace("{amount}", String.valueOf(totalSold.get()))
                     ).send(player);
@@ -227,7 +226,7 @@ public class SimpleTransactionHandler implements TransactionHandler {
         int stock = item.getStock();
         int remainStock = item.getRemainStock();
         return new ItemBuilder(item.getItemStack().clone())
-                .setLore(item.isHideLore() ? new ArrayList<>() : List.of(
+                .setLegacyLore(item.isHideLore() ? new ArrayList<>() : List.of(
                         "&e&l| &f구매가격: " + (buyPrice == 0 ? "&b무료" : (buyPrice < 0 ?"&c구매불가" : "&6" + buyPrice)),
                         "&e&l| &f판매가격: " + (sellPrice == 0 ? "&b무료" : (sellPrice < 0 ? "&c판매불가" : "&6" + sellPrice)),
                         "&e&l| &f재고: " + (remainStock < 0 ? "&b무제한" : "&6" + remainStock + "&7/&6" + stock),
@@ -237,7 +236,7 @@ public class SimpleTransactionHandler implements TransactionHandler {
                         "&e&l| &6우클릭 &f시, 아이템 &61&f개를 판매합니다.",
                         "&e&l| &6Shift+우클릭 &f시, 아이템 &664&f개를 판매합니다."
                 ))
-                .build();
+                .get();
     }
 
     private boolean setupEconomy() {

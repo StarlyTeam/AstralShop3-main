@@ -6,9 +6,8 @@ import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopItem;
 import kr.starly.astralshop.api.shop.ShopPage;
 import kr.starly.astralshop.shop.inventory.BaseShopInventory;
-import kr.starly.core.builder.ItemBuilder;
+import kr.starly.libs.inventory.item.builder.ItemBuilder;
 import net.wesjd.anvilgui.AnvilGUI;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -42,7 +41,7 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
     @Override
     protected void initializeInventory(Inventory inventory, Player player) {
         ItemStack grayGlassPane = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
-        grayGlassPane = new ItemBuilder(grayGlassPane).setName("&r").build();
+        grayGlassPane = new ItemBuilder(grayGlassPane).setDisplayName("&r").get();
 
         Material commandMaterial = Material.valueOf("REPEATING_COMMAND_BLOCK");
 
@@ -51,25 +50,25 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
             String commandLine = commands.get(i);
             inventory.setItem(i,
                     new ItemBuilder(commandMaterial)
-                            .setName("&6" + (i + 1) + "번 &f명령어")
-                            .setLore(
+                            .setDisplayName("&6" + (i + 1) + "번 &f명령어")
+                            .setLegacyLore(List.of(
                                     "&e&l| &f현재 값: &6" + commandLine,
                                     "",
                                     "&e&l| &6좌클릭 &f시, 값을 변경합니다.",
                                     "&e&l| &6Shift+우클릭 &f시, 삭제합니다."
-                            )
-                            .build()
+                            ))
+                            .get()
             );
         }
 
         for (int i = 45; i < 53; i++) inventory.setItem(i, grayGlassPane);
         inventory.setItem(53,
                 new ItemBuilder(Material.IRON_PICKAXE)
-                        .setName("&a명령어 추가")
-                        .setLore(
+                        .setDisplayName("&a명령어 추가")
+                        .setLegacyLore(List.of(
                                 "&e&l| &6좌클릭 &f시, 명령어를 추가합니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
     }
 
@@ -90,8 +89,8 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
                     .interactableSlots(AnvilGUI.Slot.OUTPUT)
                     .itemLeft(
                             new ItemBuilder(Material.PAPER)
-                                    .setName("&r")
-                                    .build()
+                                    .setDisplayName("&r")
+                                    .get()
                     )
                     .onClick((clickedSlot, stateSnapshot) -> {
                         if (clickedSlot != AnvilGUI.Slot.OUTPUT) return new ArrayList<>();
@@ -120,8 +119,8 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
                     .interactableSlots(AnvilGUI.Slot.OUTPUT)
                     .itemLeft(
                             new ItemBuilder(Material.PAPER)
-                                    .setName("&r")
-                                    .build()
+                                    .setDisplayName("&r")
+                                    .get()
                     )
                     .onClick((clickedSlot, stateSnapshot) -> {
                         if (clickedSlot != AnvilGUI.Slot.OUTPUT) return new ArrayList<>();

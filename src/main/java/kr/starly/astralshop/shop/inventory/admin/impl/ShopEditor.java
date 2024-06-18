@@ -15,7 +15,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
 
 public class ShopEditor extends AdminPaginatedShopInventory {
 

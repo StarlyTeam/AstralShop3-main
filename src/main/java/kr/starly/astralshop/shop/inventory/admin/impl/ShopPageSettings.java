@@ -5,7 +5,7 @@ import kr.starly.astralshop.api.registry.ShopRegistry;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopPage;
 import kr.starly.astralshop.shop.inventory.BaseShopInventory;
-import kr.starly.core.builder.ItemBuilder;
+import kr.starly.libs.inventory.item.builder.ItemBuilder;
 import lombok.Getter;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
@@ -33,8 +33,8 @@ public class ShopPageSettings extends BaseShopInventory {
         ItemStack item = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
         setOutline(
                 new ItemBuilder(item)
-                        .setName("&r")
-                        .build()
+                        .setDisplayName("&r")
+                        .get()
         );
 
         this.pageData = pageData;
@@ -44,32 +44,32 @@ public class ShopPageSettings extends BaseShopInventory {
     protected void initializeInventory(Inventory inventory, Player player) {
         inventory.setItem(21,
                 new ItemBuilder(Material.NAME_TAG)
-                        .setName("&6페이지 제목")
-                        .setLore(
+                        .setDisplayName("&6페이지 제목")
+                        .setLegacyLore(List.of(
                                 "&e&l| &f현재 값: &6" + pageData.getGuiTitle(),
                                 "",
                                 "&e&l| &6좌클릭 &f시, 값을 변경합니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
         inventory.setItem(22,
                 new ItemBuilder(Material.STRING)
-                        .setName("&6줄 수")
-                        .setLore(
+                        .setDisplayName("&6줄 수")
+                        .setLegacyLore(List.of(
                                 "&e&l| &f현재 값: &6" + pageData.getRows(),
                                 "",
                                 "&e&l| &6좌클릭 &f시, 줄 수를 &c1 &f줄입니다.",
                                 "&e&l| &6우클릭 &f시, 줄 수를 &a1 &f늘립니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
         inventory.setItem(23,
                 new ItemBuilder(Material.BARRIER)
-                        .setName("&c삭제")
-                        .setLore(
+                        .setDisplayName("&c삭제")
+                        .setLegacyLore(List.of(
                                 "&e&l| &6Shift+좌클릭 &f시, 페이지를 삭제합니다."
-                        )
-                        .build()
+                        ))
+                        .get()
         );
     }
 
@@ -87,8 +87,8 @@ public class ShopPageSettings extends BaseShopInventory {
                     .interactableSlots(AnvilGUI.Slot.OUTPUT)
                     .itemLeft(
                             new ItemBuilder(Material.PAPER)
-                                    .setName("&r")
-                                    .build()
+                                    .setDisplayName("&r")
+                                    .get()
                     )
                     .onClick((clickedSlot, stateSnapshot) -> {
                         if (clickedSlot != AnvilGUI.Slot.OUTPUT) return new ArrayList<>();
