@@ -2,7 +2,7 @@ package kr.starly.astralshop;
 
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.registry.ItemAttributeRegistry;
-import kr.starly.astralshop.api.registry.ShopRegistry;
+import kr.starly.astralshop.api.registry.ShopRepository;
 import kr.starly.astralshop.api.registry.TransactionHandlerRegistry;
 import kr.starly.astralshop.command.ShopAdminCommand;
 import kr.starly.astralshop.command.ShopCommand;
@@ -13,9 +13,9 @@ import kr.starly.astralshop.listener.AdminShopInventoryListener;
 import kr.starly.astralshop.listener.EntityInteractListener;
 import kr.starly.astralshop.message.MessageContext;
 import kr.starly.astralshop.registry.ItemAttributeRegistryImpl;
-import kr.starly.astralshop.registry.SQLShopRegistry;
-import kr.starly.astralshop.registry.TransactionHandlerRegistryImpl;
-import kr.starly.astralshop.registry.YamlShopRegistry;
+import kr.starly.astralshop.registry.SQLShopRepository;
+import kr.starly.astralshop.registry.SimpleTransactionHandlerRegistry;
+import kr.starly.astralshop.registry.YamlShopRepository;
 import kr.starly.astralshop.shop.transaction.SimpleTransactionHandler;
 import kr.starly.astralshop.shop.inventory.BaseShopInventory;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public class AstralShopPlugin extends AstralShop {
 
     @Getter private static AstralShopPlugin instance;
 
-    private ShopRegistry shopRegistry;
+    private ShopRepository shopRepository;
     private ItemAttributeRegistry itemAttributeRegistry;
     private TransactionHandlerRegistry transactionHandlerRegistry;
 
@@ -42,16 +42,16 @@ public class AstralShopPlugin extends AstralShop {
         MessageContext.getInstance().loadMessagesFromConfig(getConfig());
 
         // TransactionHandler Registry
-        this.transactionHandlerRegistry = new TransactionHandlerRegistryImpl();
+        this.transactionHandlerRegistry = new SimpleTransactionHandlerRegistry();
         transactionHandlerRegistry.register(new SimpleTransactionHandler());
 
         // Shop Registry
         if (getConfig().getBoolean("mysql.use")) {
             ConnectionPoolManager.initializePoolManager(getConfig());
-            shopRegistry = new SQLShopRegistry(this);
+            shopRepository = new SQLShopRepository(this);
         } else {
-            shopRegistry = new YamlShopRegistry(this);
-            shopRegistry.loadShops();
+            shopRepository = new YamlShopRepository(this);
+            shopRepository.loadShops();
         }
 
         // ItemAttribute Registry
@@ -78,6 +78,6 @@ public class AstralShopPlugin extends AstralShop {
             }
         });
 
-        shopRegistry.saveShops();
+        shopRepository.saveShops();
     }
 }

@@ -1,6 +1,6 @@
 package kr.starly.astralshop.command.sub;
 
-import kr.starly.astralshop.api.registry.ShopRegistry;
+import kr.starly.astralshop.api.registry.ShopRepository;
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.command.SubCommand;
 import kr.starly.astralshop.message.MessageContext;
@@ -45,7 +45,7 @@ public class ReloadCommand implements SubCommand {
             long startTime = System.currentTimeMillis();
 
             AstralShop plugin = AstralShop.getInstance();
-            ShopRegistry shopRegistry = plugin.getShopRegistry();
+            ShopRepository shopRepository = plugin.getShopRepository();
 
             plugin.getServer().getOnlinePlayers().forEach(player -> {
                 if (player.getOpenInventory().getTopInventory().getHolder() instanceof BaseShopInventory) {
@@ -55,8 +55,8 @@ public class ReloadCommand implements SubCommand {
             });
 
             plugin.reloadConfig();
-            shopRegistry.saveShops();
-            shopRegistry.loadShops();
+            shopRepository.saveShops();
+            shopRepository.loadShops();
             messageContext.loadMessagesFromConfig(plugin.getConfig());
 
             long endTime = System.currentTimeMillis();

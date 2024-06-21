@@ -2,7 +2,7 @@ package kr.starly.astralshop.registry;
 
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.addon.TransactionHandler;
-import kr.starly.astralshop.api.registry.ShopRegistry;
+import kr.starly.astralshop.api.registry.ShopRepository;
 import kr.starly.astralshop.api.registry.TransactionHandlerRegistry;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopAccessibility;
@@ -12,10 +12,8 @@ import kr.starly.astralshop.database.ConnectionPoolManager;
 import kr.starly.astralshop.shop.ShopImpl;
 import kr.starly.astralshop.shop.ShopItemImpl;
 import kr.starly.astralshop.shop.ShopPageImpl;
-import kr.starly.astralshop.shop.inventory.BaseShopInventory;
 import kr.starly.astralshop.shop.serialization.sql.ShopItemSQLSerializer;
 import org.bukkit.Material;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -31,11 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class SQLShopRegistry implements ShopRegistry {
+public class SQLShopRepository implements ShopRepository {
 
     private final Logger logger;
 
-    public SQLShopRegistry(JavaPlugin plugin) {
+    public SQLShopRepository(JavaPlugin plugin) {
         this.logger = plugin.getLogger();
         initializeTables();
     }

@@ -1,7 +1,7 @@
 package kr.starly.astralshop.listener;
 
 import kr.starly.astralshop.api.AstralShop;
-import kr.starly.astralshop.api.registry.ShopRegistry;
+import kr.starly.astralshop.api.registry.ShopRepository;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopAccessibility;
 import kr.starly.astralshop.message.MessageContext;
@@ -23,8 +23,8 @@ public class EntityInteractListener implements Listener {
     public static void fetchNPCNames() {
         cacheMap.clear();
 
-        ShopRegistry shopRegistry = AstralShop.getInstance().getShopRegistry();
-        shopRegistry.getShops().forEach((shop) -> {
+        ShopRepository shopRepository = AstralShop.getInstance().getShopRepository();
+        shopRepository.getShops().forEach((shop) -> {
             String shopNpc = shop.getNpc();
             if (shopNpc == null || shopNpc.isEmpty()) return;
 
@@ -41,8 +41,8 @@ public class EntityInteractListener implements Listener {
         String shopName = cacheMap.get(npcName);
         if (shopName == null || shopName.isEmpty()) return;
 
-        ShopRegistry shopRegistry = AstralShop.getInstance().getShopRegistry();
-        Shop shop = shopRegistry.getShop(shopName);
+        ShopRepository shopRepository = AstralShop.getInstance().getShopRepository();
+        Shop shop = shopRepository.getShop(shopName);
         if (shop == null) return;
 
         MessageContext messageContext = MessageContext.getInstance();

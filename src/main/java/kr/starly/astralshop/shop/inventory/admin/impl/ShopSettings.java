@@ -2,7 +2,7 @@ package kr.starly.astralshop.shop.inventory.admin.impl;
 
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.addon.TransactionHandler;
-import kr.starly.astralshop.api.registry.ShopRegistry;
+import kr.starly.astralshop.api.registry.ShopRepository;
 import kr.starly.astralshop.api.registry.TransactionHandlerRegistry;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopAccessibility;
@@ -26,7 +26,7 @@ import java.util.List;
 
 public class ShopSettings extends BaseShopInventory {
 
-    private final ShopRegistry shopRegistry = AstralShop.getInstance().getShopRegistry();
+    private final ShopRepository shopRepository = AstralShop.getInstance().getShopRepository();
 
     public ShopSettings(Shop shop) {
         super(shop, shop.getName() + " [상점 관리]", 6, true);
@@ -148,7 +148,7 @@ public class ShopSettings extends BaseShopInventory {
 
             shop.setTransactionHandler(options.get(nextIndex));
         } else if (slot == 24 && click == ClickType.SHIFT_LEFT) {
-            shopRegistry.deleteShop(shop.getName());
+            shopRepository.deleteShop(shop.getName());
 
             setEventListening(false);
             player.closeInventory();
@@ -166,7 +166,7 @@ public class ShopSettings extends BaseShopInventory {
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1f, 1f);
                 } else {
                     shop.setNpc(npc);
-                    shopRegistry.saveShop(shop);
+                    shopRepository.saveShop(shop);
                     EntityInteractListener.fetchNPCNames();
 
                     player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_YES, 1f, 1f);
@@ -236,6 +236,6 @@ public class ShopSettings extends BaseShopInventory {
 
     @Override
     protected void inventoryClose(InventoryCloseEvent event) {
-        shopRegistry.saveShop(shop);
+        shopRepository.saveShop(shop);
     }
 }

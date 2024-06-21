@@ -1,7 +1,7 @@
 package kr.starly.astralshop.shop.inventory.admin.impl;
 
 import kr.starly.astralshop.api.AstralShop;
-import kr.starly.astralshop.api.registry.ShopRegistry;
+import kr.starly.astralshop.api.registry.ShopRepository;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopItem;
 import kr.starly.astralshop.api.shop.ShopPage;
@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class ShopEditor extends AdminPaginatedShopInventory {
 
-    private final ShopRegistry shopRegistry = AstralShop.getInstance().getShopRegistry();
+    private final ShopRepository shopRepository = AstralShop.getInstance().getShopRepository();
 
     public ShopEditor(Shop shop) {
         super(shop, shop.getGuiTitle(), shop.getShopPages().get(0).getRows(), false);
@@ -80,6 +80,6 @@ public class ShopEditor extends AdminPaginatedShopInventory {
         }
 
         currentPage.setItems(newItems);
-        shopRegistry.saveShop(shop);
+        shopRepository.saveShop(shop);
     }
 }

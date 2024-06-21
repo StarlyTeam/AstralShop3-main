@@ -1,7 +1,7 @@
 package kr.starly.astralshop.command;
 
 import kr.starly.astralshop.api.AstralShop;
-import kr.starly.astralshop.api.registry.ShopRegistry;
+import kr.starly.astralshop.api.registry.ShopRepository;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopAccessibility;
 import kr.starly.astralshop.message.MessageContext;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class ShopCommand implements TabExecutor {
 
-    private final ShopRegistry shopRegistry = AstralShop.getInstance().getShopRegistry();
+    private final ShopRepository shopRepository = AstralShop.getInstance().getShopRepository();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -35,7 +35,7 @@ public class ShopCommand implements TabExecutor {
         }
 
         String name = args[0];
-        Shop shop = shopRegistry.getShop(name);
+        Shop shop = shopRepository.getShop(name);
         if (shop != null) {
             if (!shop.isEnabled() && !player.isOp()) {
                 messageContext.get(MessageType.ERROR, "shopDisabled").send(player);
@@ -62,7 +62,7 @@ public class ShopCommand implements TabExecutor {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 1) {
-            return StringUtil.copyPartialMatches(args[0], shopRegistry.getShops().stream().map(Shop::getName).toList(), new ArrayList<>());
+            return StringUtil.copyPartialMatches(args[0], shopRepository.getShops().stream().map(Shop::getName).toList(), new ArrayList<>());
         }
 
         return Collections.emptyList();

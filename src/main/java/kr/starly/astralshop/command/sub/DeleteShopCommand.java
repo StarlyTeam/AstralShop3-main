@@ -1,6 +1,6 @@
 package kr.starly.astralshop.command.sub;
 
-import kr.starly.astralshop.api.registry.ShopRegistry;
+import kr.starly.astralshop.api.registry.ShopRepository;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.command.SubCommand;
@@ -38,7 +38,7 @@ public class DeleteShopCommand implements SubCommand {
         return sender.hasPermission("starly.astralshop.create");
     }
 
-    private final ShopRegistry shopRegistry = AstralShop.getInstance().getShopRegistry();
+    private final ShopRepository shopRepository = AstralShop.getInstance().getShopRepository();
 
     @Override
     public void execute(CommandSender sender, String label, String[] args) {
@@ -49,7 +49,7 @@ public class DeleteShopCommand implements SubCommand {
         }
 
         String name = args[1];
-        if (shopRegistry.deleteShop(name)) {
+        if (shopRepository.deleteShop(name)) {
             messageContext.get(MessageType.NORMAL, "shopDeleted", (msg) -> msg.replace("{name}", name)).send(sender);
         } else {
             messageContext.get(MessageType.ERROR, "shopNotExists").send(sender);
@@ -59,7 +59,7 @@ public class DeleteShopCommand implements SubCommand {
     @Override
     public List<String> tabComplete(CommandSender sender, String label, String[] args) {
         if (args.length == 2) {
-            return shopRegistry.getShops().stream().map(Shop::getName).toList();
+            return shopRepository.getShops().stream().map(Shop::getName).toList();
         }
         return Collections.emptyList();
     }

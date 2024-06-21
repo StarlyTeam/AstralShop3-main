@@ -2,17 +2,14 @@ package kr.starly.astralshop.registry;
 
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.addon.TransactionHandler;
-import kr.starly.astralshop.api.registry.ShopRegistry;
+import kr.starly.astralshop.api.registry.ShopRepository;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopAccessibility;
 import kr.starly.astralshop.api.shop.ShopPage;
-import kr.starly.astralshop.listener.EntityInteractListener;
 import kr.starly.astralshop.shop.ShopImpl;
 import kr.starly.astralshop.shop.ShopPageImpl;
-import kr.starly.astralshop.shop.inventory.BaseShopInventory;
 import kr.starly.astralshop.shop.serialization.yaml.ShopYamlSerializer;
 import lombok.SneakyThrows;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,14 +21,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class YamlShopRegistry implements ShopRegistry {
+public class YamlShopRepository implements ShopRepository {
 
     private final Logger LOGGER;
     private final File shopFolder;
     private final Map<String, Shop> shopMap;
 
     @SuppressWarnings("unused")
-    public YamlShopRegistry(JavaPlugin plugin) {
+    public YamlShopRepository(JavaPlugin plugin) {
         this.LOGGER = plugin.getLogger();
         this.shopFolder = new File(plugin.getDataFolder(), "shops/");
         this.shopMap = new HashMap<>();

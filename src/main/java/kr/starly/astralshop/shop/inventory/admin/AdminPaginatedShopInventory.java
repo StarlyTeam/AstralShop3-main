@@ -109,7 +109,7 @@ public abstract class AdminPaginatedShopInventory extends BaseShopPaginatedInven
             int currentPage = paginationManager.getCurrentPage();
             if (targetPage <= currentPage) paginationManager.setCurrentPage(currentPage - 1);
 
-            AstralShop.getInstance().getShopRegistry().saveShop(shop);
+            AstralShop.getInstance().getShopRepository().saveShop(shop);
         }
 
         updateInventory(player);

@@ -1,7 +1,7 @@
 package kr.starly.astralshop.shop.inventory.admin.impl;
 
 import kr.starly.astralshop.api.AstralShop;
-import kr.starly.astralshop.api.registry.ShopRegistry;
+import kr.starly.astralshop.api.registry.ShopRepository;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopItem;
 import kr.starly.astralshop.api.shop.ShopPage;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class ShopItemCommandsEditor extends BaseShopInventory {
 
-    private final ShopRegistry shopRegistry = AstralShop.getInstance().getShopRegistry();
+    private final ShopRepository shopRepository = AstralShop.getInstance().getShopRepository();
 
     private final int page;
     private final int slot;
@@ -145,7 +145,7 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
 
     @Override
     protected void inventoryClose(InventoryCloseEvent event) {
-        shopRegistry.saveShop(shop);
+        shopRepository.saveShop(shop);
 
         setEventListening(false);
         new ShopItemEditor(shop, page, slot).open((Player) event.getPlayer());

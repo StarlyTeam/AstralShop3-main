@@ -1,7 +1,7 @@
 package kr.starly.astralshop.command.sub;
 
 import kr.starly.astralshop.api.AstralShop;
-import kr.starly.astralshop.api.registry.ShopRegistry;
+import kr.starly.astralshop.api.registry.ShopRepository;
 import kr.starly.astralshop.command.SubCommand;
 import kr.starly.astralshop.message.MessageContext;
 import kr.starly.astralshop.message.MessageType;
@@ -37,7 +37,7 @@ public class CreateShopCommand implements SubCommand {
         return sender.hasPermission("starly.astralshop.create");
     }
 
-    private final ShopRegistry shopRegistry = AstralShop.getInstance().getShopRegistry();
+    private final ShopRepository shopRepository = AstralShop.getInstance().getShopRepository();
 
     @Override
     public void execute(CommandSender sender, String label, String[] args) {
@@ -48,7 +48,7 @@ public class CreateShopCommand implements SubCommand {
         }
 
         String name = args[1];
-        if (shopRegistry.createShop(name)) {
+        if (shopRepository.createShop(name)) {
             messageContext.get(MessageType.NORMAL, "shopCreated", (msg) -> msg.replace("{name}", name)).send(sender);
         } else {
             messageContext.get(MessageType.ERROR, "shopAlreadyExists").send(sender);

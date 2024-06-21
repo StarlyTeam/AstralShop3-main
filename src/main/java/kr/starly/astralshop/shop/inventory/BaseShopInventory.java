@@ -1,7 +1,7 @@
 package kr.starly.astralshop.shop.inventory;
 
 import kr.starly.astralshop.api.AstralShop;
-import kr.starly.astralshop.api.registry.ShopRegistry;
+import kr.starly.astralshop.api.registry.ShopRepository;
 import kr.starly.astralshop.api.shop.Shop;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import org.bukkit.inventory.ItemStack;
 public abstract class BaseShopInventory implements InventoryHolder {
 
     protected final AstralShop plugin = AstralShop.getInstance();
-    private final ShopRegistry shopRegistry = plugin.getShopRegistry();
+    private final ShopRepository shopRepository = plugin.getShopRepository();
 
     @Getter protected Inventory inventory;
     @Getter protected Shop shop;
@@ -139,10 +139,10 @@ public abstract class BaseShopInventory implements InventoryHolder {
     }
 
     public void updateData() {
-        shop = shopRegistry.getShop(shop.getName());
+        shop = shopRepository.getShop(shop.getName());
     }
 
     public void saveShop() {
-        shopRegistry.saveShop(shop);
+        shopRepository.saveShop(shop);
     }
 }
