@@ -20,13 +20,14 @@ import kr.starly.astralshop.shop.transaction.SimpleTransactionHandler;
 import kr.starly.astralshop.shop.inventory.BaseShopInventory;
 import lombok.Getter;
 
+@Getter
 public class AstralShopPlugin extends AstralShop {
 
     @Getter private static AstralShopPlugin instance;
 
-    @Getter private ShopRegistry shopRegistry;
-    @Getter private ItemAttributeRegistry itemAttributeRegistry;
-    @Getter private TransactionHandlerRegistry transactionHandlerRegistry;
+    private ShopRegistry shopRegistry;
+    private ItemAttributeRegistry itemAttributeRegistry;
+    private TransactionHandlerRegistry transactionHandlerRegistry;
 
     @Override
     public void onEnable() {
