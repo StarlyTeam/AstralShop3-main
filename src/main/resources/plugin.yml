@@ -1,6 +1,6 @@
 name: AstralShop
 main: kr.starly.astralshop.AstralShopPlugin
-website: https://starly.kr/
+website: https://starly.kr/discord
 authors:
   - Nick
   - NillPoe
@@ -17,6 +17,6 @@ softdepend:
 
 commands:
   shopadmin:
-    aliases: [ 상점관리 ]
+    aliases: [상점관리]
   shop:
-    aliases: [ 상점 ]
+    aliases: [상점]
