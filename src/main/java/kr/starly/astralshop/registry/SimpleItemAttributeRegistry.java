@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-public class ItemAttributeRegistryImpl implements ItemAttributeRegistry {
+public class SimpleItemAttributeRegistry implements ItemAttributeRegistry {
 
     private final Map<String, ItemAttributeProvider> providers = new HashMap<>();
 

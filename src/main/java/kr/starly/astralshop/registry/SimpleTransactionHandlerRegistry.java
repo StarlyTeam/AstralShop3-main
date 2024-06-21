@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Getter
-public class TransactionHandlerRegistryImpl implements TransactionHandlerRegistry {
+public class SimpleTransactionHandlerRegistry implements TransactionHandlerRegistry {
 
     private final Map<String, TransactionHandler> handlers = new HashMap<>();
 
