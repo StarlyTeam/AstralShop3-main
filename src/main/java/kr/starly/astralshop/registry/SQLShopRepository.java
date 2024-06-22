@@ -206,7 +206,7 @@ public class SQLShopRepository implements ShopRepository {
                         pstmt.setDouble(6, shopItem.getSellPrice());
                         pstmt.setInt(7, shopItem.getStock());
                         pstmt.setInt(8, shopItem.getRemainStock());
-                        pstmt.setBoolean(9, shopItem.isHideLore());
+                        pstmt.setBoolean(9, shopItem.isMarker());
                         pstmt.setString(10, new JSONArray(shopItem.getCommands()).toString());
                         pstmt.executeUpdate();
                     }

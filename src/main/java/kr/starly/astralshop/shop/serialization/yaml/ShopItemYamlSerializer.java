@@ -21,7 +21,7 @@ public class ShopItemYamlSerializer {
         section.set("sellPrice", shopItem.getSellPrice());
         section.set("stock", shopItem.getStock());
         section.set("remainStock", shopItem.getRemainStock());
-        section.set("hideLore", shopItem.isHideLore());
+        section.set("hideLore", shopItem.isMarker());
         section.set("commands", shopItem.getCommands());
         return section;
     }

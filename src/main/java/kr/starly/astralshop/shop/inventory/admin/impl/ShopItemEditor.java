@@ -111,10 +111,11 @@ public class ShopItemEditor extends BaseShopInventory {
         );
         inventory.setItem(14,
                 new ItemBuilder(hideLoreMaterial)
-                        .setDisplayName("&6로어")
+                        .setDisplayName("&6마커")
                         .setLegacyLore(List.of(
-                                "&e&l| &f현재 값: " + (itemData.isHideLore() ? "&c숨김" : "&a표시"),
+                                "&e&l| &f현재 값: " + (itemData.isMarker() ? "&c마커 아이템" : "&a일반 아이템"),
                                 "",
+                                "&e&l| &6마커 아이템&f은 로어, 클릭 등이 불가능해집니다.",
                                 "&e&l| &6좌클릭 &f시, 값을 변경합니다."
                         ))
                         .get()
@@ -280,7 +281,7 @@ public class ShopItemEditor extends BaseShopInventory {
         } else if (slot == 13 && click == ClickType.SHIFT_LEFT) {
             itemData.setRemainStock(itemData.getStock());
         } else if (slot == 14 && click == ClickType.LEFT) {
-            itemData.setHideLore(!itemData.isHideLore());
+            itemData.setMarker(!itemData.isMarker());
         } else if (slot == 15 && click == ClickType.LEFT) {
             setEventListening(false);
             new ShopItemCommandsEditor(shop, page, this.slot).open(player);

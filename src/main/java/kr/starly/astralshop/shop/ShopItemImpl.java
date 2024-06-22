@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -20,6 +19,6 @@ public class ShopItemImpl implements ShopItem {
     @Setter private int stock;
     @Setter private int remainStock;
 
-    @Setter private boolean hideLore;
+    @Setter private boolean marker;
     @Setter private List<String> commands;
 }
