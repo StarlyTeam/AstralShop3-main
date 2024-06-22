@@ -12,12 +12,13 @@ import kr.starly.astralshop.database.ConnectionPoolManager;
 import kr.starly.astralshop.shop.ShopImpl;
 import kr.starly.astralshop.shop.ShopItemImpl;
 import kr.starly.astralshop.shop.ShopPageImpl;
-import kr.starly.astralshop.shop.serialization.sql.ShopItemSQLSerializer;
+import kr.starly.libs.json.JSONArray;
+import kr.starly.libs.json.JSONObject;
+import kr.starly.libs.util.EncodeUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONArray;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -119,7 +120,7 @@ public class SQLShopRepository implements ShopRepository {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 int slot = rs.getInt("shop_slot");
-                String serializedItemStack = rs.getString("item_stack");
+                ItemStack itemStack = EncodeUtils.deserialize(rs.getString("item_stack"), ItemStack.class);
                 double buyPrice = rs.getDouble("buy_price");
                 double sellPrice = rs.getDouble("sell_price");
                 int stock = rs.getInt("stock");
@@ -135,8 +136,17 @@ public class SQLShopRepository implements ShopRepository {
                     }
                 }
 
-                ItemStack itemStack = ShopItemSQLSerializer.deserialize(serializedItemStack);
-                ShopItem shopItem = new ShopItemImpl(itemStack, buyPrice, sellPrice, stock, remainStock, hideLore, commands);
+                String rawAttributes = rs.getString("attributes");
+                Map<String, Object> attributes = new HashMap<>();
+                if (rawAttributes != null && !rawAttributes.isEmpty()) {
+                    JSONObject jsonObject = new JSONObject(rawAttributes);
+                    for (String key : jsonObject.keySet()) {
+                        Object value = jsonObject.get(key);
+                        attributes.put(key, value);
+                    }
+                }
+
+                ShopItem shopItem = new ShopItemImpl(itemStack, buyPrice, sellPrice, stock, remainStock, hideLore, commands, attributes);
                 items.put(slot, shopItem);
             }
         } catch (SQLException e) {
@@ -196,18 +206,18 @@ public class SQLShopRepository implements ShopRepository {
                 }
 
                 if (shopItem != null && shopItem.getItemStack() != null && shopItem.getItemStack().getType() != Material.AIR) {
-                    String serializedItemStack = ShopItemSQLSerializer.serialize(shopItem);
-                    try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO shop_items VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
+                    try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO shop_items VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")) {
                         pstmt.setString(1, name);
                         pstmt.setInt(2, page.getPageNum());
                         pstmt.setInt(3, slot);
-                        pstmt.setString(4, serializedItemStack);
+                        pstmt.setString(4, EncodeUtils.serialize(shopItem));
                         pstmt.setDouble(5, shopItem.getBuyPrice());
                         pstmt.setDouble(6, shopItem.getSellPrice());
                         pstmt.setInt(7, shopItem.getStock());
                         pstmt.setInt(8, shopItem.getRemainStock());
                         pstmt.setBoolean(9, shopItem.isMarker());
                         pstmt.setString(10, new JSONArray(shopItem.getCommands()).toString());
+                        pstmt.setString(11, new JSONObject(shopItem.getAttributes()).toString());
                         pstmt.executeUpdate();
                     }
                 }

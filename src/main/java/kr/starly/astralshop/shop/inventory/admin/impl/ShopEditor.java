@@ -16,6 +16,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ShopEditor extends AdminPaginatedShopInventory {
@@ -75,7 +76,7 @@ public class ShopEditor extends AdminPaginatedShopInventory {
                 newItems.remove(i);
             }
 
-            ShopItem shopItem = new ShopItemImpl(newItem, -1, -1, -1, -1, false, new ArrayList<>());
+            ShopItem shopItem = new ShopItemImpl(newItem, -1, -1, -1, -1, false, new ArrayList<>(), new HashMap<>());
             newItems.put(i, shopItem);
         }
 

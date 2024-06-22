@@ -2,6 +2,7 @@ package kr.starly.astralshop.shop.serialization.yaml;
 
 import kr.starly.astralshop.api.shop.ShopItem;
 import kr.starly.astralshop.shop.ShopItemImpl;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -23,9 +24,11 @@ public class ShopItemYamlSerializer {
         section.set("remainStock", shopItem.getRemainStock());
         section.set("hideLore", shopItem.isMarker());
         section.set("commands", shopItem.getCommands());
+        section.set("attributes", shopItem.getAttributes());
         return section;
     }
 
+    @SuppressWarnings("unchecked")
     public static ShopItem deserialize(ConfigurationSection section) {
         ItemStack itemStack = section.getItemStack("itemStack");
 
@@ -35,8 +38,8 @@ public class ShopItemYamlSerializer {
         int remainStock = section.getInt("remainStock");
         boolean hideLore = section.getBoolean("hideLore");
         List<String> commands = section.getStringList("commands");
-
-        return new ShopItemImpl(itemStack, buyPrice, sellPrice, stock, remainStock, hideLore, commands);
+        Map<String, Object> attributes = section.getObject("attributes", Map.class);
+        return new ShopItemImpl(itemStack, buyPrice, sellPrice, stock, remainStock, hideLore, commands, attributes);
     }
 
     private static void applyEnchantmentGlint(ItemStack itemStack) {
