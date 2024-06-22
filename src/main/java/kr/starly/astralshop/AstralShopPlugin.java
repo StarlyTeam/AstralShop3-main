@@ -2,7 +2,7 @@ package kr.starly.astralshop;
 
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.registry.ItemAttributeRegistry;
-import kr.starly.astralshop.api.registry.ShopRepository;
+import kr.starly.astralshop.api.repository.ShopRepository;
 import kr.starly.astralshop.api.registry.TransactionHandlerRegistry;
 import kr.starly.astralshop.command.ShopAdminCommand;
 import kr.starly.astralshop.command.ShopCommand;

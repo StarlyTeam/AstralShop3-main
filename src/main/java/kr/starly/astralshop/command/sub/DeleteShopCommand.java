@@ -1,6 +1,6 @@
 package kr.starly.astralshop.command.sub;
 
-import kr.starly.astralshop.api.registry.ShopRepository;
+import kr.starly.astralshop.api.repository.ShopRepository;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.command.SubCommand;

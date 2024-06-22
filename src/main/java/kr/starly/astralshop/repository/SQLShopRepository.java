@@ -2,7 +2,7 @@ package kr.starly.astralshop.repository;
 
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.addon.TransactionHandler;
-import kr.starly.astralshop.api.registry.ShopRepository;
+import kr.starly.astralshop.api.repository.ShopRepository;
 import kr.starly.astralshop.api.registry.TransactionHandlerRegistry;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopAccessibility;

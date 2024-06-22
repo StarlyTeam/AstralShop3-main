@@ -3,7 +3,7 @@ package kr.starly.astralshop.shop.inventory.admin.impl;
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.addon.ItemAttributeProvider;
 import kr.starly.astralshop.api.registry.ItemAttributeRegistry;
-import kr.starly.astralshop.api.registry.ShopRepository;
+import kr.starly.astralshop.api.repository.ShopRepository;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopItem;
 import kr.starly.astralshop.api.shop.ShopPage;

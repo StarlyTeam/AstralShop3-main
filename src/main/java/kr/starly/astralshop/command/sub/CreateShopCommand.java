@@ -1,7 +1,7 @@
 package kr.starly.astralshop.command.sub;
 
 import kr.starly.astralshop.api.AstralShop;
-import kr.starly.astralshop.api.registry.ShopRepository;
+import kr.starly.astralshop.api.repository.ShopRepository;
 import kr.starly.astralshop.command.SubCommand;
 import kr.starly.astralshop.message.MessageContext;
 import kr.starly.astralshop.message.MessageType;
