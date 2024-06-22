@@ -1,4 +1,4 @@
-package kr.starly.astralshop.registry;
+package kr.starly.astralshop.repository;
 
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.addon.TransactionHandler;
