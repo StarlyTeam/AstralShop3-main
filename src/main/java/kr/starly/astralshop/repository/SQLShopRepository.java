@@ -66,7 +66,7 @@ public class SQLShopRepository implements ShopRepository {
                 + "sell_price DOUBLE, "
                 + "stock INT, "
                 + "remain_stock INT, "
-                + "hide_lore BOOLEAN, "
+                + "marker BOOLEAN, "
                 + "commands JSON, "
                 + "PRIMARY KEY (shop_name, shop_page, shop_slot)"
                 + ");");
@@ -124,7 +124,7 @@ public class SQLShopRepository implements ShopRepository {
                 double sellPrice = rs.getDouble("sell_price");
                 int stock = rs.getInt("stock");
                 int remainStock = rs.getInt("remain_stock");
-                boolean hideLore = rs.getBoolean("hide_lore");
+                boolean hideLore = rs.getBoolean("marker");
 
                 String rawCommands = rs.getString("commands");
                 List<String> commands = new ArrayList<>();
