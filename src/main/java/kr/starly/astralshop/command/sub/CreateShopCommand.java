@@ -5,10 +5,15 @@ import kr.starly.astralshop.api.repository.ShopRepository;
 import kr.starly.astralshop.command.SubCommand;
 import kr.starly.astralshop.message.MessageContext;
 import kr.starly.astralshop.message.MessageType;
+import kr.starly.libs.nms.NmsMultiVersion;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class CreateShopCommand implements SubCommand {
 
@@ -49,7 +54,10 @@ public class CreateShopCommand implements SubCommand {
 
         String name = args[1];
         if (shopRepository.createShop(name)) {
-            messageContext.get(MessageType.NORMAL, "shopCreated", (msg) -> msg.replace("{name}", name)).send(sender);
+            messageContext.get(MessageType.NORMAL, "shopCreated", TagResolver.builder()
+                    .tag("name", Tag.inserting(Component.text(name)))
+                    .build()
+            ).send(sender);
         } else {
             messageContext.get(MessageType.ERROR, "shopAlreadyExists").send(sender);
         }

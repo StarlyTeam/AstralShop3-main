@@ -6,6 +6,9 @@ import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.command.SubCommand;
 import kr.starly.astralshop.message.MessageContext;
 import kr.starly.astralshop.message.MessageType;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
@@ -50,7 +53,10 @@ public class DeleteShopCommand implements SubCommand {
 
         String name = args[1];
         if (shopRepository.deleteShop(name)) {
-            messageContext.get(MessageType.NORMAL, "shopDeleted", (msg) -> msg.replace("{name}", name)).send(sender);
+            messageContext.get(MessageType.NORMAL, "shopDeleted", TagResolver.builder()
+                    .tag("name", Tag.inserting(Component.text(name)))
+                    .build()
+            ).send(sender);
         } else {
             messageContext.get(MessageType.ERROR, "shopNotExists").send(sender);
         }
@@ -61,6 +67,7 @@ public class DeleteShopCommand implements SubCommand {
         if (args.length == 2) {
             return shopRepository.getShops().stream().map(Shop::getName).toList();
         }
+
         return Collections.emptyList();
     }
 }

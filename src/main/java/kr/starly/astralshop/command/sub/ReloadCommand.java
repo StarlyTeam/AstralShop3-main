@@ -6,6 +6,9 @@ import kr.starly.astralshop.command.SubCommand;
 import kr.starly.astralshop.message.MessageContext;
 import kr.starly.astralshop.message.MessageType;
 import kr.starly.astralshop.shop.inventory.BaseShopInventory;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.command.CommandSender;
 
 import java.util.Collections;
@@ -61,7 +64,10 @@ public class ReloadCommand implements SubCommand {
 
             long endTime = System.currentTimeMillis();
             double duration = (endTime - startTime) / 1000.0;
-            messageContext.get(MessageType.NORMAL, "reloadComplete", (msg) -> msg.replace("{duration}", String.format("%.3f", duration) + "s")).send(sender);
+            messageContext.get(MessageType.NORMAL, "reloadComplete", TagResolver.builder()
+                    .tag("duration", Tag.inserting(Component.text(duration + "s")))
+                    .build()
+            ).send(sender);
         } else {
             messageContext.get(MessageType.ERROR, "wrongCommand").send(sender);
         }

@@ -11,6 +11,9 @@ import kr.starly.astralshop.api.shop.ShopTransactionType;
 import kr.starly.astralshop.message.MessageContext;
 import kr.starly.libs.inventory.item.builder.ItemBuilder;
 import kr.starly.libs.nms.NmsMultiVersion;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.Tag;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -138,10 +141,16 @@ public class SimpleTransactionHandler implements TransactionHandler {
                 double finalPrice = totalBought * itemData.getBuyPrice();
                 int finalTotalBought = totalBought;
                 if (totalBought == amount) {
-                    messageContext.get(MessageType.NORMAL, "simple-handler.itemBought1", (msg) -> msg
-                            .replace("{name}", NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))
-                            .replace("{price}", "%.2f".formatted(finalPrice))
-                            .replace("{amount}", String.valueOf(finalTotalBought))
+                    messageContext.get(MessageType.NORMAL, "simple-handler.itemBought1", TagResolver.builder()
+                            .tag("name", Tag.inserting(Component.text(
+                                    NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))))
+                            .tag("price", Tag.inserting(Component.text(
+                                    finalPrice
+                            )))
+                            .tag("amount", Tag.inserting(Component.text(
+                                    finalTotalBought
+                            )))
+                            .build()
                     ).send(player);
                 } else if (totalBought == 0) {
                     if (isStockOut) messageContext.get(MessageType.ERROR, "simple-handler.failedToBuy1").send(player);
@@ -153,10 +162,16 @@ public class SimpleTransactionHandler implements TransactionHandler {
                     else if (isFull) key = "simple-handler.itemBought3";
                     else key = "simple-handler.itemBought4";
 
-                    messageContext.get(MessageType.NORMAL, key, (msg) -> msg
-                            .replace("{name}", NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))
-                            .replace("{price}", "%.2f".formatted(finalPrice))
-                            .replace("{amount}", String.valueOf(finalTotalBought))
+                    messageContext.get(MessageType.NORMAL, key, TagResolver.builder()
+                            .tag("name", Tag.inserting(Component.text(
+                                    NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))))
+                            .tag("price", Tag.inserting(Component.text(
+                                    finalPrice
+                            )))
+                            .tag("amount", Tag.inserting(Component.text(
+                                    finalTotalBought
+                            )))
+                            .build()
                     ).send(player);
                 }
             }
@@ -193,23 +208,38 @@ public class SimpleTransactionHandler implements TransactionHandler {
 
                 double finalPrice = totalSold.get() * itemData.getSellPrice();
                 if (totalSold.get() == amount) {
-                    messageContext.get(MessageType.NORMAL, "simple-handler.itemSold1", (msg) -> msg
-                            .replace("{name}", NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))
-                            .replace("{price}", "%.2f".formatted(finalPrice))
-                            .replace("{amount}", String.valueOf(totalSold.get()))
+                    messageContext.get(MessageType.NORMAL, "simple-handler.itemSold1", TagResolver.builder()
+                            .tag("name", Tag.inserting(Component.text(
+                                    NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))))
+                            .tag("price", Tag.inserting(Component.text(
+                                    finalPrice
+                            )))
+                            .tag("amount", Tag.inserting(Component.text(
+                                    totalSold.get()
+                            )))
+                            .build()
                     ).send(player);
                 } else if (totalSold.get() == 0) {
-                    if (isStockFull.get()) messageContext.get(MessageType.ERROR, "simple-handler.failedToSell1").send(player);
-                    else messageContext.get(MessageType.ERROR, "simple-handler.failedToSell2").send(player);
+                    if (isStockFull.get()) {
+                        messageContext.get(MessageType.ERROR, "simple-handler.failedToSell1").send(player);
+                    } else {
+                        messageContext.get(MessageType.ERROR, "simple-handler.failedToSell2").send(player);
+                    }
                 } else {
                     String key;
                     if (isStockFull.get()) key = "simple-handler.itemSold2";
                     else key = "simple-handler.itemSold3";
 
-                    messageContext.get(MessageType.NORMAL, key, (msg) -> msg
-                            .replace("{name}", NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))
-                            .replace("{price}", "%.2f".formatted(finalPrice))
-                            .replace("{amount}", String.valueOf(totalSold.get()))
+                    messageContext.get(MessageType.NORMAL, key, TagResolver.builder()
+                            .tag("name", Tag.inserting(Component.text(
+                                    NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))))
+                            .tag("price", Tag.inserting(Component.text(
+                                    finalPrice
+                            )))
+                            .tag("amount", Tag.inserting(Component.text(
+                                    totalSold.get()
+                            )))
+                            .build()
                     ).send(player);
                 }
             }
@@ -227,14 +257,14 @@ public class SimpleTransactionHandler implements TransactionHandler {
         int remainStock = item.getRemainStock();
         return new ItemBuilder(item.getItemStack().clone())
                 .setLegacyLore(item.isMarker() ? new ArrayList<>() : List.of(
-                        "§e§l| §f구매가격: " + (buyPrice == 0 ? "§b무료" : (buyPrice < 0 ? "§c구매불가" : "§6" + buyPrice)),
-                        "§e§l| §f판매가격: " + (sellPrice == 0 ? "§b무료" : (sellPrice < 0 ? "§c판매불가" : "§6" + sellPrice)),
-                        "§e§l| §f재고: " + (remainStock < 0 ? "§b무제한" : "§6" + remainStock + "§7/&6" + stock),
-                        "&r",
-                        "&e&l| &6좌클릭 &f시, 아이템 &61&f개를 구매합니다.",
-                        "&e&l| &6Shift+좌클릭 &f시, 아이템 &664&f개를 구매합니다.",
-                        "&e&l| &6우클릭 &f시, 아이템 &61&f개를 판매합니다.",
-                        "&e&l| &6Shift+우클릭 &f시, 아이템 &664&f개를 판매합니다."
+                        "§e§l| §r§f구매가격: " + (buyPrice == 0 ? "§b무료" : (buyPrice < 0 ? "§c구매불가" : "§6" + buyPrice)),
+                        "§e§l| §r§f판매가격: " + (sellPrice == 0 ? "§b무료" : (sellPrice < 0 ? "§c판매불가" : "§6" + sellPrice)),
+                        "§e§l| §r§f재고: " + (remainStock < 0 ? "§b무제한" : "§6" + remainStock + "§7/§6" + stock),
+                        "§r",
+                        "§e§l| §6좌클릭 §f시, 아이템 §61§f개를 구매합니다.",
+                        "§e§l| §6Shift+좌클릭 §f시, 아이템 §664§f개를 구매합니다.",
+                        "§e§l| §6우클릭 §f시, 아이템 §61§f개를 판매합니다.",
+                        "§e§l| §6Shift+우클릭 §f시, 아이템 §664§f개를 판매합니다."
                 ))
                 .get();
     }

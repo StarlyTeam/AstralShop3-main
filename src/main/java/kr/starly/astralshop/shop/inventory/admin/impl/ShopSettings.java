@@ -49,10 +49,10 @@ public class ShopSettings extends BaseShopInventory {
                 new ItemBuilder(enableStatusItem)
                         .setDisplayName("§6활성화")
                         .setLegacyLore(List.of(
-                                "§e§l| §f현재 값: " + (shop.isEnabled() ? "§a활성화" : "§c비활성화"),
+                                "§e§l| §r§f현재 값: " + (shop.isEnabled() ? "§a활성화" : "§c비활성화"),
                                 "",
-                                "§e§l| §c비활성화 §f시, 관리자만 상점을 열 수 있습니다.",
-                                "§e§l| §6좌클릭 §f시, 값을 변경합니다."
+                                "§e§l| §r§c비활성화 §f시, 관리자만 상점을 열 수 있습니다.",
+                                "§e§l| §r§6좌클릭 §f시, 값을 변경합니다."
                         ))
                         .get()
         );
@@ -60,12 +60,12 @@ public class ShopSettings extends BaseShopInventory {
                 new ItemBuilder(Material.SHIELD)
                         .setDisplayName("§6접근성")
                         .setLegacyLore(List.of(
-                                "§e§l| §f현재 값: §b" + shop.getAccessibility().getLabel(),
+                                "§e§l| §r§f현재 값: §b" + shop.getAccessibility().getLabel(),
                                 "",
-                                "§e§l| §b공개§7: §f퍼미션 없이 사용할 수 있습니다.",
-                                "§e§l| §b일부공개§7: §fNPC만 퍼미션 없이 사용할 수 있습니다.",
-                                "§e§l| §b비공개§7: §f퍼미션이 있어야 사용할 수 있습니다.",
-                                "§e§l| §6좌클릭 §f시, 값을 변경합니다."
+                                "§e§l| §r§b공개§7: §f퍼미션 없이 사용할 수 있습니다.",
+                                "§e§l| §r§b일부공개§7: §fNPC만 퍼미션 없이 사용할 수 있습니다.",
+                                "§e§l| §r§b비공개§7: §f퍼미션이 있어야 사용할 수 있습니다.",
+                                "§e§l| §r§6좌클릭 §f시, 값을 변경합니다."
                         ))
                         .get()
         );
@@ -73,9 +73,9 @@ public class ShopSettings extends BaseShopInventory {
                 new ItemBuilder(Material.EMERALD)
                         .setDisplayName("§6거래 방식")
                         .setLegacyLore(List.of(
-                                "§e§l| §f현재 값: §b" + shop.getTransactionHandler().getName(),
+                                "§e§l| §r§f현재 값: §b" + shop.getTransactionHandler().getName(),
                                 "",
-                                "§e§l| §6좌클릭 §f시, 값을 변경합니다."
+                                "§e§l| §r§6좌클릭 §f시, 값을 변경합니다."
                         ))
                         .get()
         );
@@ -83,7 +83,7 @@ public class ShopSettings extends BaseShopInventory {
                 new ItemBuilder(Material.BARRIER)
                         .setDisplayName("§c상점 삭제")
                         .setLegacyLore(List.of(
-                                "§e§l| §6Shift+좌클릭 §f시, 상점을 삭제합니다."
+                                "§e§l| §r§6Shift+좌클릭 §f시, 상점을 삭제합니다."
                         ))
                         .get()
         );
@@ -91,7 +91,7 @@ public class ShopSettings extends BaseShopInventory {
                 new ItemBuilder(Material.CHEST)
                         .setDisplayName("§6아이템 편집")
                         .setLegacyLore(List.of(
-                                "§e§l| §6좌클릭 §f시, 아이템 편집기를 엽니다."
+                                "§e§l| §r§6좌클릭 §f시, 아이템 편집기를 엽니다."
                         ))
                         .get()
         );
@@ -99,10 +99,10 @@ public class ShopSettings extends BaseShopInventory {
                 new ItemBuilder(npcItem)
                         .setDisplayName("§6NPC")
                         .setLegacyLore(List.of(
-                                "§e§l| §f현재 값: §6" + (shop.getNpc().isEmpty() ? "§c없음" : shop.getNpc()),
+                                "§e§l| §r§f현재 값: §6" + (shop.getNpc().isEmpty() ? "§c없음" : shop.getNpc()),
                                 "",
-                                "§e§l| §6좌클릭 §f시, 값을 변경합니다.",
-                                "§e§l| §6Shift+우클릭 §f시, 값을 초기화합니다."
+                                "§e§l| §r§6좌클릭 §f시, 값을 변경합니다.",
+                                "§e§l| §r§6Shift+우클릭 §f시, 값을 초기화합니다."
                         ))
                         .get()
         );
@@ -110,9 +110,9 @@ public class ShopSettings extends BaseShopInventory {
                 new ItemBuilder(Material.NAME_TAG)
                         .setDisplayName("§6제목 - 기본값")
                         .setLegacyLore(List.of(
-                                "§e§l| §f현재 값: §6" + shop.getGuiTitle(),
+                                "§e§l| §r§f현재 값: §6" + shop.getGuiTitle(),
                                 "",
-                                "§e§l| §6좌클릭 §f시, 값을 변경합니다."
+                                "§e§l| §r§6좌클릭 §f시, 값을 변경합니다."
                         ))
                         .get()
         );
@@ -120,7 +120,7 @@ public class ShopSettings extends BaseShopInventory {
                 new ItemBuilder(Material.NAME_TAG)
                         .setDisplayName("§6제목 - 일괄변경")
                         .setLegacyLore(List.of(
-                                "§e§l| §6좌클릭 §f시, 값을 변경합니다."
+                                "§e§l| §r§6좌클릭 §f시, 값을 변경합니다."
                         ))
                         .get()
         );
@@ -148,10 +148,10 @@ public class ShopSettings extends BaseShopInventory {
 
             shop.setTransactionHandler(options.get(nextIndex));
         } else if (slot == 24 && click == ClickType.SHIFT_LEFT) {
-            shopRepository.deleteShop(shop.getName());
-
             setEventListening(false);
             player.closeInventory();
+
+            shopRepository.deleteShop(shop.getName());
             return;
         } else if (slot == 29 && click == ClickType.LEFT) {
             setEventListening(false);
@@ -186,7 +186,7 @@ public class ShopSettings extends BaseShopInventory {
                     .interactableSlots(AnvilGUI.Slot.OUTPUT)
                     .itemLeft(
                             new ItemBuilder(Material.PAPER)
-                                    .setDisplayName("&r")
+                                    .setDisplayName("§r")
                                     .get()
                     )
                     .onClick((clickedSlot, stateSnapshot) -> {
@@ -211,7 +211,7 @@ public class ShopSettings extends BaseShopInventory {
                     .interactableSlots(AnvilGUI.Slot.OUTPUT)
                     .itemLeft(
                             new ItemBuilder(Material.PAPER)
-                                    .setDisplayName("&r")
+                                    .setDisplayName("§r")
                                     .get()
                     )
                     .onClick((clickedSlot, stateSnapshot) -> {

@@ -53,9 +53,9 @@ public class ShopAdminCommand implements TabExecutor {
             sender.sendMessage(" §6§m                                         §r");
             for (SubCommand subCommand : uniqueSubCommands) {
                 if (isKor(label)) {
-                    sender.sendMessage(" §e§l| §f/상점관리 " + subCommand.getKorName() + " " + subCommand.getKorUsage() + " : " + subCommand.getKorDescription());
+                    sender.sendMessage(" §e§l| §r§f/상점관리 " + subCommand.getKorName() + " " + subCommand.getKorUsage() + " : " + subCommand.getKorDescription());
                 } else {
-                    sender.sendMessage(" §e§l| §f/shopadmin " + subCommand.getEngName() + " " + subCommand.getKorUsage() + " : " + subCommand.getKorDescription());
+                    sender.sendMessage(" §e§l| §r§f/shopadmin " + subCommand.getEngName() + " " + subCommand.getKorUsage() + " : " + subCommand.getKorDescription());
                 }
             }
             sender.sendMessage("");

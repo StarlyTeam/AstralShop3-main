@@ -12,18 +12,18 @@ mysql:
 message:
   prefix: "&6상점 &7| &r"
   normal:
-    shopCreated: "&a{name} 상점을 생성하였습니다."
-    shopDeleted: "&a{name} 상점을 삭제하였습니다."
+    shopCreated: "&a<name> 상점을 생성하였습니다."
+    shopDeleted: "&a<name> 상점을 삭제하였습니다."
     shopClosedWhileMaintaining: "&b상점 점검으로 인하여 상점이 닫혔습니다."
-    reloadComplete: "&a리로드를 완료하였습니다. ({duration})"
+    reloadComplete: "&a리로드를 완료하였습니다. (<duration>)"
     simple-handler:
-      itemBought1: "&b{price}&f원을 지불하여 &b{name} &7x &b{amount}&f개를 구매하였습니다."
-      itemBought2: "&f재고가 부족하여 &b{price}&f원을 지불하고 &b{name} &7x &b{amount}&f개만 구매하였습니다."
-      itemBought3: "&f인벤토리의 공간이 부족하여 &b{price}&f원을 지불하고 &b{name} &7x &b{amount}&f개만 구매하였습니다."
-      itemBought4: "&f잔액이 부족하여 &b{price}&f원을 지불하고 &b{name} &7x &b{amount}&f개만 구매하였습니다."
-      itemSold1: "&b{price}&f원을 지불받고 &b{name} &7x &b{amount}&f개를 판매하였습니다."
-      itemSold2: "&f재고가 가득 차 &b{price}&f원을 지불받고 &b{name} &7x &b{amount}&f개만 판매하였습니다."
-      itemSold3: "&f인벤토리에 아이템이 부족하여 &b{price}&f원을 지불받고 &b{name} &7x &b{amount}&f개만 판매하였습니다."
+      itemBought1: "&b<price>&f원을 지불하여 &b<name> &7x &b<amount>&f개를 구매하였습니다."
+      itemBought2: "&f재고가 부족하여 &b<price>&f원을 지불하고 &b<name> &7x &b<amount>&f개만 구매하였습니다."
+      itemBought3: "&f인벤토리의 공간이 부족하여 &b<price>&f원을 지불하고 &b<name> &7x &b<amount>&f개만 구매하였습니다."
+      itemBought4: "&f잔액이 부족하여 &b<price>&f원을 지불하고 &b<name> &7x &b<amount>&f개만 구매하였습니다."
+      itemSold1: "&b<price>&f원을 지불받고 &b<name> &7x &b<amount>&f개를 판매하였습니다."
+      itemSold2: "&f재고가 가득 차 &b<price>&f원을 지불받고 &b<name> &7x &b<amount>&f개만 판매하였습니다."
+      itemSold3: "&f인벤토리에 아이템이 부족하여 &b<price>&f원을 지불받고 &b<name> &7x &b<amount>&f개만 판매하였습니다."
   error:
     noConsole: "&c콘솔에서는 사용할 수 없는 명령어입니다."
     noPermission: "&c권한이 없습니다."

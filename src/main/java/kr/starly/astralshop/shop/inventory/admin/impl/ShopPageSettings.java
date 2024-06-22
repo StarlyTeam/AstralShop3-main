@@ -46,9 +46,9 @@ public class ShopPageSettings extends BaseShopInventory {
                 new ItemBuilder(Material.NAME_TAG)
                         .setDisplayName("§6페이지 제목")
                         .setLegacyLore(List.of(
-                                "§e§l| §f현재 값: §6" + pageData.getGuiTitle(),
+                                "§e§l| §r§f현재 값: §6" + pageData.getGuiTitle(),
                                 "",
-                                "§e§l| §6좌클릭 §f시, 값을 변경합니다."
+                                "§e§l| §r§6좌클릭 §f시, 값을 변경합니다."
                         ))
                         .get()
         );
@@ -56,10 +56,10 @@ public class ShopPageSettings extends BaseShopInventory {
                 new ItemBuilder(Material.STRING)
                         .setDisplayName("§6줄 수")
                         .setLegacyLore(List.of(
-                                "§e§l| §f현재 값: §6" + pageData.getRows(),
+                                "§e§l| §r§f현재 값: §6" + pageData.getRows(),
                                 "",
-                                "§e§l| §6좌클릭 §f시, 줄 수를 §c1 §f줄입니다.",
-                                "§e§l| §6우클릭 §f시, 줄 수를 §a1 §f늘립니다."
+                                "§e§l| §r§6좌클릭 §f시, 줄 수를 §c1 §f줄입니다.",
+                                "§e§l| §r§6우클릭 §f시, 줄 수를 §a1 §f늘립니다."
                         ))
                         .get()
         );
@@ -67,7 +67,7 @@ public class ShopPageSettings extends BaseShopInventory {
                 new ItemBuilder(Material.BARRIER)
                         .setDisplayName("§c삭제")
                         .setLegacyLore(List.of(
-                                "§e§l| §6Shift+좌클릭 §f시, 페이지를 삭제합니다."
+                                "§e§l| §r§6Shift+좌클릭 §f시, 페이지를 삭제합니다."
                         ))
                         .get()
         );
@@ -85,6 +85,7 @@ public class ShopPageSettings extends BaseShopInventory {
                     .title("변경할 제목을 입력해주세요.")
                     .plugin(plugin)
                     .interactableSlots(AnvilGUI.Slot.OUTPUT)
+                    .text(shop.getGuiTitle().replace("§", "&"))
                     .itemLeft(
                             new ItemBuilder(Material.PAPER)
                                     .setDisplayName("§r")

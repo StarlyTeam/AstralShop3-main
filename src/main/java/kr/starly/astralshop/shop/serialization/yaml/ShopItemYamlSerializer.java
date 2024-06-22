@@ -38,7 +38,7 @@ public class ShopItemYamlSerializer {
         int remainStock = section.getInt("remainStock");
         boolean hideLore = section.getBoolean("hideLore");
         List<String> commands = section.getStringList("commands");
-        Map<String, Object> attributes = section.getObject("attributes", Map.class);
+        Map<String, Object> attributes = section.getObject("attributes", Map.class, new HashMap());
         return new ShopItemImpl(itemStack, buyPrice, sellPrice, stock, remainStock, hideLore, commands, attributes);
     }
 

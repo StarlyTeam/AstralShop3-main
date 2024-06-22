@@ -1,6 +1,7 @@
 package kr.starly.astralshop.message;
 
 import kr.starly.libs.util.Pair;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -43,16 +44,16 @@ public class MessageContext {
         return get(type, key, "");
     }
 
-    public STMessage get(MessageType type, String key, String orElse, Function<String, String> replacer) {
-        return new STMessage(getPrefix(), replacer.apply(get(type, key, orElse).getMessage()));
+    public STMessage get(MessageType type, String key, String orElse, TagResolver replacer) {
+        return new STMessage(getPrefix(), get(type, key, orElse).getMessage(), replacer);
     }
 
-    public STMessage get(MessageType type, String key, Function<String, String> replacer) {
+    public STMessage get(MessageType type, String key, TagResolver replacer) {
         return get(type, key, "", replacer);
     }
 
     public void set(MessageType type, String key, String value) {
-        map.put(new Pair<>(type, key), ChatColor.translateAlternateColorCodes('&', value));
+        map.put(new Pair<>(type, key), value);
     }
 
     public String getOnlyString(MessageType type, String key) {

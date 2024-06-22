@@ -8,7 +8,6 @@ import kr.starly.astralshop.command.ShopAdminCommand;
 import kr.starly.astralshop.command.ShopCommand;
 import kr.starly.astralshop.database.ConnectionPoolManager;
 import kr.starly.astralshop.dispatcher.EntityInteractDispatcher;
-import kr.starly.astralshop.hook.PlaceholderAPIHook;
 import kr.starly.astralshop.listener.AdminShopInventoryListener;
 import kr.starly.astralshop.listener.EntityInteractListener;
 import kr.starly.astralshop.message.MessageContext;
@@ -33,9 +32,6 @@ public class AstralShopPlugin extends AstralShop {
     public void onEnable() {
         AstralShop.setInstance(this);
         instance = this;
-
-        // API Hook
-        PlaceholderAPIHook.initializeHook(this);
 
         // Configuration
         saveDefaultConfig();

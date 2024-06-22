@@ -69,8 +69,8 @@ public class PaginationControlBar implements ControlBar {
                 pageNumber + " 페이지",
                 pageNumber == paginationHelper.getCurrentPage(),
                 modifiable ? new String[]{
-                        "§e§l| §6Shift+좌클릭 §f시, 페이지 속성창이 열립니다.",
-                        "§e§l| §6Shift+우클릭 §f시, 페이지를 삭제합니다."
+                        "§e§l| §r§6Shift+좌클릭 §f시, 페이지 속성창이 열립니다.",
+                        "§e§l| §r§6Shift+우클릭 §f시, 페이지를 삭제합니다."
                 } : new String[]{}
         );
     }
