@@ -227,7 +227,7 @@ public class SimpleTransactionHandler implements TransactionHandler {
         int remainStock = item.getRemainStock();
         return new ItemBuilder(item.getItemStack().clone())
                 .setLegacyLore(item.isMarker() ? new ArrayList<>() : List.of(
-                        "§e§l| §f구매가격: " + (buyPrice == 0 ? "&b무료" : (buyPrice < 0 ?"&c구매불가" : "&6" + buyPrice)),
+                        "§e§l| §f구매가격: " + (buyPrice == 0 ? "&b무료" : (buyPrice < 0 ? "&c구매불가" : "&6" + buyPrice)),
                         "&e&l| &f판매가격: " + (sellPrice == 0 ? "&b무료" : (sellPrice < 0 ? "&c판매불가" : "&6" + sellPrice)),
                         "&e&l| &f재고: " + (remainStock < 0 ? "&b무제한" : "&6" + remainStock + "&7/&6" + stock),
                         "&r",
