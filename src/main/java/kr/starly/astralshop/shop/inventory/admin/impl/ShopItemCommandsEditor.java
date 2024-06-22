@@ -54,8 +54,8 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
                             .setLegacyLore(List.of(
                                     "§e§l| §f현재 값: §6" + commandLine,
                                     "",
-                                    "&e&l| &6좌클릭 &f시, 값을 변경합니다.",
-                                    "&e&l| &6Shift+우클릭 &f시, 삭제합니다."
+                                    "§e§l| §6좌클릭 §f시, 값을 변경합니다.",
+                                    "§e§l| §6Shift+우클릭 §f시, 삭제합니다."
                             ))
                             .get()
             );
@@ -64,9 +64,9 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
         for (int i = 45; i < 53; i++) inventory.setItem(i, grayGlassPane);
         inventory.setItem(53,
                 new ItemBuilder(Material.IRON_PICKAXE)
-                        .setDisplayName("&a명령어 추가")
+                        .setDisplayName("§a명령어 추가")
                         .setLegacyLore(List.of(
-                                "&e&l| &6좌클릭 &f시, 명령어를 추가합니다."
+                                "§e§l| §6좌클릭 §f시, 명령어를 추가합니다."
                         ))
                         .get()
         );
@@ -89,7 +89,7 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
                     .interactableSlots(AnvilGUI.Slot.OUTPUT)
                     .itemLeft(
                             new ItemBuilder(Material.PAPER)
-                                    .setDisplayName("&r")
+                                    .setDisplayName("§r")
                                     .get()
                     )
                     .onClick((clickedSlot, stateSnapshot) -> {
@@ -119,7 +119,7 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
                     .interactableSlots(AnvilGUI.Slot.OUTPUT)
                     .itemLeft(
                             new ItemBuilder(Material.PAPER)
-                                    .setDisplayName("&r")
+                                    .setDisplayName("§r")
                                     .get()
                     )
                     .onClick((clickedSlot, stateSnapshot) -> {

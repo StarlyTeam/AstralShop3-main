@@ -69,60 +69,60 @@ public class ShopItemEditor extends BaseShopInventory {
         itemData.getCommands().forEach((commandLine) -> commandsLore.add("§b§l| §f" + commandLine));
         if (commandsLore.isEmpty()) commandsLore.add("§b§l| §c없음");
         commandsLore.add("");
-        commandsLore.add("&e&l| &6좌클릭 &f시, 명령어 편집기를 엽니다.");
+        commandsLore.add("§e§l| §6좌클릭 §f시, 명령어 편집기를 엽니다.");
 
         inventory.setItem(11,
                 new ItemBuilder(Material.EMERALD)
-                        .setDisplayName("&6구매 가격")
+                        .setDisplayName("§6구매 가격")
                         .setLegacyLore(List.of(
-                                "&e&l| &f현재 값: &6" + itemData.getBuyPrice(),
+                                "§e§l| §f현재 값: §6" + itemData.getBuyPrice(),
                                 "",
-                                "&e&l| &b유저&f가 구매할 때의 가격입니다.",
-                                "&e&l| &b음수&f를 입력하면 &c구매불가 &f상태가 됩니다.",
-                                "&e&l| &6좌클릭 &f시, 값을 변경합니다."
+                                "§e§l| §b유저§f가 구매할 때의 가격입니다.",
+                                "§e§l| §b음수§f를 입력하면 §c구매불가 §f상태가 됩니다.",
+                                "§e§l| §6좌클릭 §f시, 값을 변경합니다."
                         ))
                         .get()
         );
         inventory.setItem(12,
                 new ItemBuilder(Material.EMERALD)
-                        .setDisplayName("&6판매 가격")
+                        .setDisplayName("§6판매 가격")
                         .setLegacyLore(List.of(
-                                "&e&l| &f현재 값: &6" + itemData.getSellPrice(),
+                                "§e§l| §f현재 값: §6" + itemData.getSellPrice(),
                                 "",
-                                "&e&l| &b유저&f가 판매할 때의 가격입니다.",
-                                "&e&l| &b음수&f를 입력하면 &c판매불가 &f상태가 됩니다.",
-                                "&e&l| &6좌클릭 &f시, 값을 변경합니다."
+                                "§e§l| §b유저§f가 판매할 때의 가격입니다.",
+                                "§e§l| §b음수§f를 입력하면 §c판매불가 §f상태가 됩니다.",
+                                "§e§l| §6좌클릭 §f시, 값을 변경합니다."
                         ))
                         .get()
         );
         inventory.setItem(13,
                 new ItemBuilder(Material.ANVIL)
-                        .setDisplayName("&6재고")
+                        .setDisplayName("§6재고")
                         .setLegacyLore(List.of(
-                                "&e&l| &f최대 값: &6" + itemData.getStock(),
-                                "&e&l| &f현재 값: &6" + itemData.getRemainStock(),
+                                "§e§l| §f최대 값: §6" + itemData.getStock(),
+                                "§e§l| §f현재 값: §6" + itemData.getRemainStock(),
                                 "",
-                                "&e&l| &b음수&f를 입력하면 &a무제한 &f상태가 됩니다.",
-                                "&e&l| &6좌클릭 &f시, 최대 값을 변경합니다.",
-                                "&e&l| &6우클릭 &f시, 현재 값을 변경합니다.",
-                                "&e&l| &6Shift+좌클릭 &f시, 재고를 최대로 채웁니다."
+                                "§e§l| §b음수§f를 입력하면 §a무제한 §f상태가 됩니다.",
+                                "§e§l| §6좌클릭 §f시, 최대 값을 변경합니다.",
+                                "§e§l| §6우클릭 §f시, 현재 값을 변경합니다.",
+                                "§e§l| §6Shift+좌클릭 §f시, 재고를 최대로 채웁니다."
                         ))
                         .get()
         );
         inventory.setItem(14,
                 new ItemBuilder(hideLoreMaterial)
-                        .setDisplayName("&6마커")
+                        .setDisplayName("§6마커")
                         .setLegacyLore(List.of(
-                                "&e&l| &f현재 값: " + (itemData.isMarker() ? "&c마커 아이템" : "&a일반 아이템"),
+                                "§e§l| §f현재 값: " + (itemData.isMarker() ? "§c마커 아이템" : "§a일반 아이템"),
                                 "",
-                                "&e&l| &6마커 아이템&f은 로어, 클릭 등이 불가능해집니다.",
-                                "&e&l| &6좌클릭 &f시, 값을 변경합니다."
+                                "§e§l| §6마커 아이템§f은 로어, 클릭 등이 불가능해집니다.",
+                                "§e§l| §6좌클릭 §f시, 값을 변경합니다."
                         ))
                         .get()
         );
         inventory.setItem(15,
                 new ItemBuilder(commandsMaterial)
-                        .setDisplayName("&6명령어")
+                        .setDisplayName("§6명령어")
                         .setLegacyLore(commandsLore)
                         .get()
         );

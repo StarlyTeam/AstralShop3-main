@@ -78,6 +78,6 @@ public class AstralShopPlugin extends AstralShop {
             }
         });
 
-        shopRepository.saveShops();
+        if (shopRepository != null) shopRepository.saveShops();
     }
 }

@@ -48,26 +48,26 @@ public class ShopPageSettings extends BaseShopInventory {
                         .setLegacyLore(List.of(
                                 "§e§l| §f현재 값: §6" + pageData.getGuiTitle(),
                                 "",
-                                "&e&l| &6좌클릭 &f시, 값을 변경합니다."
+                                "§e§l| §6좌클릭 §f시, 값을 변경합니다."
                         ))
                         .get()
         );
         inventory.setItem(22,
                 new ItemBuilder(Material.STRING)
-                        .setDisplayName("&6줄 수")
+                        .setDisplayName("§6줄 수")
                         .setLegacyLore(List.of(
-                                "&e&l| &f현재 값: &6" + pageData.getRows(),
+                                "§e§l| §f현재 값: §6" + pageData.getRows(),
                                 "",
-                                "&e&l| &6좌클릭 &f시, 줄 수를 &c1 &f줄입니다.",
-                                "&e&l| &6우클릭 &f시, 줄 수를 &a1 &f늘립니다."
+                                "§e§l| §6좌클릭 §f시, 줄 수를 §c1 §f줄입니다.",
+                                "§e§l| §6우클릭 §f시, 줄 수를 §a1 §f늘립니다."
                         ))
                         .get()
         );
         inventory.setItem(23,
                 new ItemBuilder(Material.BARRIER)
-                        .setDisplayName("&c삭제")
+                        .setDisplayName("§c삭제")
                         .setLegacyLore(List.of(
-                                "&e&l| &6Shift+좌클릭 &f시, 페이지를 삭제합니다."
+                                "§e§l| §6Shift+좌클릭 §f시, 페이지를 삭제합니다."
                         ))
                         .get()
         );
@@ -87,7 +87,7 @@ public class ShopPageSettings extends BaseShopInventory {
                     .interactableSlots(AnvilGUI.Slot.OUTPUT)
                     .itemLeft(
                             new ItemBuilder(Material.PAPER)
-                                    .setDisplayName("&r")
+                                    .setDisplayName("§r")
                                     .get()
                     )
                     .onClick((clickedSlot, stateSnapshot) -> {

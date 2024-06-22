@@ -51,76 +51,76 @@ public class ShopSettings extends BaseShopInventory {
                         .setLegacyLore(List.of(
                                 "§e§l| §f현재 값: " + (shop.isEnabled() ? "§a활성화" : "§c비활성화"),
                                 "",
-                                "§e§l| §c비활성화 &f시, 관리자만 상점을 열 수 있습니다.",
-                                "&e&l| &6좌클릭 &f시, 값을 변경합니다."
+                                "§e§l| §c비활성화 §f시, 관리자만 상점을 열 수 있습니다.",
+                                "§e§l| §6좌클릭 §f시, 값을 변경합니다."
                         ))
                         .get()
         );
         inventory.setItem(21,
                 new ItemBuilder(Material.SHIELD)
-                        .setDisplayName("&6접근성")
+                        .setDisplayName("§6접근성")
                         .setLegacyLore(List.of(
-                                "&e&l| &f현재 값: &b" + shop.getAccessibility().getLabel(),
+                                "§e§l| §f현재 값: §b" + shop.getAccessibility().getLabel(),
                                 "",
-                                "&e&l| &b공개&7: &f퍼미션 없이 사용할 수 있습니다.",
-                                "&e&l| &b일부공개&7: &fNPC만 퍼미션 없이 사용할 수 있습니다.",
-                                "&e&l| &b비공개&7: &f퍼미션이 있어야 사용할 수 있습니다.",
-                                "&e&l| &6좌클릭 &f시, 값을 변경합니다."
+                                "§e§l| §b공개§7: §f퍼미션 없이 사용할 수 있습니다.",
+                                "§e§l| §b일부공개§7: §fNPC만 퍼미션 없이 사용할 수 있습니다.",
+                                "§e§l| §b비공개§7: §f퍼미션이 있어야 사용할 수 있습니다.",
+                                "§e§l| §6좌클릭 §f시, 값을 변경합니다."
                         ))
                         .get()
         );
         inventory.setItem(23,
                 new ItemBuilder(Material.EMERALD)
-                        .setDisplayName("&6거래 방식")
+                        .setDisplayName("§6거래 방식")
                         .setLegacyLore(List.of(
-                                "&e&l| &f현재 값: &b" + shop.getTransactionHandler().getName(),
+                                "§e§l| §f현재 값: §b" + shop.getTransactionHandler().getName(),
                                 "",
-                                "&e&l| &6좌클릭 &f시, 값을 변경합니다."
+                                "§e§l| §6좌클릭 §f시, 값을 변경합니다."
                         ))
                         .get()
         );
         inventory.setItem(24,
                 new ItemBuilder(Material.BARRIER)
-                        .setDisplayName("&c상점 삭제")
+                        .setDisplayName("§c상점 삭제")
                         .setLegacyLore(List.of(
-                                "&e&l| &6Shift+좌클릭 &f시, 상점을 삭제합니다."
+                                "§e§l| §6Shift+좌클릭 §f시, 상점을 삭제합니다."
                         ))
                         .get()
         );
         inventory.setItem(29,
                 new ItemBuilder(Material.CHEST)
-                        .setDisplayName("&6아이템 편집")
+                        .setDisplayName("§6아이템 편집")
                         .setLegacyLore(List.of(
-                                "&e&l| &6좌클릭 &f시, 아이템 편집기를 엽니다."
+                                "§e§l| §6좌클릭 §f시, 아이템 편집기를 엽니다."
                         ))
                         .get()
         );
         inventory.setItem(30,
                 new ItemBuilder(npcItem)
-                        .setDisplayName("&6NPC")
+                        .setDisplayName("§6NPC")
                         .setLegacyLore(List.of(
-                                "&e&l| &f현재 값: &6" + (shop.getNpc().isEmpty() ? "&c없음" : shop.getNpc()),
+                                "§e§l| §f현재 값: §6" + (shop.getNpc().isEmpty() ? "§c없음" : shop.getNpc()),
                                 "",
-                                "&e&l| &6좌클릭 &f시, 값을 변경합니다.",
-                                "&e&l| &6Shift+우클릭 &f시, 값을 초기화합니다."
+                                "§e§l| §6좌클릭 §f시, 값을 변경합니다.",
+                                "§e§l| §6Shift+우클릭 §f시, 값을 초기화합니다."
                         ))
                         .get()
         );
         inventory.setItem(32,
                 new ItemBuilder(Material.NAME_TAG)
-                        .setDisplayName("&6제목 - 기본값")
+                        .setDisplayName("§6제목 - 기본값")
                         .setLegacyLore(List.of(
-                                "&e&l| &f현재 값: &6" + shop.getGuiTitle(),
+                                "§e§l| §f현재 값: §6" + shop.getGuiTitle(),
                                 "",
-                                "&e&l| &6좌클릭 &f시, 값을 변경합니다."
+                                "§e§l| §6좌클릭 §f시, 값을 변경합니다."
                         ))
                         .get()
         );
         inventory.setItem(33,
                 new ItemBuilder(Material.NAME_TAG)
-                        .setDisplayName("&6제목 - 일괄변경")
+                        .setDisplayName("§6제목 - 일괄변경")
                         .setLegacyLore(List.of(
-                                "&e&l| &6좌클릭 &f시, 값을 변경합니다."
+                                "§e§l| §6좌클릭 §f시, 값을 변경합니다."
                         ))
                         .get()
         );
