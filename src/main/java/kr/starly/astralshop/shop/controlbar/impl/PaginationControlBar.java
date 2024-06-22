@@ -39,8 +39,8 @@ public class PaginationControlBar implements ControlBar {
         ItemStack item1 = new ItemStack(Material.valueOf("RED_STAINED_GLASS_PANE"));
         ItemStack item2 = new ItemStack(Material.valueOf("BLUE_STAINED_GLASS_PANE"));
 
-        inventory.setItem(controlBarSlot, createControlItem(item1, "&d이전 페이지", hasPrevPage));
-        inventory.setItem(controlBarSlot + 8, createControlItem(item2, "&d다음 페이지", hasNextPage));
+        inventory.setItem(controlBarSlot, createControlItem(item1, "§d이전 페이지", hasPrevPage));
+        inventory.setItem(controlBarSlot + 8, createControlItem(item2, "§d다음 페이지", hasNextPage));
     }
 
     private void setupPageItems(Inventory inventory, int controlBarSlot) {
@@ -69,7 +69,7 @@ public class PaginationControlBar implements ControlBar {
                 pageNumber + " 페이지",
                 pageNumber == paginationHelper.getCurrentPage(),
                 modifiable ? new String[]{
-                        "&e&l| &6Shift+좌클릭 &f시, 페이지 속성창이 열립니다.",
+                        "§e§l| §6Shift+좌클릭 &f시, 페이지 속성창이 열립니다.",
                         "&e&l| &6Shift+우클릭 &f시, 페이지를 삭제합니다."
                 } : new String[]{}
         );

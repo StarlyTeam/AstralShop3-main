@@ -34,7 +34,7 @@ public class ShopSettings extends BaseShopInventory {
         ItemStack item = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
         setOutline(
                 new ItemBuilder(item)
-                        .setDisplayName("&r")
+                        .setDisplayName("§r")
                         .get()
         );
     }
@@ -47,11 +47,11 @@ public class ShopSettings extends BaseShopInventory {
 
         inventory.setItem(20,
                 new ItemBuilder(enableStatusItem)
-                        .setDisplayName("&6활성화")
+                        .setDisplayName("§6활성화")
                         .setLegacyLore(List.of(
-                                "&e&l| &f현재 값: " + (shop.isEnabled() ? "&a활성화" : "&c비활성화"),
+                                "§e§l| §f현재 값: " + (shop.isEnabled() ? "§a활성화" : "§c비활성화"),
                                 "",
-                                "&e&l| &c비활성화 &f시, 관리자만 상점을 열 수 있습니다.",
+                                "§e§l| §c비활성화 &f시, 관리자만 상점을 열 수 있습니다.",
                                 "&e&l| &6좌클릭 &f시, 값을 변경합니다."
                         ))
                         .get()

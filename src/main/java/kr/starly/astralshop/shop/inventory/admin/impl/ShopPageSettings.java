@@ -33,7 +33,7 @@ public class ShopPageSettings extends BaseShopInventory {
         ItemStack item = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
         setOutline(
                 new ItemBuilder(item)
-                        .setDisplayName("&r")
+                        .setDisplayName("§r")
                         .get()
         );
 
@@ -44,9 +44,9 @@ public class ShopPageSettings extends BaseShopInventory {
     protected void initializeInventory(Inventory inventory, Player player) {
         inventory.setItem(21,
                 new ItemBuilder(Material.NAME_TAG)
-                        .setDisplayName("&6페이지 제목")
+                        .setDisplayName("§6페이지 제목")
                         .setLegacyLore(List.of(
-                                "&e&l| &f현재 값: &6" + pageData.getGuiTitle(),
+                                "§e§l| §f현재 값: §6" + pageData.getGuiTitle(),
                                 "",
                                 "&e&l| &6좌클릭 &f시, 값을 변경합니다."
                         ))

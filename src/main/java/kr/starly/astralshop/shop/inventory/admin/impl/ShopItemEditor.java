@@ -38,7 +38,7 @@ public class ShopItemEditor extends BaseShopInventory {
         ItemStack item = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
         setOutline(
                 new ItemBuilder(item)
-                        .setDisplayName("&r")
+                        .setDisplayName("§r")
                         .get()
         );
 
@@ -66,8 +66,8 @@ public class ShopItemEditor extends BaseShopInventory {
         Material hideLoreMaterial = Material.valueOf("OAK_SIGN");
 
         List<String> commandsLore = new ArrayList<>();
-        itemData.getCommands().forEach((commandLine) -> commandsLore.add("&b&l| &f" + commandLine));
-        if (commandsLore.isEmpty()) commandsLore.add("&b&l| &c없음");
+        itemData.getCommands().forEach((commandLine) -> commandsLore.add("§b§l| §f" + commandLine));
+        if (commandsLore.isEmpty()) commandsLore.add("§b§l| §c없음");
         commandsLore.add("");
         commandsLore.add("&e&l| &6좌클릭 &f시, 명령어 편집기를 엽니다.");
 

@@ -41,7 +41,7 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
     @Override
     protected void initializeInventory(Inventory inventory, Player player) {
         ItemStack grayGlassPane = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
-        grayGlassPane = new ItemBuilder(grayGlassPane).setDisplayName("&r").get();
+        grayGlassPane = new ItemBuilder(grayGlassPane).setDisplayName("§r").get();
 
         Material commandMaterial = Material.valueOf("REPEATING_COMMAND_BLOCK");
 
@@ -50,9 +50,9 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
             String commandLine = commands.get(i);
             inventory.setItem(i,
                     new ItemBuilder(commandMaterial)
-                            .setDisplayName("&6" + (i + 1) + "번 &f명령어")
+                            .setDisplayName("§6" + (i + 1) + "번 §f명령어")
                             .setLegacyLore(List.of(
-                                    "&e&l| &f현재 값: &6" + commandLine,
+                                    "§e§l| §f현재 값: §6" + commandLine,
                                     "",
                                     "&e&l| &6좌클릭 &f시, 값을 변경합니다.",
                                     "&e&l| &6Shift+우클릭 &f시, 삭제합니다."
