@@ -1,4 +1,4 @@
-package kr.starly.astralshop.shop.inventory.admin;
+package kr.starly.astralshop.shop.inventory.old;
 
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.shop.Shop;
@@ -6,9 +6,6 @@ import kr.starly.astralshop.api.shop.ShopPage;
 import kr.starly.astralshop.shop.ShopPageImpl;
 import kr.starly.astralshop.shop.controlbar.ControlBar;
 import kr.starly.astralshop.shop.controlbar.impl.PaginationControlBar;
-import kr.starly.astralshop.shop.inventory.BaseShopPaginatedInventory;
-import kr.starly.astralshop.shop.inventory.PaginationHelper;
-import kr.starly.astralshop.shop.inventory.admin.impl.ShopPageSettings;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -96,9 +93,6 @@ public abstract class AdminPaginatedShopInventory extends BaseShopPaginatedInven
 
         if (click == ClickType.LEFT) {
             paginationManager.setCurrentPage(targetPage);
-        } else if (click == ClickType.SHIFT_LEFT) {
-            new ShopPageSettings(shop, shop.getShopPages().get(targetPage - 1)).open(player);
-            return;
         } else if (click == ClickType.SHIFT_RIGHT) {
             List<ShopPage> pages = paginationManager.getPages();
             if (pages.size() == 1) return;
@@ -116,9 +110,9 @@ public abstract class AdminPaginatedShopInventory extends BaseShopPaginatedInven
     }
 
     private void handleCreatePageInteraction(Player player, PaginationHelper paginationHelper) {
-        shop.getShopPages().add(new ShopPageImpl(paginationHelper.getTotalPages() + 1, shop.getGuiTitle(), 6, new HashMap<>()));
+        shop.getShopPages().add(new ShopPageImpl(paginationHelper.getTotalPages() + 1, new HashMap<>()));
 
-        paginationManager.setCurrentPage(paginationHelper.getTotalPages() + 1);
+        paginationManager.setCurrentPage(paginationHelper.getTotalPages());
         updateInventory(player);
     }
 

@@ -1,4 +1,4 @@
-package kr.starly.astralshop.shop.inventory;
+package kr.starly.astralshop.shop.inventory.old;
 
 import kr.starly.astralshop.api.shop.ShopPage;
 import lombok.AllArgsConstructor;

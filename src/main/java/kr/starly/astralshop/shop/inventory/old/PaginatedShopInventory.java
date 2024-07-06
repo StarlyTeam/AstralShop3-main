@@ -1,8 +1,6 @@
-package kr.starly.astralshop.shop.inventory.global;
+package kr.starly.astralshop.shop.inventory.old;
 
-import kr.starly.astralshop.api.shop.Shop;
-import kr.starly.astralshop.shop.inventory.BaseShopPaginatedInventory;
-import kr.starly.astralshop.shop.inventory.PaginationHelper;
+import kr.starly.astralshop.api.shop.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -12,7 +10,7 @@ import org.bukkit.inventory.Inventory;
 public abstract class PaginatedShopInventory extends BaseShopPaginatedInventory {
 
     public PaginatedShopInventory(Shop shop) {
-        super(shop, shop.getGuiTitle(), shop.getShopPages().get(0).getRows(), true);
+        super(shop, shop.getGuiTitle(), shop.getRows(), true);
     }
 
     @Override

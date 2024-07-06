@@ -25,14 +25,12 @@ public class ShopYamlSerializer {
         config.set("shop.enabled", shop.isEnabled());
         config.set("shop.accessibility", shop.getAccessibility().name());
         config.set("shop.gui_title", shop.getGuiTitle());
-        config.set("shop.npc", shop.getNpc());
+        config.set("shop.rows", shop.getRows());
         config.set("shop.transaction_handler", shop.getTransactionHandler().getName());
 
         int index = 1;
         for (ShopPage page : shop.getShopPages()) {
             String basePath = "pages.page_" + index;
-            config.set(basePath + ".gui_title", page.getGuiTitle());
-            config.set(basePath + ".gui_rows", page.getRows());
 
             Map<Integer, ShopItem> items = page.getItems();
             for (Map.Entry<Integer, ShopItem> entry : items.entrySet()) {
@@ -54,9 +52,9 @@ public class ShopYamlSerializer {
                 config.getString("shop.accessibility")
         );
         String guiTitle = config.getString("shop.gui_title");
-        String npc = config.getString("shop.npc");
-        String transactionHandlerName = config.getString("shop.transaction_handler");
+        int rows = config.getInt("shop.rows");
 
+        String transactionHandlerName = config.getString("shop.transaction_handler");
         TransactionHandlerRegistry transactionHandlerRegistry = AstralShop.getInstance().getTransactionHandlerRegistry();
         TransactionHandler transactionHandler = transactionHandlerRegistry.getHandler(transactionHandlerName);
         if (transactionHandler == null) transactionHandler = transactionHandlerRegistry.getHandler("기본");
@@ -65,8 +63,6 @@ public class ShopYamlSerializer {
         int index = 1;
         while (config.contains("pages.page_" + index)) {
             String basePath = "pages.page_" + index;
-            String pageGuiTitle = config.getString(basePath + ".gui_title");
-            int pageRows = config.getInt(basePath + ".gui_rows");
 
             Map<Integer, ShopItem> items = new HashMap<>();
             ConfigurationSection itemsSection = config.getConfigurationSection(basePath + ".items");
@@ -77,11 +73,11 @@ public class ShopYamlSerializer {
                 }
             }
 
-            ShopPage page = new ShopPageImpl(index, pageGuiTitle, pageRows, items);
+            ShopPage page = new ShopPageImpl(index, items);
             pages.add(page);
             index++;
         }
 
-        return new ShopImpl(name, enabled, accessibility, guiTitle, npc, transactionHandler, pages);
+        return new ShopImpl(name, enabled, accessibility, guiTitle, rows, transactionHandler, pages);
     }
 }

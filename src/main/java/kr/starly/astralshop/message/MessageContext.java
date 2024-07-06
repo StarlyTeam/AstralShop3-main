@@ -1,15 +1,18 @@
 package kr.starly.astralshop.message;
 
+import kr.starly.libs.inventory.access.component.AdventureComponentWrapper;
+import kr.starly.libs.inventory.access.component.ComponentWrapper;
 import kr.starly.libs.util.Pair;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class MessageContext {
 
@@ -31,13 +34,13 @@ public class MessageContext {
         Arrays.stream(MessageType.values()).forEach(messageType -> {
             ConfigurationSection section = config.getConfigurationSection(messageType.getKey());
             if (section != null) {
-                section.getKeys(true).forEach(key -> set(messageType, key, section.getString(key)));
+                section.getKeys(false).forEach(key -> set(messageType, key, section.getString(key)));
             }
         });
     }
 
     public STMessage get(MessageType type, String key, String orElse) {
-        return new STMessage(getPrefix(), map.getOrDefault(new Pair<>(type, key), orElse));
+        return new STMessage(getPrefix(), map.getOrDefault(Pair.of(type, key), orElse));
     }
 
     public STMessage get(MessageType type, String key) {
@@ -53,14 +56,26 @@ public class MessageContext {
     }
 
     public void set(MessageType type, String key, String value) {
-        map.put(new Pair<>(type, key), value);
+        map.put(Pair.of(type, key), value);
     }
 
     public String getOnlyString(MessageType type, String key) {
-        return map.getOrDefault(new Pair<>(type, key), "");
+        return map.getOrDefault(Pair.of(type, key), "");
     }
 
     public String getPrefix() {
-        return map.getOrDefault(new Pair<>(MessageType.NONE, "prefix"), "");
+        return map.getOrDefault(Pair.of(MessageType.NONE, "prefix"), "");
+    }
+
+
+    public static String INFO_PREFIX = "<b><white>[<i><#FFCC00>!</i><white>]</b> ";
+    public static String CONTROL_PREFIX = "<b><white>[<i><#F6904E>!</i><white>]</b> ";
+
+    public static ComponentWrapper parseMessage(String message) {
+        return new AdventureComponentWrapper(MiniMessage.miniMessage().deserialize(message));
+    }
+
+    public static List<ComponentWrapper> parseMessage(String... lines) {
+        return Arrays.stream(lines).map((line) -> new AdventureComponentWrapper(MiniMessage.miniMessage().deserialize(line))).collect(Collectors.toList());
     }
 }

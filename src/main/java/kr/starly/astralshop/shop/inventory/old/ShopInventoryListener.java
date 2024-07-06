@@ -1,14 +1,12 @@
-package kr.starly.astralshop.listener;
+package kr.starly.astralshop.shop.inventory.old;
 
-import kr.starly.astralshop.shop.inventory.BaseShopInventory;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryEvent;
-import org.bukkit.inventory.InventoryHolder;
 
-public class AdminShopInventoryListener implements Listener {
+public class ShopInventoryListener implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {

@@ -1,13 +1,16 @@
-package kr.starly.astralshop.shop.inventory.admin.impl;
+package kr.starly.astralshop.shop.inventory;
 
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.repository.ShopRepository;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopItem;
 import kr.starly.astralshop.api.shop.ShopPage;
-import kr.starly.astralshop.shop.inventory.BaseShopInventory;
+import kr.starly.astralshop.shop.inventory.old.BaseShopInventory;
+import kr.starly.libs.inventory.gui.Gui;
 import kr.starly.libs.inventory.item.builder.ItemBuilder;
-import net.wesjd.anvilgui.AnvilGUI;
+import kr.starly.libs.inventory.window.AnvilWindow;
+import kr.starly.libs.scheduler.Do;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -16,8 +19,9 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import static kr.starly.astralshop.message.MessageContext.*;
 
 public class ShopItemCommandsEditor extends BaseShopInventory {
 
@@ -40,33 +44,32 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
 
     @Override
     protected void initializeInventory(Inventory inventory, Player player) {
-        ItemStack grayGlassPane = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
-        grayGlassPane = new ItemBuilder(grayGlassPane).setDisplayName("§r").get();
-
-        Material commandMaterial = Material.valueOf("REPEATING_COMMAND_BLOCK");
+        ItemStack border = new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE)
+                .setDisplayName(parseMessage(""))
+                .get();
 
         List<String> commands = itemData.getCommands();
         for (int i = 0; i < Math.min(45, commands.size()); i++) {
             String commandLine = commands.get(i);
             inventory.setItem(i,
-                    new ItemBuilder(commandMaterial)
-                            .setDisplayName("§6" + (i + 1) + "번 §f명령어")
+                    new ItemBuilder(Material.REPEATING_COMMAND_BLOCK)
+                            .setDisplayName(parseMessage("<b><gold>%d번 명령어</b>".formatted(i + 1)))
                             .setLegacyLore(List.of(
-                                    "§e§l| §r§f현재 값: §6" + commandLine,
+                                    INFO_PREFIX + "<white>현재 값: <aqua>" + commandLine,
                                     "",
-                                    "§e§l| §r§6좌클릭 §f시, 값을 변경합니다.",
-                                    "§e§l| §r§6Shift+우클릭 §f시, 삭제합니다."
+                                    CONTROL_PREFIX + "<gold>좌클릭 <white>시, 값을 변경합니다.",
+                                    CONTROL_PREFIX + "<gold>Shift+우클릭 <white>시, 삭제합니다."
                             ))
                             .get()
             );
         }
 
-        for (int i = 45; i < 53; i++) inventory.setItem(i, grayGlassPane);
+        for (int i = 45; i < 53; i++) inventory.setItem(i, border);
         inventory.setItem(53,
                 new ItemBuilder(Material.IRON_PICKAXE)
-                        .setDisplayName("§a명령어 추가")
+                        .setDisplayName(parseMessage("<green>명령어 추가"))
                         .setLegacyLore(List.of(
-                                "§e§l| §r§6좌클릭 §f시, 명령어를 추가합니다."
+                                CONTROL_PREFIX + "<gold>좌클릭 <white>시, 명령어를 추가합니다."
                         ))
                         .get()
         );
@@ -83,29 +86,29 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
         ClickType click = event.getClick();
         if (slot >= 0 && slot < 45 && click == ClickType.LEFT) {
             setEventListening(false);
-            new AnvilGUI.Builder()
-                    .title("변경할 명령어를 입력해주세요.")
-                    .plugin(plugin)
-                    .interactableSlots(AnvilGUI.Slot.OUTPUT)
-                    .itemLeft(
-                            new ItemBuilder(Material.PAPER)
-                                    .setDisplayName("§r")
-                                    .get()
-                    )
-                    .onClick((clickedSlot, stateSnapshot) -> {
-                        if (clickedSlot != AnvilGUI.Slot.OUTPUT) return new ArrayList<>();
-
-                        String newCommand = stateSnapshot.getText();
-                        if (newCommand.startsWith("/")) newCommand = newCommand.substring(1);
-                        itemData.getCommands().set(slot, newCommand);
-
-                        return List.of(AnvilGUI.ResponseAction.close());
-                    })
-                    .onClose((stateSnapshot) -> {
-                        setEventListening(true);
-                        open(player);
-                    })
-                    .open(player);
+//            new AnvilGUI.Builder() TODO TODO TODO TODO TODO TODO
+//                    .title("변경할 명령어를 입력해주세요.")
+//                    .plugin(plugin)
+//                    .interactableSlots(AnvilGUI.Slot.OUTPUT)
+//                    .itemLeft(
+//                            new ItemBuilder(Material.PAPER)
+//                                    .setDisplayName("§r")
+//                                    .get()
+//                    )
+//                    .onClick((clickedSlot, stateSnapshot) -> {
+//                        if (clickedSlot != AnvilGUI.Slot.OUTPUT) return new ArrayList<>();
+//
+//                        String newCommand = stateSnapshot.getText();
+//                        if (newCommand.startsWith("/")) newCommand = newCommand.substring(1);
+//                        itemData.getCommands().set(slot, newCommand);
+//
+//                        return List.of(AnvilGUI.ResponseAction.close());
+//                    })
+//                    .onClose((stateSnapshot) -> {
+//                        setEventListening(true);
+//                        open(player);
+//                    })
+//                    .open(player);
             return;
         } else if (slot >= 0 && slot < 45 && click == ClickType.SHIFT_RIGHT) {
             itemData.getCommands().remove(slot);
@@ -113,28 +116,24 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
             if (itemData.getCommands().size() >= 45) return;
 
             setEventListening(false);
-            new AnvilGUI.Builder()
-                    .title("추가할 명령어를 입력해주세요.")
-                    .plugin(plugin)
-                    .interactableSlots(AnvilGUI.Slot.OUTPUT)
-                    .itemLeft(
-                            new ItemBuilder(Material.PAPER)
-                                    .setDisplayName("§r")
-                                    .get()
-                    )
-                    .onClick((clickedSlot, stateSnapshot) -> {
-                        if (clickedSlot != AnvilGUI.Slot.OUTPUT) return new ArrayList<>();
 
-                        String newCommand = stateSnapshot.getText();
+            Gui gui = Gui.normal()
+                    .setStructure("x . .")
+                    .addIngredient('x', new ItemBuilder(Material.PAPER).setDisplayName("/"))
+                    .build();
+
+            AnvilWindow.single()
+                    .setGui(gui)
+                    .setTitle("명령어를 입력 후 닫아주세요.")
+                    .addRenameHandler((newCommand) -> {
                         if (newCommand.startsWith("/")) newCommand = newCommand.substring(1);
                         itemData.getCommands().add(newCommand);
-
-                        return List.of(AnvilGUI.ResponseAction.close());
                     })
-                    .onClose((stateSnapshot) -> {
+                    .addCloseHandler(() -> Do.syncLater(1, () -> {
                         setEventListening(true);
                         open(player);
-                    })
+                    }))
+                    .addCloseHandler(() -> Do.async(ShopItemCommandsEditor.this::saveShop))
                     .open(player);
             return;
         }
@@ -145,10 +144,10 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
 
     @Override
     protected void inventoryClose(InventoryCloseEvent event) {
-        shopRepository.saveShop(shop);
+        saveShop();
 
         setEventListening(false);
-        new ShopItemEditor(shop, page, slot).open((Player) event.getPlayer());
+        Do.syncLater(1, () -> new ShopItemEditor((Player) event.getPlayer(), shop, page, slot).open());
     }
 
     @Override

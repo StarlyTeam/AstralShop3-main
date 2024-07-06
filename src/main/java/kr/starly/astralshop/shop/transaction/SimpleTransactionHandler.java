@@ -5,10 +5,11 @@ import kr.starly.astralshop.api.addon.TransactionHandler;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopItem;
 import kr.starly.astralshop.api.shop.ShopTransaction;
-import kr.starly.astralshop.message.MessageType;
-import kr.starly.astralshop.shop.ShopTransactionImpl;
 import kr.starly.astralshop.api.shop.ShopTransactionType;
 import kr.starly.astralshop.message.MessageContext;
+import kr.starly.astralshop.message.MessageType;
+import kr.starly.astralshop.shop.ShopTransactionImpl;
+import kr.starly.libs.inventory.item.Click;
 import kr.starly.libs.inventory.item.builder.ItemBuilder;
 import kr.starly.libs.nms.NmsMultiVersion;
 import net.kyori.adventure.text.Component;
@@ -18,7 +19,6 @@ import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static kr.starly.astralshop.message.MessageContext.*;
 
 public class SimpleTransactionHandler implements TransactionHandler {
 
@@ -52,34 +54,34 @@ public class SimpleTransactionHandler implements TransactionHandler {
     }
 
     @Override
-    public ShopTransaction handleClick(InventoryClickEvent event, Shop shop, int page, int slot, ShopItem item) {
+    public ShopTransaction handleClick(Click click, Shop shop, int page, int slot, ShopItem item) {
         MessageContext messageContext = MessageContext.getInstance();
-        Player player = (Player) event.getWhoClicked();
+        Player player = click.getPlayer();
         Date date = new Date();
 
-        return switch (event.getClick()) {
+        return switch (click.getClickType()) {
             case LEFT, SHIFT_LEFT -> {
                 if (item.getBuyPrice() < 0) {
                     if (!item.isMarker()) {
-                        messageContext.get(MessageType.ERROR, "simple-handler.cannotBuy").send(player);
+                        messageContext.get(MessageType.SIMPLE_HANDLER, "cannotBuy").send(player);
                     }
 
                     yield null;
                 }
 
-                yield new ShopTransactionImpl(player, ShopTransactionType.BUY, date, shop, page, slot, item, event.getClick().isShiftClick() ? 64 : 1);
+                yield new ShopTransactionImpl(player, ShopTransactionType.BUY, date, shop, page, slot, item, click.getClickType().isShiftClick() ? 64 : 1);
             }
 
             case RIGHT, SHIFT_RIGHT -> {
                 if (item.getSellPrice() < 0) {
                     if (!item.isMarker()) {
-                        messageContext.get(MessageType.ERROR, "simple-handler.cannotSell").send(player);
+                        messageContext.get(MessageType.SIMPLE_HANDLER, "cannotSell").send(player);
                     }
 
                     yield null;
                 }
 
-                yield new ShopTransactionImpl(player, ShopTransactionType.SELL, date, shop, page, slot, item, event.getClick().isShiftClick() ? 64 : 1);
+                yield new ShopTransactionImpl(player, ShopTransactionType.SELL, date, shop, page, slot, item, click.getClickType().isShiftClick() ? 64 : 1);
             }
 
             default -> null;
@@ -115,7 +117,7 @@ public class SimpleTransactionHandler implements TransactionHandler {
 
                 int toAdd = Math.min(amount, (int) (economy.getBalance(player) / itemData.getBuyPrice()));
                 if (toAdd != 0) {
-                   if (itemData.getRemainStock() >= 0) {
+                    if (itemData.getRemainStock() >= 0) {
                         int toAdd1 = Math.min(toAdd, itemData.getRemainStock());
                         if (toAdd != toAdd1) {
                             toAdd = toAdd1;
@@ -141,7 +143,7 @@ public class SimpleTransactionHandler implements TransactionHandler {
                 double finalPrice = totalBought * itemData.getBuyPrice();
                 int finalTotalBought = totalBought;
                 if (totalBought == amount) {
-                    messageContext.get(MessageType.NORMAL, "simple-handler.itemBought1", TagResolver.builder()
+                    messageContext.get(MessageType.SIMPLE_HANDLER, "itemBought1", TagResolver.builder()
                             .tag("name", Tag.inserting(Component.text(
                                     NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))))
                             .tag("price", Tag.inserting(Component.text(
@@ -153,16 +155,16 @@ public class SimpleTransactionHandler implements TransactionHandler {
                             .build()
                     ).send(player);
                 } else if (totalBought == 0) {
-                    if (isStockOut) messageContext.get(MessageType.ERROR, "simple-handler.failedToBuy1").send(player);
-                    else if (isFull) messageContext.get(MessageType.ERROR, "simple-handler.failedToBuy2").send(player);
-                    else messageContext.get(MessageType.ERROR, "simple-handler.failedToBuy3").send(player);
+                    if (isStockOut) messageContext.get(MessageType.SIMPLE_HANDLER, "failedToBuy1").send(player);
+                    else if (isFull) messageContext.get(MessageType.SIMPLE_HANDLER, "failedToBuy2").send(player);
+                    else messageContext.get(MessageType.SIMPLE_HANDLER, "failedToBuy3").send(player);
                 } else {
                     String key;
-                    if (isStockOut) key = "simple-handler.itemBought2";
-                    else if (isFull) key = "simple-handler.itemBought3";
-                    else key = "simple-handler.itemBought4";
+                    if (isStockOut) key = "itemBought2";
+                    else if (isFull) key = "itemBought3";
+                    else key = "itemBought4";
 
-                    messageContext.get(MessageType.NORMAL, key, TagResolver.builder()
+                    messageContext.get(MessageType.SIMPLE_HANDLER, key, TagResolver.builder()
                             .tag("name", Tag.inserting(Component.text(
                                     NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))))
                             .tag("price", Tag.inserting(Component.text(
@@ -208,7 +210,7 @@ public class SimpleTransactionHandler implements TransactionHandler {
 
                 double finalPrice = totalSold.get() * itemData.getSellPrice();
                 if (totalSold.get() == amount) {
-                    messageContext.get(MessageType.NORMAL, "simple-handler.itemSold1", TagResolver.builder()
+                    messageContext.get(MessageType.SIMPLE_HANDLER, "itemSold1", TagResolver.builder()
                             .tag("name", Tag.inserting(Component.text(
                                     NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))))
                             .tag("price", Tag.inserting(Component.text(
@@ -221,16 +223,16 @@ public class SimpleTransactionHandler implements TransactionHandler {
                     ).send(player);
                 } else if (totalSold.get() == 0) {
                     if (isStockFull.get()) {
-                        messageContext.get(MessageType.ERROR, "simple-handler.failedToSell1").send(player);
+                        messageContext.get(MessageType.SIMPLE_HANDLER, "failedToSell1").send(player);
                     } else {
-                        messageContext.get(MessageType.ERROR, "simple-handler.failedToSell2").send(player);
+                        messageContext.get(MessageType.SIMPLE_HANDLER, "failedToSell2").send(player);
                     }
                 } else {
                     String key;
-                    if (isStockFull.get()) key = "simple-handler.itemSold2";
-                    else key = "simple-handler.itemSold3";
+                    if (isStockFull.get()) key = "itemSold2";
+                    else key = "itemSold3";
 
-                    messageContext.get(MessageType.NORMAL, key, TagResolver.builder()
+                    messageContext.get(MessageType.SIMPLE_HANDLER, key, TagResolver.builder()
                             .tag("name", Tag.inserting(Component.text(
                                     NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))))
                             .tag("price", Tag.inserting(Component.text(
@@ -256,15 +258,15 @@ public class SimpleTransactionHandler implements TransactionHandler {
         int stock = item.getStock();
         int remainStock = item.getRemainStock();
         return new ItemBuilder(item.getItemStack().clone())
-                .setLegacyLore(item.isMarker() ? new ArrayList<>() : List.of(
-                        "§e§l| §r§f구매가격: " + (buyPrice == 0 ? "§b무료" : (buyPrice < 0 ? "§c구매불가" : "§6" + buyPrice)),
-                        "§e§l| §r§f판매가격: " + (sellPrice == 0 ? "§b무료" : (sellPrice < 0 ? "§c판매불가" : "§6" + sellPrice)),
-                        "§e§l| §r§f재고: " + (remainStock < 0 ? "§b무제한" : "§6" + remainStock + "§7/§6" + stock),
-                        "§r",
-                        "§e§l| §6좌클릭 §f시, 아이템 §61§f개를 구매합니다.",
-                        "§e§l| §6Shift+좌클릭 §f시, 아이템 §664§f개를 구매합니다.",
-                        "§e§l| §6우클릭 §f시, 아이템 §61§f개를 판매합니다.",
-                        "§e§l| §6Shift+우클릭 §f시, 아이템 §664§f개를 판매합니다."
+                .setLore(item.isMarker() ? new ArrayList<>() : parseMessage(
+                        INFO_PREFIX + "<white>구매가격: " + (buyPrice == 0 ? "<aqua>무료" : (buyPrice < 0 ? "<red>구매불가" : "<gold>" + buyPrice)),
+                        INFO_PREFIX + "<white>판매가격: " + (sellPrice == 0 ? "<aqua>무료" : (sellPrice < 0 ? "<red>판매불가" : "<gold>" + sellPrice)),
+                        INFO_PREFIX + "<white>재고: " + (remainStock < 0 ? "<aqua>무제한" : "<gold>" + remainStock + "<gray>/<gold>" + stock),
+                        "",
+                        CONTROL_PREFIX + "<gold>좌클릭 <white>시, 아이템 <gold>1<white>개를 구매합니다.",
+                        CONTROL_PREFIX + "<gold>Shift+좌클릭 <white>시, 아이템 <gold>64<white>개를 구매합니다.",
+                        CONTROL_PREFIX + "<gold>우클릭 <white>시, 아이템 <gold>1<white>개를 판매합니다.",
+                        CONTROL_PREFIX + "<gold>Shift+우클릭 <white>시, 아이템 <gold>64<white>개를 판매합니다."
                 ))
                 .get();
     }

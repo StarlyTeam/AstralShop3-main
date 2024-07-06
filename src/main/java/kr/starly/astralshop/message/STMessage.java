@@ -23,7 +23,8 @@ public class STMessage {
     }
 
     public void send(CommandSender sender) {
-        sender.sendMessage(getText());
+        Component text = getText();
+        if (text != null) sender.sendMessage(text);
     }
 
     public void broadcast() {
@@ -31,6 +32,6 @@ public class STMessage {
     }
 
     public Component getText() {
-        return MiniMessage.miniMessage().deserialize(prefix + message, replacer);
+        return message.isEmpty() ? null : MiniMessage.miniMessage().deserialize(prefix + message, replacer);
     }
 }

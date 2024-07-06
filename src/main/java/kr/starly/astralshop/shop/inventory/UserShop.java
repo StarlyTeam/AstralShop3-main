@@ -1,4 +1,4 @@
-package kr.starly.astralshop.shop.inventory.global.impl;
+package kr.starly.astralshop.shop.inventory;
 
 import kr.starly.astralshop.api.addon.TransactionHandler;
 import kr.starly.astralshop.api.event.ShopTransactionEvent;
@@ -7,8 +7,9 @@ import kr.starly.astralshop.api.shop.ShopItem;
 import kr.starly.astralshop.api.shop.ShopTransaction;
 import kr.starly.astralshop.shop.controlbar.ControlBar;
 import kr.starly.astralshop.shop.controlbar.impl.PaginationControlBar;
-import kr.starly.astralshop.shop.inventory.PaginationHelper;
-import kr.starly.astralshop.shop.inventory.global.PaginatedShopInventory;
+import kr.starly.astralshop.shop.inventory.old.PaginatedShopInventory;
+import kr.starly.astralshop.shop.inventory.old.PaginationHelper;
+import kr.starly.libs.inventory.item.Click;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -56,7 +57,7 @@ public class UserShop extends PaginatedShopInventory {
 
         // Transaction
         TransactionHandler transactionHandler = shop.getTransactionHandler();
-        ShopTransaction transaction = transactionHandler.handleClick(event, shop, currentPage, clickedSlot, shopItem);
+        ShopTransaction transaction = transactionHandler.handleClick(new Click(event), shop, currentPage, clickedSlot, shopItem);
         if (transaction != null && transaction.getPlayer() == player) {
             ShopTransactionEvent transactionEvent = new ShopTransactionEvent(transaction);
             plugin.getServer().getPluginManager().callEvent(transactionEvent);

@@ -1,4 +1,4 @@
-package kr.starly.astralshop.shop.inventory.admin.impl;
+package kr.starly.astralshop.shop.inventory;
 
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.repository.ShopRepository;
@@ -6,7 +6,8 @@ import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopItem;
 import kr.starly.astralshop.api.shop.ShopPage;
 import kr.starly.astralshop.shop.ShopItemImpl;
-import kr.starly.astralshop.shop.inventory.admin.AdminPaginatedShopInventory;
+import kr.starly.astralshop.shop.inventory.old.AdminPaginatedShopInventory;
+import kr.starly.libs.scheduler.Do;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -19,12 +20,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ShopEditor extends AdminPaginatedShopInventory {
+public class ShopItemsEditor extends AdminPaginatedShopInventory {
 
     private final ShopRepository shopRepository = AstralShop.getInstance().getShopRepository();
 
-    public ShopEditor(Shop shop) {
-        super(shop, shop.getGuiTitle(), shop.getShopPages().get(0).getRows(), false);
+    public ShopItemsEditor(Shop shop) {
+        super(shop, shop.getGuiTitle(), shop.getRows(), false);
+    }
+
+    public ShopItemsEditor(Shop shop, int page) {
+        this(shop);
+        getPaginationManager().setCurrentPage(page);
     }
 
     @Override
@@ -38,7 +44,7 @@ public class ShopEditor extends AdminPaginatedShopInventory {
             savePage(inventory);
 
             setEventListening(false);
-            new ShopItemEditor(shop, paginationManager.getCurrentPage(), event.getSlot()).open(player);
+            Do.syncLater(1, () -> new ShopItemEditor(player, shop, paginationManager.getCurrentPage(), event.getSlot()).open());
         }
     }
 
@@ -56,7 +62,7 @@ public class ShopEditor extends AdminPaginatedShopInventory {
     @Override
     protected void inventoryClose(InventoryCloseEvent event) {
         setEventListening(false);
-        new ShopSettings(shop).open((Player) event.getPlayer());
+        Do.syncLater(1, () -> new ShopSettings((Player) event.getPlayer(), shop).open());
 
         Inventory inventory = event.getInventory();
         savePage(inventory);

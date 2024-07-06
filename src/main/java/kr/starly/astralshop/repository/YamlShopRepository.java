@@ -95,8 +95,8 @@ public class YamlShopRepository implements ShopRepository {
 
         TransactionHandler transactionHandler = AstralShop.getInstance().getTransactionHandlerRegistry().getHandler("기본");
         List<ShopPage> shopPages = new ArrayList<>();
-        Shop newShop = new ShopImpl(name, false, ShopAccessibility.PRIVATE, name, "", transactionHandler, shopPages);
-        shopPages.add(new ShopPageImpl(1, newShop.getGuiTitle(), 6, new HashMap<>()));
+        Shop newShop = new ShopImpl(name, false, ShopAccessibility.NONE, name, 6, transactionHandler, shopPages);
+        shopPages.add(new ShopPageImpl(1, new HashMap<>()));
 
         File shopFile = new File(shopFolder, name + ".yml");
         if (shopFile.exists()) {

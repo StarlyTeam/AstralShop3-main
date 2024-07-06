@@ -1,7 +1,8 @@
 package kr.starly.astralshop.shop.controlbar.impl;
 
 import kr.starly.astralshop.shop.controlbar.ControlBar;
-import kr.starly.astralshop.shop.inventory.PaginationHelper;
+import kr.starly.astralshop.shop.inventory.old.PaginationHelper;
+import kr.starly.libs.inventory.item.builder.ItemBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.ChatColor;
@@ -15,6 +16,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static kr.starly.astralshop.message.MessageContext.CONTROL_PREFIX;
+import static kr.starly.astralshop.message.MessageContext.parseMessage;
 
 @AllArgsConstructor
 @Getter
@@ -36,11 +40,8 @@ public class PaginationControlBar implements ControlBar {
         boolean hasPrevPage = paginationHelper.getCurrentPage() > 1;
         boolean hasNextPage = paginationHelper.getCurrentPage() < 64 && paginationHelper.getCurrentPage() < paginationHelper.getTotalPages();
 
-        ItemStack item1 = new ItemStack(Material.valueOf("RED_STAINED_GLASS_PANE"));
-        ItemStack item2 = new ItemStack(Material.valueOf("BLUE_STAINED_GLASS_PANE"));
-
-        inventory.setItem(controlBarSlot, createControlItem(item1, "§d이전 페이지", hasPrevPage));
-        inventory.setItem(controlBarSlot + 8, createControlItem(item2, "§d다음 페이지", hasNextPage));
+        inventory.setItem(controlBarSlot, createControlItem(new ItemStack(Material.RED_STAINED_GLASS_PANE), "<light_purple>이전 페이지", hasPrevPage));
+        inventory.setItem(controlBarSlot + 8, createControlItem(new ItemStack(Material.BLUE_STAINED_GLASS_PANE), "<light_purple>다음 페이지", hasNextPage));
     }
 
     private void setupPageItems(Inventory inventory, int controlBarSlot) {
@@ -66,46 +67,31 @@ public class PaginationControlBar implements ControlBar {
 
         return createItemStack(
                 new ItemStack(Material.BOOK, pageNumber),
-                pageNumber + " 페이지",
+                "<aqua>" + pageNumber + " 페이지",
                 pageNumber == paginationHelper.getCurrentPage(),
                 modifiable ? new String[]{
-                        "§e§l| §r§6Shift+좌클릭 §f시, 페이지 속성창이 열립니다.",
-                        "§e§l| §r§6Shift+우클릭 §f시, 페이지를 삭제합니다."
+                        CONTROL_PREFIX + "<gold>Shift+우클릭 <white>시, 페이지를 삭제합니다."
                 } : new String[]{}
         );
     }
 
     private ItemStack createCreatePageItem() {
-        ItemStack item = new ItemStack(Material.valueOf("GREEN_STAINED_GLASS_PANE"));
-
-        return createItemStack(item, "&e페이지 생성", false);
+        return createItemStack(new ItemStack(Material.GREEN_STAINED_GLASS_PANE), "<yellow>페이지 생성", false);
     }
 
     private ItemStack createEmptyPageItem() {
-        ItemStack item = new ItemStack(Material.valueOf("GRAY_STAINED_GLASS_PANE"));
-
-        return createItemStack(item, "&7빈 페이지", false);
+        return createItemStack(new ItemStack(Material.GRAY_STAINED_GLASS_PANE), "<gray>빈 페이지", false);
     }
 
     private ItemStack createItemStack(ItemStack item, String displayName, boolean isCurrentPage, String... lore) {
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&r" + displayName));
-
-            if (isCurrentPage) {
-                meta.addEnchant(Enchantment.LUCK, 1, true);
-                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            } if (lore != null && lore.length > 0) {
-                List<String> newLore = new ArrayList<>();
-                for (String loreLine : lore) {
-                    newLore.add(ChatColor.translateAlternateColorCodes('&', loreLine));
-                }
-
-                meta.setLore(newLore);
-            }
-
-            item.setItemMeta(meta);
+        ItemBuilder itemBuilder = new ItemBuilder(item)
+                .setDisplayName(parseMessage(displayName))
+                .setLore(parseMessage(lore));
+        if (isCurrentPage) {
+            itemBuilder.addEnchantment(Enchantment.LUCK, 1, true);
+            itemBuilder.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
-        return item;
+
+        return itemBuilder.get();
     }
 }

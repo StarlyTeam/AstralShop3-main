@@ -6,7 +6,7 @@ import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.command.SubCommand;
 import kr.starly.astralshop.message.MessageContext;
 import kr.starly.astralshop.message.MessageType;
-import kr.starly.astralshop.shop.inventory.admin.impl.ShopSettings;
+import kr.starly.astralshop.shop.inventory.ShopSettings;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -45,12 +45,10 @@ public class EditShopCommand implements SubCommand {
     @Override
     public void execute(CommandSender sender, String label, String[] args) {
         MessageContext messageContext = MessageContext.getInstance();
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             messageContext.get(MessageType.ERROR, "noConsole").send(sender);
             return;
         }
-
-        Player player = (Player) sender;
 
         if (args.length != 2) {
             messageContext.get(MessageType.ERROR, "wrongCommand").send(sender);
@@ -64,7 +62,7 @@ public class EditShopCommand implements SubCommand {
             return;
         }
 
-        new ShopSettings(shop).open(player);
+        new ShopSettings(player, shop).open();
     }
 
     @Override

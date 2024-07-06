@@ -14,7 +14,5 @@ import java.util.Map;
 public class ShopPageImpl implements ShopPage {
 
     private int pageNum;
-    private String guiTitle;
-    private int rows;
     private Map<Integer, ShopItem> items;
 }

@@ -16,14 +16,21 @@ public class ShopItemImpl implements ShopItem {
 
     private final ItemStack itemStack;
 
-    @Setter private double buyPrice;
-    @Setter private double sellPrice;
-    @Setter private int stock;
-    @Setter private int remainStock;
+    @Setter
+    private double buyPrice;
+    @Setter
+    private double sellPrice;
+    @Setter
+    private int stock;
+    @Setter
+    private int remainStock;
 
-    @Setter private boolean marker;
-    @Setter private List<String> commands;
-    @Setter private Map<String, Object> attributes;
+    @Setter
+    private boolean marker;
+    @Setter
+    private List<String> commands;
+    @Setter
+    private Map<String, Object> attributes;
 
     public ImmutableMap<String, Object> getAttributes() {
         return ImmutableMap.copyOf(attributes);

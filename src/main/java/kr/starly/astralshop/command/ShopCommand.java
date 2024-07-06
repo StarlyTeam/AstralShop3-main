@@ -6,7 +6,7 @@ import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopAccessibility;
 import kr.starly.astralshop.message.MessageContext;
 import kr.starly.astralshop.message.MessageType;
-import kr.starly.astralshop.shop.inventory.global.impl.UserShop;
+import kr.starly.astralshop.shop.inventory.UserShop;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -43,7 +43,7 @@ public class ShopCommand implements TabExecutor {
             }
 
             ShopAccessibility accessibility = shop.getAccessibility();
-            if (accessibility == ShopAccessibility.PROTECTED || accessibility == ShopAccessibility.PRIVATE) {
+            if (accessibility == ShopAccessibility.NPC || accessibility == ShopAccessibility.NONE) {
                 if (!player.hasPermission("starly.astralshop.open." + shop.getName())) {
                     messageContext.get(MessageType.ERROR, "noPermission").send(player);
                     return false;

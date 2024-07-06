@@ -12,15 +12,16 @@ import java.util.List;
 
 @AllArgsConstructor
 @Getter
+@Setter
 public class ShopImpl implements Shop {
 
-    @Setter private String name;
-    @Setter private boolean enabled;
-    @Setter private ShopAccessibility accessibility;
+    private String name;
+    private boolean enabled;
+    private ShopAccessibility accessibility;
 
-    @Setter private String guiTitle;
-    @Setter private String npc;
+    private String guiTitle;
+    private int rows;
 
-    @Setter private TransactionHandler transactionHandler;
+    private TransactionHandler transactionHandler;
     private final List<ShopPage> shopPages;
 }

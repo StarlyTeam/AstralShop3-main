@@ -15,11 +15,17 @@ public class ConnectionPoolManager {
     private static ConnectionPoolManager internalPool;
     private HikariDataSource dataSource;
 
-    @Setter private String host;
-    @Setter private String port;
-    @Setter @Getter private String database;
-    @Setter private String username;
-    @Setter private String password;
+    @Setter
+    private String host;
+    @Setter
+    private String port;
+    @Setter
+    @Getter
+    private String database;
+    @Setter
+    private String username;
+    @Setter
+    private String password;
     private final int minimumConnections;
     private final int maximumConnections;
     private long connectionTimeout;

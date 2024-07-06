@@ -8,13 +8,18 @@ group = "kr.starly.astralshop"
 version = rootProject.version
 
 repositories {
-    maven { url = "https://repo.codemc.io/repository/maven-snapshots/" }
+    maven { url "https://repo.codemc.io/repository/maven-snapshots/" }
+    maven { url "https://maven.citizensnpcs.co/repo" }
 }
 
 dependencies {
     api "com.zaxxer:HikariCP:4.0.3"
     api "org.xerial:sqlite-jdbc:3.45.2.0"
-    api "net.wesjd:anvilgui:1.9.4-SNAPSHOT"
+
+    compileOnly "net.kyori:adventure-text-minimessage:4.17.0"
+    compileOnly "me.clip:placeholderapi:2.11.6"
+    compileOnly "com.github.MilkBowl:VaultAPI:1.7.1"
+    compileOnly "net.citizensnpcs:citizensapi:2.0.33-SNAPSHOT"
 
     api project(":AstralShop-api")
 }
@@ -26,7 +31,6 @@ shadowJar {
     relocate "com.zaxxer.hikari", "kr.starly.astralshop.hikari"
     relocate "org.json", "kr.starly.astralshop.json"
     relocate "org.sqlite", "kr.starly.astralshop.sqlite"
-    relocate "net.wesjd.anvilgui", "kr.starly.astralshop.anvilgui"
 }
 
 build.dependsOn shadowJar

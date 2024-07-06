@@ -2,8 +2,8 @@ package kr.starly.astralshop.repository;
 
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.addon.TransactionHandler;
-import kr.starly.astralshop.api.repository.ShopRepository;
 import kr.starly.astralshop.api.registry.TransactionHandlerRegistry;
+import kr.starly.astralshop.api.repository.ShopRepository;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopAccessibility;
 import kr.starly.astralshop.api.shop.ShopItem;
@@ -45,7 +45,7 @@ public class SQLShopRepository implements ShopRepository {
                 + "enabled BOOLEAN, "
                 + "accessibility VARCHAR(15), "
                 + "gui_title VARCHAR(255), "
-                + "npc VARCHAR(255), "
+                + "rows INT, "
                 + "transaction_handler VARCHAR(50), "
                 + "PRIMARY KEY (name)"
                 + ");");
@@ -53,8 +53,6 @@ public class SQLShopRepository implements ShopRepository {
         createTableIfNotExists("CREATE TABLE IF NOT EXISTS shop_pages ("
                 + "shop_name VARCHAR(255), "
                 + "shop_page INT, "
-                + "gui_title VARCHAR(255), "
-                + "`rows` INT, "
                 + "PRIMARY KEY (shop_name, shop_page)"
                 + ");");
 
@@ -82,8 +80,13 @@ public class SQLShopRepository implements ShopRepository {
         }
     }
 
-    @Override public void loadShops() {}
-    @Override public Shop loadShop(String name) {
+    @Override
+    public void loadShops() {
+        throw new UnsupportedOperationException("Cannot bulk load shops with SQLRepository.");
+    }
+
+    @Override
+    public Shop loadShop(String name) {
         return null;
     }
 
@@ -96,11 +99,9 @@ public class SQLShopRepository implements ShopRepository {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 int pageNum = rs.getInt("shop_page");
-                String guiTitle = rs.getString("gui_title");
-                int rows = rs.getInt("rows");
                 Map<Integer, ShopItem> items = loadShopItems(name, pageNum);
 
-                ShopPage page = new ShopPageImpl(pageNum, guiTitle, rows, items);
+                ShopPage page = new ShopPageImpl(pageNum, items);
                 pages.add(page);
             }
         } catch (SQLException e) {
@@ -155,7 +156,11 @@ public class SQLShopRepository implements ShopRepository {
         return items;
     }
 
-    @Override public void saveShops() {}
+    @Override
+    public void saveShops() {
+        throw new UnsupportedOperationException("Cannot bulk save shops with SQLRepository.");
+    }
+
     @Override
     public void saveShop(Shop shop) {
         try (Connection conn = ConnectionPoolManager.getInternalPool().getConnection()) {
@@ -169,8 +174,8 @@ public class SQLShopRepository implements ShopRepository {
                 pstmt.setBoolean(2, shop.isEnabled());
                 pstmt.setString(3, shop.getAccessibility().name());
                 pstmt.setString(4, shop.getGuiTitle());
-                pstmt.setString(5, shop.getNpc());
-                pstmt.setString(6, shop.getTransactionHandler().getName());
+                pstmt.setInt(5, shop.getRows());
+                pstmt.setString(5, shop.getTransactionHandler().getName());
                 pstmt.executeUpdate();
             }
 
@@ -188,11 +193,9 @@ public class SQLShopRepository implements ShopRepository {
     }
 
     private void saveShopPage(Connection conn, String name, ShopPage page) throws SQLException {
-        try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO shop_pages VALUES (?, ?, ?, ?)")) {
+        try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO shop_pages VALUES (?, ?)")) {
             pstmt.setString(1, name);
             pstmt.setInt(2, page.getPageNum());
-            pstmt.setString(3, page.getGuiTitle());
-            pstmt.setInt(4, page.getRows());
             pstmt.executeUpdate();
         }
 
@@ -234,13 +237,12 @@ public class SQLShopRepository implements ShopRepository {
                 return false;
             }
 
-            try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO shops VALUES (?, ?, ?, ?, ?, ?)")) {
+            try (PreparedStatement pstmt = conn.prepareStatement("INSERT INTO shops VALUES (?, ?, ?, ?, ?)")) {
                 pstmt.setString(1, name);
                 pstmt.setBoolean(2, false);
-                pstmt.setString(3, ShopAccessibility.PRIVATE.name());
+                pstmt.setString(3, ShopAccessibility.NONE.name());
                 pstmt.setString(4, name);
-                pstmt.setString(5, "");
-                pstmt.setString(6, "기본");
+                pstmt.setString(5, "기본");
                 pstmt.executeUpdate();
             }
 
@@ -313,16 +315,16 @@ public class SQLShopRepository implements ShopRepository {
                         rs.getString("accessibility")
                 );
                 String guiTitle = rs.getString("gui_title");
-                String npc = rs.getString("npc");
-                String transactionHandlerName = rs.getString("transaction_handler");
+                int rows = rs.getInt("rows");
 
+                String transactionHandlerName = rs.getString("transaction_handler");
                 TransactionHandlerRegistry transactionHandlerRegistry = AstralShop.getInstance().getTransactionHandlerRegistry();
                 TransactionHandler transactionHandler = transactionHandlerRegistry.getHandler(transactionHandlerName);
                 if (transactionHandler == null) transactionHandler = transactionHandlerRegistry.getHandler("기본");
 
                 List<ShopPage> shopPages = loadShopPages(name);
 
-                return new ShopImpl(name, enabled, accessibility, guiTitle, npc, transactionHandler, shopPages);
+                return new ShopImpl(name, enabled, accessibility, guiTitle, rows, transactionHandler, shopPages);
             }
         } catch (SQLException e) {
             logger.warning("Error occurred while loading shop: " + e);

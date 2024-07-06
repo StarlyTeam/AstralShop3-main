@@ -2,27 +2,26 @@ package kr.starly.astralshop;
 
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.registry.ItemAttributeRegistry;
-import kr.starly.astralshop.api.repository.ShopRepository;
 import kr.starly.astralshop.api.registry.TransactionHandlerRegistry;
+import kr.starly.astralshop.api.repository.ShopRepository;
 import kr.starly.astralshop.command.ShopAdminCommand;
 import kr.starly.astralshop.command.ShopCommand;
 import kr.starly.astralshop.database.ConnectionPoolManager;
-import kr.starly.astralshop.dispatcher.EntityInteractDispatcher;
-import kr.starly.astralshop.listener.AdminShopInventoryListener;
-import kr.starly.astralshop.listener.EntityInteractListener;
+import kr.starly.astralshop.listener.NPCInteractListener;
 import kr.starly.astralshop.message.MessageContext;
 import kr.starly.astralshop.registry.ItemAttributeRegistryImpl;
-import kr.starly.astralshop.repository.SQLShopRepository;
 import kr.starly.astralshop.registry.SimpleTransactionHandlerRegistry;
+import kr.starly.astralshop.repository.SQLShopRepository;
 import kr.starly.astralshop.repository.YamlShopRepository;
+import kr.starly.astralshop.shop.inventory.old.ShopInventoryListener;
 import kr.starly.astralshop.shop.transaction.SimpleTransactionHandler;
-import kr.starly.astralshop.shop.inventory.BaseShopInventory;
 import lombok.Getter;
 
 @Getter
 public class AstralShopPlugin extends AstralShop {
 
-    @Getter private static AstralShopPlugin instance;
+    @Getter
+    private static AstralShopPlugin instance;
 
     private ShopRepository shopRepository;
     private ItemAttributeRegistry itemAttributeRegistry;
@@ -58,9 +57,8 @@ public class AstralShopPlugin extends AstralShop {
         getCommand("shop").setExecutor(new ShopCommand());
 
         // Listener
-        EntityInteractDispatcher.register(this);
-        getServer().getPluginManager().registerEvents(new EntityInteractListener(), this);
-        getServer().getPluginManager().registerEvents(new AdminShopInventoryListener(), this);
+        getServer().getPluginManager().registerEvents(new NPCInteractListener(), this);
+        getServer().getPluginManager().registerEvents(new ShopInventoryListener(), this);
     }
 
     @Override
@@ -68,11 +66,7 @@ public class AstralShopPlugin extends AstralShop {
         ConnectionPoolManager pool = ConnectionPoolManager.getInternalPool();
         if (pool != null) pool.closePool();
 
-        getServer().getOnlinePlayers().forEach(player -> {
-            if (player.getOpenInventory().getTopInventory().getHolder() instanceof BaseShopInventory) {
-                player.closeInventory();
-            }
-        });
+        // TODO: CLOSE
 
         if (shopRepository != null) shopRepository.saveShops();
     }

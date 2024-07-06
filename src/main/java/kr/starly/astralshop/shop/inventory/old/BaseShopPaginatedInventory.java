@@ -1,7 +1,6 @@
-package kr.starly.astralshop.shop.inventory;
+package kr.starly.astralshop.shop.inventory.old;
 
 import kr.starly.astralshop.api.shop.Shop;
-import kr.starly.astralshop.api.shop.ShopPage;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 
@@ -17,9 +16,8 @@ public abstract class BaseShopPaginatedInventory extends BaseShopInventory {
 
     @Override
     protected void createInventory(Player player) {
-        ShopPage currentPage = paginationManager.getCurrentPageData();
-        this.title = currentPage.getGuiTitle();
-        this.rows = currentPage.getRows();
+        this.title = shop.getGuiTitle();
+        this.rows = shop.getRows();
 
         super.createInventory(player);
     }

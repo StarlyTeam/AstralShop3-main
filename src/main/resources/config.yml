@@ -7,35 +7,42 @@ mysql:
   password: ""
 
 #   ／￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣＼
-#  ｜                 Message Settings                  ｜
+#  ｜                   Message Settings                    ｜
 #   ＼＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿／
 message:
-  prefix: "&6상점 &7| &r"
+  prefix: "<gold>상점 <gray>| <white>"
+
   normal:
-    shopCreated: "&a<name> 상점을 생성하였습니다."
-    shopDeleted: "&a<name> 상점을 삭제하였습니다."
-    shopClosedWhileMaintaining: "&b상점 점검으로 인하여 상점이 닫혔습니다."
-    reloadComplete: "&a리로드를 완료하였습니다. (<duration>)"
-    simple-handler:
-      itemBought1: "&b<price>&f원을 지불하여 &b<name> &7x &b<amount>&f개를 구매하였습니다."
-      itemBought2: "&f재고가 부족하여 &b<price>&f원을 지불하고 &b<name> &7x &b<amount>&f개만 구매하였습니다."
-      itemBought3: "&f인벤토리의 공간이 부족하여 &b<price>&f원을 지불하고 &b<name> &7x &b<amount>&f개만 구매하였습니다."
-      itemBought4: "&f잔액이 부족하여 &b<price>&f원을 지불하고 &b<name> &7x &b<amount>&f개만 구매하였습니다."
-      itemSold1: "&b<price>&f원을 지불받고 &b<name> &7x &b<amount>&f개를 판매하였습니다."
-      itemSold2: "&f재고가 가득 차 &b<price>&f원을 지불받고 &b<name> &7x &b<amount>&f개만 판매하였습니다."
-      itemSold3: "&f인벤토리에 아이템이 부족하여 &b<price>&f원을 지불받고 &b<name> &7x &b<amount>&f개만 판매하였습니다."
+    shopCreated: "<green><name> 상점을 생성하였습니다."
+    shopDeleted: "<green><name> 상점을 삭제하였습니다."
+    setNpc: "<green>설정할 NPC를 우클릭 해주세요. 취소하려면 허공에 우클릭 해주세요."
+    npcSet: "<green>NPC를 설정하였습니다."
+    removeNpc: "<green>삭제할 NPC를 우클릭 해주세요. 취소하려면 허공에 우클릭 해주세요."
+    npcRemoved: "<green>NPC 정보를 삭제하였습니다."
+    shopClosedForMaintain: "<aqua>상점 점검으로 인하여 상점이 닫혔습니다."
+    reloadComplete: "<green>리로드를 완료하였습니다. (<duration>)"
+
   error:
-    noConsole: "&c콘솔에서는 사용할 수 없는 명령어입니다."
-    noPermission: "&c권한이 없습니다."
-    wrongCommand: "&c잘못된 명령어입니다."
-    shopAlreadyExists: "&c이미 존재하는 상점입니다."
-    shopNotExists: "&c존재하지 않는 상점입니다."
-    shopDisabled: "&c상점이 문을 닫았습니다."
-    simple-handler:
-      cannotBuy: "&c해당 상품은 구매하실 수 없습니다."
-      cannotSell: "&c해당 상품은 판매하실 수 없습니다."
-      failedToBuy1: "&c재고가 부족하여 아이템을 구매하실 수 없습니다."
-      failedToBuy2: "&c인벤토리의 공간이 부족하여 아이템을 구매하실 수 없습니다."
-      failedToBuy3: "&c잔액이 부족하여 아이템을 구매하실 수 없습니다."
-      failedToSell1: "&c재고가 가득 차 아이템을 판매하실 수 없습니다."
-      failedToSell2: "&c인벤토리에 아이템이 부족하여 아이템을 판매하실 수 없습니다."
+    noConsole: "<red>콘솔에서는 사용할 수 없는 명령어입니다."
+    noPermission: "<red>권한이 없습니다."
+    wrongCommand: "<red>잘못된 명령어입니다."
+    shopAlreadyExists: "<red>이미 존재하는 상점입니다."
+    shopNotExists: "<red>존재하지 않는 상점입니다."
+    shopDisabled: "<red>상점이 문을 닫았습니다."
+
+  simple-handler:
+    itemBought1: "<aqua><price><white>원을 지불하여 <aqua><name> <gray>x <aqua><amount><white>개를 구매하였습니다."
+    itemBought2: "<white>재고가 부족하여 <aqua><price><white>원을 지불하고 <aqua><name> <gray>x <aqua><amount><white>개만 구매하였습니다."
+    itemBought3: "<white>인벤토리의 공간이 부족하여 <aqua><price><white>원을 지불하고 <aqua><name> <gray>x <aqua><amount><white>개만 구매하였습니다."
+    itemBought4: "<white>잔액이 부족하여 <aqua><price><white>원을 지불하고 <aqua><name> <gray>x <aqua><amount><white>개만 구매하였습니다."
+    itemSold1: "<aqua><price><white>원을 지불받고 <aqua><name> <gray>x <aqua><amount><white>개를 판매하였습니다."
+    itemSold2: "<white>재고가 가득 차 <aqua><price><white>원을 지불받고 <aqua><name> <gray>x <aqua><amount><white>개만 판매하였습니다."
+    itemSold3: "<white>인벤토리에 아이템이 부족하여 <aqua><price><white>원을 지불받고 <aqua><name> <gray>x <aqua><amount><white>개만 판매하였습니다."
+
+    cannotBuy: "<red>해당 상품은 구매하실 수 없습니다."
+    cannotSell: "<red>해당 상품은 판매하실 수 없습니다."
+    failedToBuy1: "<red>재고가 부족하여 아이템을 구매하실 수 없습니다."
+    failedToBuy2: "<red>인벤토리의 공간이 부족하여 아이템을 구매하실 수 없습니다."
+    failedToBuy3: "<red>잔액이 부족하여 아이템을 구매하실 수 없습니다."
+    failedToSell1: "<red>재고가 가득 차 아이템을 판매하실 수 없습니다."
+    failedToSell2: "<red>인벤토리에 아이템이 부족하여 아이템을 판매하실 수 없습니다."

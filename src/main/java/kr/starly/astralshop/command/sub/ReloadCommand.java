@@ -1,11 +1,10 @@
 package kr.starly.astralshop.command.sub;
 
-import kr.starly.astralshop.api.repository.ShopRepository;
 import kr.starly.astralshop.api.AstralShop;
+import kr.starly.astralshop.api.repository.ShopRepository;
 import kr.starly.astralshop.command.SubCommand;
 import kr.starly.astralshop.message.MessageContext;
 import kr.starly.astralshop.message.MessageType;
-import kr.starly.astralshop.shop.inventory.BaseShopInventory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.Tag;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -50,12 +49,7 @@ public class ReloadCommand implements SubCommand {
             AstralShop plugin = AstralShop.getInstance();
             ShopRepository shopRepository = plugin.getShopRepository();
 
-            plugin.getServer().getOnlinePlayers().forEach(player -> {
-                if (player.getOpenInventory().getTopInventory().getHolder() instanceof BaseShopInventory) {
-                    player.closeInventory();
-                    messageContext.get(MessageType.NORMAL, "shopClosedWhileMaintaining").send(player);
-                }
-            });
+            // TODO: CLOSE
 
             plugin.reloadConfig();
             shopRepository.saveShops();
