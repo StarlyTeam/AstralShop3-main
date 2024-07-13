@@ -68,6 +68,7 @@ public class AstralShopPlugin extends AstralShop {
 
         // TODO: CLOSE
 
-        if (shopRepository != null) shopRepository.saveShops();
+        if (shopRepository != null && !(shopRepository instanceof SQLShopRepository))
+            shopRepository.saveShops();
     }
 }
