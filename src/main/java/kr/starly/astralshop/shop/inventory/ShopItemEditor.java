@@ -270,8 +270,7 @@ public class ShopItemEditor {
                         )),
                 (click) -> {
                     window.setCloseHandlers(new ArrayList<>());
-                    Do.syncLater(1, () -> new ShopItemCommandsEditor(shop, page, slot).open(player));
-                    window.setCloseHandlers(closeHandlers);
+                    new ShopItemCommandsEditor(shop, page, slot).open(player);
                     return false;
                 }
         );
