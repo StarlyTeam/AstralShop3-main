@@ -8,7 +8,9 @@ group = "kr.starly.astralshop"
 version = rootProject.version
 
 repositories {
+    maven { url "https://jitpack.io" }
     maven { url "https://repo.codemc.io/repository/maven-snapshots/" }
+    maven { url "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
     maven { url "https://maven.citizensnpcs.co/repo" }
 }
 
