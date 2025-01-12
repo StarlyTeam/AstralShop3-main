@@ -3,7 +3,6 @@ package kr.starly.astralshop.shop.inventory;
 import kr.starly.astralshop.api.AstralShop;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopItem;
-import kr.starly.astralshop.message.MessageContext;
 import kr.starly.libs.inventory.gui.Gui;
 import kr.starly.libs.inventory.item.Item;
 import kr.starly.libs.inventory.item.builder.ItemBuilder;
@@ -12,23 +11,22 @@ import kr.starly.libs.inventory.item.impl.SuppliedItem;
 import kr.starly.libs.inventory.window.AnvilWindow;
 import kr.starly.libs.inventory.window.Window;
 import kr.starly.libs.scheduler.Do;
+import org.apache.commons.collections4.ListUtils;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import static kr.starly.astralshop.message.MessageContext.*;
 
 public class ShopItemEditor {
 
-    private static final Map<ShopItem, Gui> guiMap = new HashMap<>();
     private final AstralShop plugin = AstralShop.getInstance();
-    private final MessageContext messageContext = MessageContext.getInstance();
 
-    private final Player player;
+    private Player player;
     private final int page;
     private final int slot;
     private final Shop shop;
@@ -37,15 +35,21 @@ public class ShopItemEditor {
     private final Gui gui;
     private Window window;
 
-    public ShopItemEditor(Player player, Shop shop, int page, int slot) {
-        this.player = player;
+    private final List<Runnable> closeHandlers;
+
+    public ShopItemEditor(Shop shop, int page, int slot) {
         this.page = page;
         this.slot = slot;
         this.shop = shop;
         this.shopItem = shop.getShopPages().get(page - 1).getItems().get(slot);
 
-        this.gui = guiMap.computeIfAbsent(shopItem, (k) -> createGui());
+        this.gui = createGui();
         this.window = null;
+
+        this.closeHandlers = List.of(
+                () -> Do.syncLater(1, () -> this.open(player)),
+                () -> Do.async(() -> plugin.getShopRepository().saveShop(shop))
+        );
     }
 
     private Gui createGui() {
@@ -76,7 +80,8 @@ public class ShopItemEditor {
                 .build(player);
     }
 
-    public void open() {
+    public void open(Player player) {
+        this.player = player;
         this.window = createWindow();
         window.open();
     }
@@ -106,6 +111,7 @@ public class ShopItemEditor {
                                     .setDisplayName(String.valueOf(shopItem.getBuyPrice())))
                             .build();
 
+                    window.setCloseHandlers(new ArrayList<>());
                     AnvilWindow.single()
                             .setGui(gui)
                             .setTitle("구매가격을 입력 후 닫아주세요.")
@@ -119,8 +125,7 @@ public class ShopItemEditor {
                                     player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, .8f, 1f);
                                 }
                             })
-                            .addCloseHandler(() -> Do.syncLater(1, ShopItemEditor.this::open))
-                            .addCloseHandler(() -> Do.async(() -> plugin.getShopRepository().saveShop(shop)))
+                            .setCloseHandlers(ListUtils.union(List.of(() -> window.setCloseHandlers(closeHandlers)), closeHandlers))
                             .open(player);
                     return false;
                 }
@@ -145,6 +150,7 @@ public class ShopItemEditor {
                                     .setDisplayName(String.valueOf(shopItem.getSellPrice())))
                             .build();
 
+                    window.setCloseHandlers(new ArrayList<>());
                     AnvilWindow.single()
                             .setGui(gui)
                             .setTitle("판매가격을 입력 후 닫아주세요.")
@@ -158,8 +164,7 @@ public class ShopItemEditor {
                                     player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, .8f, 1f);
                                 }
                             })
-                            .addCloseHandler(() -> Do.syncLater(1, ShopItemEditor.this::open))
-                            .addCloseHandler(() -> Do.async(() -> plugin.getShopRepository().saveShop(shop)))
+                            .setCloseHandlers(ListUtils.union(List.of(() -> window.setCloseHandlers(closeHandlers)), closeHandlers))
                             .open(player);
                     return false;
                 }
@@ -187,6 +192,7 @@ public class ShopItemEditor {
                                         .setDisplayName(String.valueOf(shopItem.getSellPrice())))
                                 .build();
 
+                        window.setCloseHandlers(new ArrayList<>());
                         AnvilWindow.single()
                                 .setGui(gui)
                                 .setTitle("최대 재고를 입력 후 닫아주세요.")
@@ -200,8 +206,7 @@ public class ShopItemEditor {
                                         player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, .8f, 1f);
                                     }
                                 })
-                                .addCloseHandler(() -> Do.syncLater(1, ShopItemEditor.this::open))
-                                .addCloseHandler(() -> Do.async(() -> plugin.getShopRepository().saveShop(shop)))
+                                .setCloseHandlers(ListUtils.union(List.of(() -> window.setCloseHandlers(closeHandlers)), closeHandlers))
                                 .open(player);
                         return false;
                     } else if (click.getClickType() == ClickType.RIGHT) {
@@ -211,6 +216,7 @@ public class ShopItemEditor {
                                         .setDisplayName(String.valueOf(shopItem.getSellPrice())))
                                 .build();
 
+                        window.setCloseHandlers(new ArrayList<>());
                         AnvilWindow.single()
                                 .setGui(gui)
                                 .setTitle("현재 재고를 입력 후 닫아주세요.")
@@ -224,8 +230,7 @@ public class ShopItemEditor {
                                         player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_LAND, .8f, 1f);
                                     }
                                 })
-                                .addCloseHandler(() -> Do.syncLater(1, ShopItemEditor.this::open))
-                                .addCloseHandler(() -> Do.async(() -> plugin.getShopRepository().saveShop(shop)))
+                                .setCloseHandlers(ListUtils.union(List.of(() -> window.setCloseHandlers(closeHandlers)), closeHandlers))
                                 .open(player);
                         return false;
                     } else if (click.getClickType() == ClickType.SHIFT_RIGHT) {
@@ -264,7 +269,9 @@ public class ShopItemEditor {
                                 CONTROL_PREFIX + "<gold>좌클릭 <white>시, 편집창으로 이동합니다."
                         )),
                 (click) -> {
+                    window.setCloseHandlers(new ArrayList<>());
                     Do.syncLater(1, () -> new ShopItemCommandsEditor(shop, page, slot).open(player));
+                    window.setCloseHandlers(closeHandlers);
                     return false;
                 }
         );

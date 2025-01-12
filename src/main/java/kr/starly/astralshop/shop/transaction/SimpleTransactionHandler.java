@@ -113,7 +113,7 @@ public class SimpleTransactionHandler implements TransactionHandler {
                 }
 
                 boolean isFull = false, isStockOut = false;
-                int totalBought = 0;
+                AtomicInteger totalBought = new AtomicInteger();
 
                 int toAdd = Math.min(amount, (int) (economy.getBalance(player) / itemData.getBuyPrice()));
                 if (toAdd != 0) {
@@ -134,15 +134,15 @@ public class SimpleTransactionHandler implements TransactionHandler {
                                 itemData.setRemainStock(itemData.getRemainStock() - 1);
                             }
 
-                            economy.withdrawPlayer(player, itemData.getBuyPrice());
-                            totalBought++;
+                            totalBought.addAndGet(1);
                         }
                     }
                 }
 
-                double finalPrice = totalBought * itemData.getBuyPrice();
-                int finalTotalBought = totalBought;
-                if (totalBought == amount) {
+                double finalPrice = totalBought.get() * itemData.getBuyPrice();
+                economy.withdrawPlayer(player, finalPrice);
+
+                if (totalBought.get() == amount) {
                     messageContext.get(MessageType.SIMPLE_HANDLER, "itemBought1", TagResolver.builder()
                             .tag("name", Tag.inserting(Component.text(
                                     NmsMultiVersion.getItemTranslator().translateItemName(itemStack, Locale.KOREA))))
@@ -150,11 +150,11 @@ public class SimpleTransactionHandler implements TransactionHandler {
                                     finalPrice
                             )))
                             .tag("amount", Tag.inserting(Component.text(
-                                    finalTotalBought
+                                    totalBought.get()
                             )))
                             .build()
                     ).send(player);
-                } else if (totalBought == 0) {
+                } else if (totalBought.get() == 0) {
                     if (isStockOut) messageContext.get(MessageType.SIMPLE_HANDLER, "failedToBuy1").send(player);
                     else if (isFull) messageContext.get(MessageType.SIMPLE_HANDLER, "failedToBuy2").send(player);
                     else messageContext.get(MessageType.SIMPLE_HANDLER, "failedToBuy3").send(player);
@@ -171,7 +171,7 @@ public class SimpleTransactionHandler implements TransactionHandler {
                                     finalPrice
                             )))
                             .tag("amount", Tag.inserting(Component.text(
-                                    finalTotalBought
+                                    totalBought.get()
                             )))
                             .build()
                     ).send(player);
@@ -204,11 +204,12 @@ public class SimpleTransactionHandler implements TransactionHandler {
                     }
 
                     itemStack1.setAmount(itemStack1.getAmount() - toRemove);
-                    economy.depositPlayer(player, itemData.getSellPrice() * toRemove);
                     totalSold.addAndGet(toRemove);
                 });
 
                 double finalPrice = totalSold.get() * itemData.getSellPrice();
+                economy.depositPlayer(player, finalPrice);
+
                 if (totalSold.get() == amount) {
                     messageContext.get(MessageType.SIMPLE_HANDLER, "itemSold1", TagResolver.builder()
                             .tag("name", Tag.inserting(Component.text(

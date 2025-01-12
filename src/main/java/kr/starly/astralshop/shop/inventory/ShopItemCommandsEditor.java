@@ -1,7 +1,5 @@
 package kr.starly.astralshop.shop.inventory;
 
-import kr.starly.astralshop.api.AstralShop;
-import kr.starly.astralshop.api.repository.ShopRepository;
 import kr.starly.astralshop.api.shop.Shop;
 import kr.starly.astralshop.api.shop.ShopItem;
 import kr.starly.astralshop.api.shop.ShopPage;
@@ -10,7 +8,6 @@ import kr.starly.libs.inventory.gui.Gui;
 import kr.starly.libs.inventory.item.builder.ItemBuilder;
 import kr.starly.libs.inventory.window.AnvilWindow;
 import kr.starly.libs.scheduler.Do;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -24,8 +21,6 @@ import java.util.List;
 import static kr.starly.astralshop.message.MessageContext.*;
 
 public class ShopItemCommandsEditor extends BaseShopInventory {
-
-    private final ShopRepository shopRepository = AstralShop.getInstance().getShopRepository();
 
     private final int page;
     private final int slot;
@@ -147,7 +142,7 @@ public class ShopItemCommandsEditor extends BaseShopInventory {
         saveShop();
 
         setEventListening(false);
-        Do.syncLater(1, () -> new ShopItemEditor((Player) event.getPlayer(), shop, page, slot).open());
+        Do.syncLater(1, () -> new ShopItemEditor(shop, page, slot).open((Player) event.getPlayer()));
     }
 
     @Override

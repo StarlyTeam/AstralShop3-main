@@ -44,7 +44,7 @@ public class ShopItemsEditor extends AdminPaginatedShopInventory {
             savePage(inventory);
 
             setEventListening(false);
-            Do.syncLater(1, () -> new ShopItemEditor(player, shop, paginationManager.getCurrentPage(), event.getSlot()).open());
+            Do.syncLater(1, () -> new ShopItemEditor(shop, paginationManager.getCurrentPage(), event.getSlot()).open(player));
         }
     }
 

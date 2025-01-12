@@ -38,7 +38,6 @@ import static kr.starly.astralshop.message.MessageContext.*;
 
 public class ShopSettings {
 
-    private static final Map<Shop, Gui> guiMap = new HashMap<>();
     private final AstralShop plugin = AstralShop.getInstance();
     private final MessageContext messageContext = MessageContext.getInstance();
 
@@ -52,7 +51,7 @@ public class ShopSettings {
         this.player = player;
         this.shop = shop;
 
-        this.gui = guiMap.computeIfAbsent(shop, (k) -> createGui());
+        this.gui = createGui();
         this.window = null;
     }
 

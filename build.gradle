@@ -17,6 +17,7 @@ repositories {
 dependencies {
     api "com.zaxxer:HikariCP:4.0.3"
     api "org.xerial:sqlite-jdbc:3.45.2.0"
+    api "org.apache.commons:commons-collections4:4.5.0-M3"
 
     compileOnly "net.kyori:adventure-text-minimessage:4.17.0"
     compileOnly "me.clip:placeholderapi:2.11.6"
